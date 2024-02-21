@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loginrace/loginn.dart';
+import 'package:loginrace/login2.dart';
 
 void main() {
   runApp(const MyApp());
