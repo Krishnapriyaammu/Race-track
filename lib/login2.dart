@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:loginrace/Race%20track/registration.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState(); 
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -16,7 +17,7 @@ class _LoginPageState extends State<LoginPage> {
 body: Center(child: 
               Center(
                 child: Container(
-                  color: Colors.amber,
+                 
                   width: 400,
                   
                   child: Padding(
@@ -29,7 +30,7 @@ body: Center(child:
                           mainAxisAlignment: MainAxisAlignment.start,
                           
                           children: [
-                            Padding(padding: const EdgeInsets.all(20)),
+                            Padding(padding: const EdgeInsets.all(10)),
                             Text('Enter username'),
                           ],
                         ),
@@ -37,10 +38,11 @@ body: Center(child:
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(40))
                         ),
                         ),
+                        SizedBox(height: 10,),
                         Container(child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Padding(padding: const EdgeInsets.all(20)),
+                            Padding(padding: const EdgeInsets.all(10)),
                             Text('Enter Password'),
                           ],
                         )),
@@ -88,7 +90,13 @@ body: Center(child:
                           
                         
                     SizedBox(height: 40,),
-                        ElevatedButton(onPressed: (){}, child: Text('Login',style: TextStyle(fontSize: 20,),))
+                        ElevatedButton(onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return raceRegistration();
+                            
+                          },));
+                          
+                        }, child: Text('Login',style: TextStyle(fontSize: 20,),))
                     
                     ],
                     
