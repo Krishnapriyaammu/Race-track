@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:loginrace/Community/communityregis.dart';
+import 'package:loginrace/Community/navigation.dart';
 import 'package:loginrace/Race%20track/event.dart';
 import 'package:loginrace/Race%20track/registration.dart';
 import 'package:loginrace/Rental/rentalregistration.dart';
@@ -22,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
 body: Center(child: 
               Center(
                 child: Container(
-                 
+                
                   width: 400,
                   
                   child: Padding(
@@ -31,6 +32,7 @@ body: Center(child:
                       mainAxisAlignment: MainAxisAlignment.center,
                       
                       children: [
+                        Image.asset('images/logo1.png'),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           
@@ -76,7 +78,7 @@ body: Center(child:
                   alignment: Alignment.centerRight,
                   child: TextButton(onPressed: (){
                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return CommunityRegister();
+                            return LoginPage();
                   },));
 
                   }, child: Text('SIGN UP')),
@@ -103,7 +105,7 @@ body: Center(child:
                     SizedBox(height: 40,),
                         ElevatedButton(onPressed: (){
                       Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return RentUser();
+                            return Navigation();
                   },));
 
                         },  style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 217, 149, 149))),
