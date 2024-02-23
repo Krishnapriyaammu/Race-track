@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/Rental/renteditprofile.dart';
 
-class raceRegistration extends StatefulWidget {
-  const raceRegistration({super.key});
+class RentalRegister extends StatefulWidget {
+  const RentalRegister({super.key});
 
   @override
-  State<raceRegistration> createState() => _raceRegistrationState();
+  State<RentalRegister> createState() => _RentalRegisterState();
 }
 
-class _raceRegistrationState extends State<raceRegistration> {
+class _RentalRegisterState extends State<RentalRegister> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       body:SafeArea(
+
+      body:SafeArea(
          child: Center(
            child: Padding(
              padding:  EdgeInsets.all(20.0),
@@ -24,6 +26,7 @@ class _raceRegistrationState extends State<raceRegistration> {
                    child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Text('SIGN UP',style: TextStyle(fontWeight: FontWeight.bold),),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -33,7 +36,7 @@ class _raceRegistrationState extends State<raceRegistration> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Name',fillColor: Color.fromARGB(114, 234, 70, 70),filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: 'Name',fillColor: Colors.deepOrange[100],filled: true,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                         ),
@@ -108,16 +111,16 @@ class _raceRegistrationState extends State<raceRegistration> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('License',),
+                            child: Text('Proof',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'License',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: 'Proof',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                       
                       ),),
                    
-                        SizedBox(height: 10,),
+                        // SizedBox(height: 10,),
                    
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -151,8 +154,14 @@ class _raceRegistrationState extends State<raceRegistration> {
                       
                       SizedBox(height: 40,),
                    
-                      ElevatedButton(onPressed: (){}, 
-                      style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 240, 7, 19))),
+                      ElevatedButton(onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return RentalEditprofile();
+                  },));
+                      },
+
+                      
+                      style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 237, 142, 146))),
                       child: Text('SIGN UP'))
                    
                       
@@ -170,6 +179,9 @@ class _raceRegistrationState extends State<raceRegistration> {
            ),
          ),
        )
+
+
+
 
 
 

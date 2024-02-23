@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/Community/commeditprofil.dart';
 
-class raceRegistration extends StatefulWidget {
-  const raceRegistration({super.key});
+class CommunityRegister extends StatefulWidget {
+  const CommunityRegister({super.key});
 
   @override
-  State<raceRegistration> createState() => _raceRegistrationState();
+  State<CommunityRegister> createState() => _CommunityRegisterState();
 }
 
-class _raceRegistrationState extends State<raceRegistration> {
+class _CommunityRegisterState extends State<CommunityRegister> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       body:SafeArea(
+body:SafeArea(
          child: Center(
            child: Padding(
              padding:  EdgeInsets.all(20.0),
@@ -29,11 +30,11 @@ class _raceRegistrationState extends State<raceRegistration> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Name',),
+                            child: Text('Community Name',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Name',fillColor: Color.fromARGB(114, 234, 70, 70),filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: 'Name',fillColor: Colors.deepOrange[100],filled: true,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                         ),
@@ -92,11 +93,11 @@ class _raceRegistrationState extends State<raceRegistration> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Upload Image',),
+                            child: Text('Total vehicle',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'image',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: 'Total vehicles',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                       ),),
@@ -108,11 +109,11 @@ class _raceRegistrationState extends State<raceRegistration> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('License',),
+                            child: Text('Proof',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'License',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: 'Proof',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                       
                       ),),
@@ -151,8 +152,13 @@ class _raceRegistrationState extends State<raceRegistration> {
                       
                       SizedBox(height: 40,),
                    
-                      ElevatedButton(onPressed: (){}, 
-                      style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 240, 7, 19))),
+                      ElevatedButton(onPressed: (){
+
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return Commueditprofile();
+                  },));
+                      }, 
+                      style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 233, 142, 146))),
                       child: Text('SIGN UP'))
                    
                       
@@ -170,6 +176,12 @@ class _raceRegistrationState extends State<raceRegistration> {
            ),
          ),
        )
+
+
+
+
+
+
 
 
 

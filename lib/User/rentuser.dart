@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/User/bookautoshow.dart';
 
-class raceRegistration extends StatefulWidget {
-  const raceRegistration({super.key});
+class RentUser extends StatefulWidget {
+  const RentUser({super.key});
 
   @override
-  State<raceRegistration> createState() => _raceRegistrationState();
+  State<RentUser> createState() => _RentUserState();
 }
 
-class _raceRegistrationState extends State<raceRegistration> {
+class _RentUserState extends State<RentUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       body:SafeArea(
+
+body:SafeArea(
          child: Center(
            child: Padding(
              padding:  EdgeInsets.all(20.0),
@@ -33,7 +35,7 @@ class _raceRegistrationState extends State<raceRegistration> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Name',fillColor: Color.fromARGB(114, 234, 70, 70),filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: 'Name',fillColor:  Colors.deepOrange[100],filled: true,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                         ),
@@ -92,11 +94,11 @@ class _raceRegistrationState extends State<raceRegistration> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Upload Image',),
+                            child: Text('Date of rent',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'image',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: 'rent date',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                       ),),
@@ -108,11 +110,11 @@ class _raceRegistrationState extends State<raceRegistration> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('License',),
+                            child: Text('Due date',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'License',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: 'Due date',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                       
                       ),),
@@ -124,36 +126,41 @@ class _raceRegistrationState extends State<raceRegistration> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Password',),
+                            child: Text('Payment',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'password',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: 'payment',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                       ),),
                         // SizedBox(height: 10,),
                    
                    
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Confirm Password',),
-                          ),
-                        ],
-                      ),
-                      TextFormField(decoration: InputDecoration(hintText: 'confirm password',fillColor: Colors.deepOrange[100],filled: true,
-                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                      ),),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.start,
+                      //   children: [
+                      //     Padding(
+                      //       padding: const EdgeInsets.all(10.0),
+                      //       child: Text('Confirm Password',),
+                      //     ),
+                      //   ],
+                      // ),
+                      // TextFormField(decoration: InputDecoration(hintText: 'confirm password',fillColor: Colors.deepOrange[100],filled: true,
+                      //      border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+                      // ),),
                    
                       
                       SizedBox(height: 40,),
                    
-                      ElevatedButton(onPressed: (){}, 
+                      ElevatedButton(onPressed: (){
+
+                         Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return AutoshowBooking();
+                  },));
+                      }, 
                       style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 240, 7, 19))),
-                      child: Text('SIGN UP'))
+                      child: Text('SUBMIT'))
                    
                       
                       
@@ -170,6 +177,8 @@ class _raceRegistrationState extends State<raceRegistration> {
            ),
          ),
        )
+
+
 
 
 

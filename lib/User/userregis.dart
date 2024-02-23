@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class raceRegistration extends StatefulWidget {
-  const raceRegistration({super.key});
+class UserRgistration extends StatefulWidget {
+  const UserRgistration({super.key});
 
   @override
-  State<raceRegistration> createState() => _raceRegistrationState();
+  State<UserRgistration> createState() => _UserRgistrationState();
 }
 
-class _raceRegistrationState extends State<raceRegistration> {
+class _UserRgistrationState extends State<UserRgistration> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       body:SafeArea(
+ body:SafeArea(
          child: Center(
            child: Padding(
              padding:  EdgeInsets.all(20.0),
@@ -170,6 +170,8 @@ class _raceRegistrationState extends State<raceRegistration> {
            ),
          ),
        )
+
+
 
 
 

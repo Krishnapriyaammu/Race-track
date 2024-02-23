@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:loginrace/Race%20track/track.dart';
 
-class raceRegistration extends StatefulWidget {
-  const raceRegistration({super.key});
+class EventAdd extends StatefulWidget {
+  const EventAdd({super.key});
 
   @override
-  State<raceRegistration> createState() => _raceRegistrationState();
+  State<EventAdd> createState() => _EventAddState();
 }
 
-class _raceRegistrationState extends State<raceRegistration> {
+class _EventAddState extends State<EventAdd> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       body:SafeArea(
+      appBar: AppBar(backgroundColor: Color.fromARGB(255, 212, 119, 110),),
+      
+body: 
+        
+        SafeArea(
+  
          child: Center(
            child: Padding(
-             padding:  EdgeInsets.all(20.0),
+             padding:  EdgeInsets.all(40.00),
              child: Container(
               
               width: 400,
@@ -24,17 +31,21 @@ class _raceRegistrationState extends State<raceRegistration> {
                    child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Text('EVENTS', style: TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+              ),),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Name',),
+                            child: Text('Event Name',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Name',fillColor: Color.fromARGB(114, 234, 70, 70),filled: true,
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+                      TextFormField(decoration: InputDecoration(hintText: 'Event Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                         ),
                         ),
@@ -45,12 +56,12 @@ class _raceRegistrationState extends State<raceRegistration> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Email',),
+                            child: Text('Owner',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Email',fillColor: Colors.deepOrange[100],filled: true,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+                      TextFormField(decoration: InputDecoration(hintText: 'Owner',fillColor:  Color.fromARGB(112, 243, 214, 214),filled: true,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       ),),
                    
                         // SizedBox(height: 10,),
@@ -60,12 +71,12 @@ class _raceRegistrationState extends State<raceRegistration> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Location',),
+                            child: Text('Date',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Location',fillColor: Colors.deepOrange[100],filled: true,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+                      TextFormField(decoration: InputDecoration(hintText: 'Date',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                       ),),
                    
@@ -76,12 +87,12 @@ class _raceRegistrationState extends State<raceRegistration> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Phone Number',),
+                            child: Text('Total Tickets',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Phone number',fillColor: Colors.deepOrange[100],filled: true,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+                      TextFormField(decoration: InputDecoration(hintText: 'Total tickets',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
                    
@@ -96,8 +107,8 @@ class _raceRegistrationState extends State<raceRegistration> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'image',fillColor: Colors.deepOrange[100],filled: true,
-                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+                      TextFormField(decoration: InputDecoration(hintText: 'image',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                       ),),
                    
@@ -108,52 +119,30 @@ class _raceRegistrationState extends State<raceRegistration> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('License',),
+                            child: Text('Price',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'License',fillColor: Colors.deepOrange[100],filled: true,
-                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
+                      TextFormField(decoration: InputDecoration(hintText: 'Price',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
                    
-                        SizedBox(height: 10,),
+                      
                    
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Password',),
-                          ),
-                        ],
-                      ),
-                      TextFormField(decoration: InputDecoration(hintText: 'password',fillColor: Colors.deepOrange[100],filled: true,
-                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                                       
-                      ),),
-                        // SizedBox(height: 10,),
-                   
-                   
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Confirm Password',),
-                          ),
-                        ],
-                      ),
-                      TextFormField(decoration: InputDecoration(hintText: 'confirm password',fillColor: Colors.deepOrange[100],filled: true,
-                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                      ),),
+                     
                    
                       
                       SizedBox(height: 40,),
                    
-                      ElevatedButton(onPressed: (){}, 
-                      style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 240, 7, 19))),
-                      child: Text('SIGN UP'))
+                      ElevatedButton(onPressed: (){
+
+                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return TrackAdd();
+                  },));
+                      }, 
+                      style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 240, 124, 130))),
+                      child: Text('SUBMIT',style: TextStyle(color: Colors.white),))
                    
                       
                       
@@ -170,6 +159,15 @@ class _raceRegistrationState extends State<raceRegistration> {
            ),
          ),
        )
+
+
+
+
+
+
+
+
+      
 
 
 
