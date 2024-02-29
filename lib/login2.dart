@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:loginrace/Community/communityregis.dart';
 import 'package:loginrace/Community/navigation.dart';
 import 'package:loginrace/Race%20track/event.dart';
 import 'package:loginrace/Race%20track/registration.dart';
 import 'package:loginrace/Rental/rentalregistration.dart';
+import 'package:loginrace/User/imagepicker.dart';
 import 'package:loginrace/User/rentuser.dart';
 import 'package:loginrace/User/userregis.dart';
+import 'package:loginrace/User/viewevents.dart';
+import 'package:loginrace/User/viewracetrack.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -78,7 +82,7 @@ body: Center(child:
                   alignment: Alignment.centerRight,
                   child: TextButton(onPressed: (){
                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return LoginPage();
+                            return ViewEvents();
                   },));
 
                   }, child: Text('SIGN UP')),
@@ -104,8 +108,9 @@ body: Center(child:
                         
                     SizedBox(height: 40,),
                         ElevatedButton(onPressed: (){
+
                       Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return Navigation();
+                            return  ImagePickerPage();
                   },));
 
                         },  style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 217, 149, 149))),
