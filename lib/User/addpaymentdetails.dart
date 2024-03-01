@@ -1,19 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:loginrace/Race%20track/instructor.dart';
 
-class TrackAdd extends StatefulWidget {
-  const TrackAdd({super.key});
+class AddPaymentdetails extends StatefulWidget {
+  const AddPaymentdetails({super.key});
 
   @override
-  State<TrackAdd> createState() => _TrackAddState();
+  State<AddPaymentdetails> createState() => _AddPaymentdetailsState();
 }
 
-class _TrackAddState extends State<TrackAdd> {
+class _AddPaymentdetailsState extends State<AddPaymentdetails> {
+   TextEditingController dateController = TextEditingController();
+
+  DateTime selectedDate = DateTime.now();
+  
+  get suffixIcon => null;
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime ? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+        dateController.text = picked.toLocal().toString().split(' ')[0];
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
 appBar: AppBar(backgroundColor: Color.fromARGB(255, 212, 119, 110),),
       
 body: 
@@ -35,53 +52,36 @@ body:
                     
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('RACE TRACK', style: TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-              ),),
+             
                 
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Track Name',),
+                            child: Text('Name',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Track Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: ' Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                         ),
                         ),
                    
                    
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Track type',),
-                          ),
-                        ],
-                      ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Track type',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                                       
-                      ),),
-                   
-                        // SizedBox(height: 10,),
+                    
                    
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Feedback',),
+                            child: Text('phone number',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Feedback',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: 'phone number',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
@@ -93,11 +93,11 @@ body:
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Upload Image',),
+                            child: Text(' level',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'image',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: 'level',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                       ),),
@@ -109,14 +109,48 @@ body:
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('State',),
+                            child: Text('Amount',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'State',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: 'amount',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
+                       Row(
+                       
+                        children: [
+                           
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: TextFormField(
+                                readOnly: true,
+                                controller: dateController,
+                                decoration: InputDecoration(
+                                  hintText: 'Select Date',
+                                  fillColor: Color.fromARGB(112, 243, 214, 214),
+                                  filled: true,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          // IconButton(
+                          //   icon: Icon(Icons.calendar_today),
+                          //   onPressed: () => _selectDate(context),
+                          // ),
+                       IconButton(
+                icon: Icon(Icons.calendar_today),
+                onPressed: () => _selectDate(context),
+              ),
+                              // onTap: () => _selectDate(context),
+
+                        ],
+                      ),
                    
                       
                    
@@ -127,12 +161,12 @@ body:
                    
                       ElevatedButton(onPressed: (){
 
-                         Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return Instructor();
-                  },));
+                  //        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  //           return Instructor();
+                  // },));
                       }, 
                       style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 240, 124, 130))),
-                      child: Text('SUBMIT',style: TextStyle(color: Colors.white),))
+                      child: Text('Next',style: TextStyle(color: Colors.white),))
                    
                       
                       
@@ -149,10 +183,6 @@ body:
            ),
          ),
        )
-
-
-
-
 
 
     );
