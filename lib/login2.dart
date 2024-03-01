@@ -6,11 +6,17 @@ import 'package:loginrace/Community/navigation.dart';
 import 'package:loginrace/Race%20track/event.dart';
 import 'package:loginrace/Race%20track/registration.dart';
 import 'package:loginrace/Rental/rentalregistration.dart';
+import 'package:loginrace/User/chat.dart';
 import 'package:loginrace/User/imagepicker.dart';
 import 'package:loginrace/User/rentuser.dart';
 import 'package:loginrace/User/userregis.dart';
+import 'package:loginrace/User/viewautoshow.dart';
+import 'package:loginrace/User/viewautoshowdetails.dart';
 import 'package:loginrace/User/viewevents.dart';
+import 'package:loginrace/User/viewgallery.dart';
+import 'package:loginrace/User/viewprofile.dart';
 import 'package:loginrace/User/viewracetrack.dart';
+import 'package:loginrace/User/viewrentalsearch.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -82,7 +88,7 @@ body: Center(child:
                   alignment: Alignment.centerRight,
                   child: TextButton(onPressed: (){
                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return ViewEvents();
+                            return Viewprofile();
                   },));
 
                   }, child: Text('SIGN UP')),
@@ -110,7 +116,7 @@ body: Center(child:
                         ElevatedButton(onPressed: (){
 
                       Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return  ImagePickerPage();
+                            return  ChatPage();
                   },));
 
                         },  style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 217, 149, 149))),

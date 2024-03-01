@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ViewEvents extends StatefulWidget {
   const ViewEvents({super.key});
@@ -9,22 +10,50 @@ class ViewEvents extends StatefulWidget {
 }
 
 class _ViewEventsState extends State<ViewEvents> {
+  TextEditingController _searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
   
   appBar: AppBar(
 
+    leading: Row(
+      children: [
+        Icon(Icons.person_outline_sharp,
+        size:30,
+        ),
+        SizedBox(width: 8,),
+        Expanded(child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: 
+            TextFormField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: 'Search',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(30))
+                    ),)),
+        )
+      ],
+    ),
+     
+        
+
+
   ),
+  
   body: 
     Column(
       
+      
       children:
      [
-      Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: TextFormField(decoration: InputDecoration(labelText: 'search', border: OutlineInputBorder()),),
-      ),
+      // Padding(
+      //   padding: const EdgeInsets.all(20.0),
+      //   child: TextFormField(controller: _searchController,decoration: InputDecoration(hintText: 'search',
+      //      prefixIcon: Icon(Icons.search),border: OutlineInputBorder(borderRadius: BorderRadius.circular(40))),),
+      // ),
+      
 
       Expanded(
         child: ListView.builder(
@@ -43,17 +72,20 @@ class _ViewEventsState extends State<ViewEvents> {
                       children: [
                         Align(
                           alignment: Alignment.centerLeft,
-                          child: CircleAvatar(
-                            radius: 15,
-                            
-                            backgroundImage: AssetImage('images/racing.jpg'),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: CircleAvatar(
+                              radius: 15,
+                              
+                              backgroundImage: AssetImage('images/racing.jpg'),
+                            ),
                           ),
                         ),
                         Align(
                            alignment: Alignment.centerRight,
                            child: Padding(
                              padding: const EdgeInsets.only(right: 100),
-                             child: Text('Formula Race Test'),
+                             child: Text('Formula Race Test',style: GoogleFonts.getFont('Josefin Sans',textStyle: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),),
                            ),
                             
                         ),
@@ -67,12 +99,17 @@ class _ViewEventsState extends State<ViewEvents> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  // InkWell(onTap: (){
+
+                  // },),
                   Container(
-                    color: Color.fromARGB(255, 154, 153, 151),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Color.fromARGB(255, 154, 153, 151),),
+                   
                     child: Column(
                      
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        ClipRRect(borderRadius: BorderRadius.circular(50),),
                            Image.asset('images/racing.jpg',height: 200,),
                            Text('CUIDED DEL MOTOR'),
                            Row(
