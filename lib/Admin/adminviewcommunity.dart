@@ -1,37 +1,37 @@
 import 'package:flutter/material.dart';
 
-class AdminViewUser extends StatefulWidget {
-  const AdminViewUser({super.key});
+class AdminViewCommunity extends StatefulWidget {
+  const AdminViewCommunity({super.key});
 
   @override
-  State<AdminViewUser> createState() => _AdminViewUserState();
+  State<AdminViewCommunity> createState() => _AdminViewCommunityState();
 }
 
-class _AdminViewUserState extends State<AdminViewUser> {
- 
- 
+class _AdminViewCommunityState extends State<AdminViewCommunity> {
   @override
   Widget build(BuildContext context) {
-  
     return Scaffold(
-  appBar: AppBar(
-          title: Text('User List'),
+
+appBar: AppBar(
+          title: Text('Community List'),
         ),
         body: ListView.builder(
           itemCount: 7,
           itemBuilder: (context, index) {
             return ListTile(
               leading: CircleAvatar(radius: 30,backgroundImage: AssetImage('images/imaaaa.jpg'),),
-              title: Text('Krishnapriya'),
+              title: Text('Race Vibe hub'),
               subtitle: Text('krishnaammu123@gmail.com'),
               trailing: Icon(Icons.navigate_next),
             );
           },
         ),
-      );
-      
 
-    
+
+
+
+
+
+    );
   }
 }
-
