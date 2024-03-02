@@ -6,7 +6,11 @@ import 'package:loginrace/Community/communityregis.dart';
 import 'package:loginrace/Community/navigation.dart';
 import 'package:loginrace/Race%20track/event.dart';
 import 'package:loginrace/Race%20track/registration.dart';
+import 'package:loginrace/Rental/addrental.dart';
 import 'package:loginrace/Rental/rentalregistration.dart';
+import 'package:loginrace/Rental/viewrentproducts.dart';
+import 'package:loginrace/Rental/viewrequestrental.dart';
+import 'package:loginrace/Rental/viewuseracceptreject.dart';
 import 'package:loginrace/User/addpaymentdetails.dart';
 import 'package:loginrace/User/chat.dart';
 import 'package:loginrace/User/evntticketbooking.dart';
@@ -15,7 +19,9 @@ import 'package:loginrace/User/payemettype.dart';
 import 'package:loginrace/User/rentuser.dart';
 import 'package:loginrace/User/successfullpayement.dart';
 import 'package:loginrace/User/ticketcart.dart';
+import 'package:loginrace/User/userfeedback.dart';
 import 'package:loginrace/User/userregis.dart';
+import 'package:loginrace/User/userviewfeedback.dart';
 import 'package:loginrace/User/viewautoshow.dart';
 import 'package:loginrace/User/viewautoshowdetails.dart';
 import 'package:loginrace/User/viewevents.dart';
@@ -28,6 +34,7 @@ import 'package:loginrace/User/viewtrack.dart';
 import 'package:loginrace/User/viewtrackdetails.dart';
 import 'package:loginrace/User/griddd.dart';
 import 'package:loginrace/Admin/viewuser.dart';
+import 'package:loginrace/User/userviewfeedback.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -127,7 +134,7 @@ body: Center(child:
                         ElevatedButton(onPressed: (){
 
                       Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return  EventTicketBooking();
+                            return  ViewUserAccept();
                   },));
 
                         },  style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 217, 149, 149))),
