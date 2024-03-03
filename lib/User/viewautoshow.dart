@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:loginrace/User/viewautoshowdetails.dart';
+
+
 
 class ViewAutoshow extends StatefulWidget {
   const ViewAutoshow({super.key});
@@ -15,126 +19,140 @@ class _ViewAutoshowState extends State<ViewAutoshow> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          leading: Row(
-      children: [
-        // Icon(Icons.person_outline_sharp,
-        // size:30,
-        // ),
-        SizedBox(width: 8,),
-        Expanded(child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: 
-            TextFormField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Search',
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                       contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 50),)
-                    ),)),
-        
-      
-      ],
+        title: Text('Auto show'),
       ),
-      ),
-     
-        
-
-
-  
-  
-  body: 
-    Column(
-      
-      
-      children:
-     [
-       Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Auto Shows',
-              style: GoogleFonts.nunitoSans(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 243, 53, 53),
+      body:Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color.fromARGB(255, 238, 180, 180).withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search for auto shows',
+                    prefixIcon: Icon(Icons.search),
+                    border: InputBorder.none,
+                  ),
+                ),
               ),
             ),
           ),
-      
-
-      Expanded(
-        child: ListView.builder(
-          itemCount: 5,
-          itemBuilder: (context, index) {
-           return Padding(
-             padding: const EdgeInsets.all(8.0),
-             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-             
-                  width: 300,
-                 
-                       
-                  ),
-               
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  // InkWell(onTap: (){
-
-                  // },),
-                  Container(
-                    decoration: BoxDecoration( color: Color.fromARGB(255, 154, 153, 151),),
-                   
-                    child: Column(
-                     
-                      crossAxisAlignment: CrossAxisAlignment.start,
+          Expanded(
+            child: ListView.builder(
+              itemCount: 5,
+              itemBuilder: ((context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    elevation: 5,
+                    child: Row(
                       children: [
-                        // ClipRRect(borderRadius: BorderRadius.circular(0),),
-                           Image.asset('images/racing.jpg',height: 200,),
-                           Text('Houston community'),
-                        
-                           Text('Since 2001')
-                           
-                          
-                            
-                            
-                    ],),
+                        // Left Container
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.all(12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                InkWell(onTap: () {
+                                     Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return ViewAutoshowDetails();
+                   },));
+                                },
+                                  child: Text(
+                                    'Houston Community',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  children: [
+                                    RatingBar.builder(
+                                      itemSize: 20,
+                                      initialRating: 3,
+                                      minRating: 1,
+                                      direction: Axis.horizontal,
+                                      allowHalfRating: true,
+                                      itemCount: 5,
+                                      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                      itemBuilder: (context, _) => Icon(
+                                        Icons.star,
+                                        size: 20,
+                                        color: Colors.amber,
+                                      ),
+                                      onRatingUpdate: (rating) {
+                                        print(rating);
+                                      },
+                                    ),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      '3.0',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                // SizedBox(height: 10),
+                                // Text(
+                                //   'Car Racing Track',
+                                //   style: TextStyle(
+                                //     fontSize: 16,
+                                //   ),
+                                // ),
+                                Text(
+                                  'Since 2001',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // Right Container
+                        Container(
+                          width: 120,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            image: DecorationImage(
+                              image: AssetImage('images/racing.jpg'),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  
-                  // SizedBox(height: 400,),
-                ],
-              ),
-               ],
-              ),
-           );
-            
-          },
-       
-          
-         
-        
-        ),
-      )
-
-
-
-
-    ],),
+                );
+              }),
+            ),
+          ),
+        ],
+      ),
     );
-
-
-
-
-        
-        
-      
-      
-
-
-
-
-    
   }
 }
+  

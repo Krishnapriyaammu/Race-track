@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/User/viewevents.dart';
 
 
 class SuccessfullPayment extends StatefulWidget {
@@ -12,17 +13,15 @@ class _SuccessfullPaymentState extends State<SuccessfullPayment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-        appBar: AppBar(
-        title: Text('Payment '),
-        // backgroundColor: Color.fromARGB(255, 219, 130, 134), // You can change the color based on your design
+      appBar: AppBar(
+        backgroundColor: Colors.blue, 
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.check_circle_outline,
+              Icons.check_circle,
               color: Color.fromARGB(255, 20, 167, 37),
               size: 100.0,
             ),
@@ -32,37 +31,31 @@ class _SuccessfullPaymentState extends State<SuccessfullPayment> {
               style: TextStyle(
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
+                color: Colors.black, 
               ),
             ),
-            SizedBox(height: 10.0),
-            // Text(
-            //   'Thank you for your purchase.',
-            //   style: TextStyle(
-            //     fontSize: 16.0,
-            //   ),
-            // ),
             SizedBox(height: 20.0),
             ElevatedButton(
-              
               onPressed: () {
-                
-                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return ViewEvents();
+                }));
               },
-               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 237, 107, 122),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue, 
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                'OK',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.white, 
                 ),
               ),
-              child: Text('OK', style: TextStyle(
-                  fontSize: 16.0,
-                  color: Colors.black,),
             ),
-          ),  ],
+          ],
         ),
-      ),   
-
+      ),
     );
   }
 }

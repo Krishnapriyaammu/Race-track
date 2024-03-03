@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:loginrace/User/usertrackbooking.dart';
+import 'package:loginrace/User/userviewfeedback.dart';
+import 'package:loginrace/User/viewgallery.dart';
+import 'package:loginrace/User/viewinstructor.dart';
+import 'package:loginrace/User/viewtrack.dart';
 
 class ViewTrackDetails extends StatefulWidget {
   const ViewTrackDetails({Key? key}) : super(key: key);
@@ -13,6 +19,7 @@ class _ViewTrackDetailsState extends State<ViewTrackDetails> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Adventure Race Track'),
+        backgroundColor: Colors.blue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -22,32 +29,45 @@ class _ViewTrackDetailsState extends State<ViewTrackDetails> {
             children: [
               Text(
                 'Upcoming Sessions',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),
               ),
+              SizedBox(height: 10),
               Text('Motorcycle racing training program'),
               Text('January 26th, 27th & 28th'),
               Text('Kart motor speedway, KOVAI'),
               SizedBox(height: 20),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  buildSessionContainer('LEVEL 1 & 2 (3 DAYS)', '₹21,599/-', Colors.blue,),
+                  buildSessionContainer('LEVEL 1 & 2 (3 DAYS)', '₹21,599/-', Colors.blue),
                   buildSessionContainer('LEVEL 3 (5 DAYS)', '₹25,999/-', Colors.green),
-                  buildSessionContainer('TRACK DAYS (3 DAYS)', '₹16,999/-', Colors.orange),
                 ],
               ),
               SizedBox(height: 20),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  buildArrowItem('OUR INSTRUCTORS'),
-                  buildArrowItem('VIEW TRACK'),
-                  buildArrowItem('GALLERY'),
+                  buildArrowItem('OUR INSTRUCTORS',Icons.arrow_forward, () {
+                     Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return ViewInstructor();
+                  },));
+                  }),
+                  buildArrowItem('VIEW TRACK', Icons.arrow_forward, () {
+                     Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return ViewTrack();
+                  },));
+                  }),
+                  buildArrowItem('VIEW GALLERY', Icons.arrow_forward, () {
+                     Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return ViewGallery();
+                  },));
+                  }),
                 ],
               ),
               SizedBox(height: 20),
               Text(
                 'STUDENTS TESTIMONIALS',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 44, 44, 45)),
               ),
               TestimonialCard(
                 avatar: 'TONY JOSEPH',
@@ -61,7 +81,9 @@ class _ViewTrackDetailsState extends State<ViewTrackDetails> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    // Handle view all testimonials
+                     Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return FeedbackViewPage();
+                  },));
                   },
                   child: Text('View all', style: TextStyle(color: Colors.blue)),
                 ),
@@ -74,46 +96,53 @@ class _ViewTrackDetailsState extends State<ViewTrackDetails> {
   }
 
   Widget buildSessionContainer(String title, String price, Color color) {
-    return Expanded(
-      child: Container(
-        padding: EdgeInsets.all(16),
-        margin: EdgeInsets.only(right: 16),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-            ),
-            SizedBox(height: 8),
-            Text(price, style: TextStyle(color: Colors.white)),
-            SizedBox(height: 8),
-            ElevatedButton(
-              onPressed: () {
-                // Handle booking
+    return Container(
+      padding: EdgeInsets.all(16),
+      margin: EdgeInsets.only(right: 16),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          SizedBox(height: 8),
+          Text(price, style: TextStyle(color: Colors.white)),
+          SizedBox(height: 8),
+          ElevatedButton(
+            onPressed: () {
+               Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return UserTrackBooking();
+                  },));
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-              child: Text(
-                'BOOK NOW',
-                style: TextStyle(color: color),
-              ),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+            child: Text(
+              'BOOK NOW',
+              style: TextStyle(color: color),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget buildArrowItem(String title) {
-    return Row(
-      children: [
-        Text(title),
-        Icon(Icons.arrow_forward),
-      ],
+  Widget buildArrowItem(String title, IconData icon, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          children: [
+            Icon(icon, color: Colors.blue),
+            SizedBox(width: 8),
+            Text(title, style: TextStyle(fontSize: 18, color: Colors.blue)),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -135,4 +164,3 @@ class TestimonialCard extends StatelessWidget {
     );
   }
 }
-

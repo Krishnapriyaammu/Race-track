@@ -12,7 +12,7 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
-  int selectedindex=0;
+  int selectedindex=1;
 
   static const List<dynamic> _widgetoption= [
     CommunityAbout(),

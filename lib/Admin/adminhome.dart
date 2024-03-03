@@ -62,7 +62,7 @@ class _AdminHomeState extends State<AdminHome> {
               leading: Icon(Icons.shopping_cart),
               title: Text('Rental'),
               onTap: () {
-                // Navigate to Rental page
+               
                 print('Rental pressed');
                 Navigator.pop(context);
               },
@@ -74,7 +74,7 @@ class _AdminHomeState extends State<AdminHome> {
         children: [
           // Background Image
           Image.asset(
-            'images/background.jpeg', // Replace with your image path
+            'images/background.jpeg', 
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,

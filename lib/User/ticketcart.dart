@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:loginrace/User/addpaymentdetails.dart';
 
 class ShoppingCart extends StatefulWidget {
   const ShoppingCart({super.key});
@@ -89,7 +90,12 @@ class _ShoppingCartState extends State<ShoppingCart> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+
+                   Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return AddPaymentdetails();
+                  },));
+                },
                 child: Text('Check out'),
               ),
             ],

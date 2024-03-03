@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/User/payemettype.dart';
 
 class AddPaymentdetails extends StatefulWidget {
   const AddPaymentdetails({super.key});
@@ -31,7 +32,7 @@ class _AddPaymentdetailsState extends State<AddPaymentdetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-appBar: AppBar(backgroundColor: Color.fromARGB(255, 212, 119, 110),),
+appBar: AppBar(backgroundColor: Colors.blue,),
       
 body: 
         
@@ -161,9 +162,9 @@ body:
                    
                       ElevatedButton(onPressed: (){
 
-                  //        Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  //           return Instructor();
-                  // },));
+                         Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return PayementType();
+                  },));
                       }, 
                       style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 240, 124, 130))),
                       child: Text('Next',style: TextStyle(color: Colors.white),))

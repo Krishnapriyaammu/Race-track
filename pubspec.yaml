@@ -28,9 +28,11 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.6
+  
   flutter:
     sdk: flutter
+ 
   flutter_rating_bar: ^4.0.1
   google_fonts: ^6.1.0
   image_picker: ^0.8.4+4
@@ -62,7 +64,12 @@ flutter:
   assets:
     - images/logo1.png
     - images/imaaaa.jpg
+    - images/racing.jpg
+    - images/auto2.jfif
     - images/background.jpeg
+    - images/cooo.jpg
+    - images/track.jpg
+    - images/community.jpg
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

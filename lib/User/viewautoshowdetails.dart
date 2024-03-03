@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/User/bookautoshow.dart';
 
 class ViewAutoshowDetails extends StatefulWidget {
   const ViewAutoshowDetails({super.key});
@@ -9,23 +10,22 @@ class ViewAutoshowDetails extends StatefulWidget {
 
 class _ViewAutoshowDetailsState extends State<ViewAutoshowDetails> {
   @override
-  Widget build(BuildContext context) {
+   Widget build(BuildContext context) {
     return Scaffold(
-
- appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 228, 102, 102), // Change app bar color
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-             Center(
-               child: Text(
+            Center(
+              child: Text(
                 'HOUSTON COMMUNITY',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 14, 13, 13)),
-                           ),
-             ),
+              ),
+            ),
             SizedBox(height: 16),
             Text(
               'About',
@@ -49,20 +49,29 @@ class _ViewAutoshowDetailsState extends State<ViewAutoshowDetails> {
             ),
             Text('Per hour - \$67/-', style: TextStyle(fontSize: 18, color: Color.fromARGB(255, 14, 13, 13))),
             SizedBox(height: 20),
-            Image.asset(
-              'images/auto3.jfif',
-              height: 150,
-              width: double.infinity,
-              fit: BoxFit.cover,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                'images/community.jpg',
+                height: 150,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Handle booking logic
+                 Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return AutoshowBooking();
+                  },));
+
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 21, 22, 21), // Change button color
+                backgroundColor: Color.fromARGB(255, 21, 22, 21),
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
               child: Text(
                 'BOOK FOR SHOW',
@@ -73,17 +82,17 @@ class _ViewAutoshowDetailsState extends State<ViewAutoshowDetails> {
             Row(
               children: [
                 Icon(Icons.phone, color: Colors.green),
-                 SizedBox(width: 10,),
+                SizedBox(width: 10),
                 Text(
-                  '+918589282042', // Replace with actual phone number
+                  '+918589282042',
                   style: TextStyle(fontSize: 18, color: Colors.grey[800]),
                 ),
               ],
             ),
-            SizedBox(height: 10,),
-             Row(
+            SizedBox(height: 10),
+            Row(
               children: [
-                Icon(Icons.chat, color: Color.fromARGB(255, 243, 84, 84)), // Chat icon
+                Icon(Icons.chat, color: Color.fromARGB(255, 243, 84, 84)),
                 SizedBox(width: 8),
                 Text(
                   'For more inquiries',
@@ -94,13 +103,6 @@ class _ViewAutoshowDetailsState extends State<ViewAutoshowDetails> {
           ],
         ),
       ),
-
-
-
-
-
-
-
     );
   }
 }

@@ -31,7 +31,7 @@ Widget build(BuildContext context) {
           SizedBox(height: 16), 
           Padding(
             padding: const EdgeInsets.only(left: 40),
-            child: Image.asset('images/images.jfif'),
+            child: Image.asset('images/track.jpg'),
           ),
           Container(
             height: 30,
