@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:loginrace/Rental/renteditprofile.dart';
+import 'package:loginrace/Racetrack/editprofile.dart';
 
-class RentViewProfile extends StatefulWidget {
-  const RentViewProfile({super.key});
+class RaceTrackViewProfile extends StatefulWidget {
+  const RaceTrackViewProfile({super.key});
 
   @override
-  State<RentViewProfile> createState() => _RentViewProfileState();
+  State<RaceTrackViewProfile> createState() => _RaceTrackViewProfileState();
 }
 
-class _RentViewProfileState extends State<RentViewProfile> {
+class _RaceTrackViewProfileState extends State<RaceTrackViewProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
 
- appBar: AppBar(
+appBar: AppBar(
+  
+  
           title: Text('View Profile'),
           actions: [
             IconButton(
               icon: Icon(Icons.edit_note_outlined),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return RentalEditprofile();
+                            return YourPage();
                   },));
               },
             ),
@@ -69,12 +71,9 @@ class _RentViewProfileState extends State<RentViewProfile> {
       ),
 
 
+     ),
 
 
-
-
-
-
-     ), );
+    );
   }
 }

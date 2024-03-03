@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:loginrace/Rental/rentalviewprofile.dart';
+import 'package:loginrace/Rental/logoutrent.dart';
 import 'package:loginrace/Rental/rentelhome.dart';
-import 'package:loginrace/Rental/rentnotification.dart';
+import 'package:loginrace/Rental/viewrentproducts.dart';
 
 class RentNavigationbar extends StatefulWidget {
   const RentNavigationbar({super.key});
@@ -12,10 +12,12 @@ class RentNavigationbar extends StatefulWidget {
 
 class _RentNavigationbarState extends State<RentNavigationbar> {
    int selectedindex=1;
-    static const List<dynamic>option=[
+    static  List<dynamic>option=[
    RentalHome(),
-   RentNotification(),
-   RentViewProfile(),
+   ProductViewPage(),
+   RentLogout(),
+   
+  
 
    ];
    void ontop(int index){
@@ -30,9 +32,9 @@ class _RentNavigationbarState extends State<RentNavigationbar> {
  body: Center(child:option.
       elementAt(selectedindex),),
 bottomNavigationBar: BottomNavigationBar(items: [
-  BottomNavigationBarItem(icon: Icon(Icons.book_online,),label: 'booking'),
   BottomNavigationBarItem(icon: Icon(Icons.home,),label: 'home'),
-  BottomNavigationBarItem(icon: Icon(Icons.person,),label: 'person')
+  BottomNavigationBarItem(icon: Icon(Icons.repeat_one,),label: 'products'),
+  BottomNavigationBarItem(icon: Icon(Icons.logout,),label: 'logout')
 ],
 type: BottomNavigationBarType.shifting,
 currentIndex: selectedindex,

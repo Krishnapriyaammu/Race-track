@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/User/viewtrackdetails.dart';
 
 class Booksuccesfully extends StatefulWidget {
   const Booksuccesfully({super.key});
@@ -44,7 +45,9 @@ class _BooksuccesfullyState extends State<Booksuccesfully> {
               ElevatedButton(
                 onPressed: () {
                  
-                  Navigator.pop(context); 
+                   Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return ViewTrackDetails();
+                  },));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,

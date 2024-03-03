@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/Rental/addrental.dart';
 
 class Product {
   final String name;
@@ -91,7 +92,16 @@ class ProductViewPage extends StatelessWidget {
           
       );
         },
-     ) );   
+     ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+           Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return AddrentalProducts();
+                  },));
+        },
+        child: Icon(Icons.add),
+      ),
+      );   
         }
   }
 

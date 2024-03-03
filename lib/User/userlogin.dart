@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/User/navigationuser.dart';
 import 'package:loginrace/User/viewautoshow.dart';
 import 'package:loginrace/User/viewevents.dart';
 import 'package:loginrace/User/viewracetrack.dart';
@@ -101,7 +102,7 @@ body: Center(child:
                         ElevatedButton(onPressed: (){
                        
                       Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return ViewAutoshow() ;
+                            return NavigationUser();
                   },));
 
                         },  style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 217, 149, 149))),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/Rental/viewrequestrental.dart';
 
 class ViewUserAccept extends StatefulWidget {
   const ViewUserAccept({super.key});
@@ -95,7 +96,9 @@ appBar: AppBar(
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      // Handle Accept action
+                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return ViewRentRequest();
+                  },));
                     },
                     child: Text('Accept'),
                   ),

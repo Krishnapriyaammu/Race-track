@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:loginrace/User/userfeedback.dart';
 
-class FeedbackItem {
+class FeedbackItemPage {
   final String userImage;
   final String username;
   final double rating;
   final String feedback;
 
-  FeedbackItem({
+  FeedbackItemPage({
     required this.userImage,
     required this.username,
     required this.rating,
@@ -16,15 +15,15 @@ class FeedbackItem {
   });
 }
 
-class FeedbackViewPage extends StatelessWidget {
-  final List<FeedbackItem> feedbackList = [
-    FeedbackItem(
+class FeedbackViewPageRaceTrack extends StatelessWidget {
+  final List<FeedbackItemPage> feedbackList = [
+    FeedbackItemPage(
       userImage: 'images/imaaaa.jpg',
       username: 'John Doe',
       rating: 4.5,
       feedback: 'Great experience with the track!',
     ),
-    FeedbackItem(
+    FeedbackItemPage(
       userImage: 'images/imaaaa.jpg',
       username: 'Jane Smith',
       rating: 3.0,
@@ -41,7 +40,7 @@ class FeedbackViewPage extends StatelessWidget {
       body: ListView.builder(
         itemCount: feedbackList.length,
         itemBuilder: (context, index) {
-          final feedbackItem = feedbackList[index];
+          final feedbackItems = feedbackList[index];
           return Card(
             margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             child: Padding(
@@ -50,17 +49,17 @@ class FeedbackViewPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CircleAvatar(
-                    backgroundImage: AssetImage(feedbackItem.userImage),
+                    backgroundImage: AssetImage(feedbackItems.userImage),
                     radius: 30,
                   ),
                   SizedBox(height: 8),
                   Text(
-                    'User: ${feedbackItem.username}',
+                    'User: ${feedbackItems.username}',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 8),
                   RatingBarIndicator(
-                    rating: feedbackItem.rating,
+                    rating: feedbackItems.rating,
                     itemBuilder: (context, index) => Icon(
                       Icons.star,
                       color: Colors.amber,
@@ -71,7 +70,7 @@ class FeedbackViewPage extends StatelessWidget {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    'Feedback: ${feedbackItem.feedback}',
+                    'Feedback: ${feedbackItems.feedback}',
                     style: TextStyle(fontSize: 16),
                   ),
                 ],
@@ -80,18 +79,7 @@ class FeedbackViewPage extends StatelessWidget {
           );
         },
       ),
-       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-           Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return UserFeedback();
-                  },));
-        },
-        child: Icon(Icons.add),
-      ),
     );
   }
 }
 
-
-
-    

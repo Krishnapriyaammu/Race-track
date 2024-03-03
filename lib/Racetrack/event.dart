@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:loginrace/Race%20track/track.dart';
+import 'package:loginrace/Racetrack/track.dart';
+import 'package:loginrace/Racetrack/uploadeventimage.dart';
 
 class EventAdd extends StatefulWidget {
   const EventAdd({super.key});
@@ -10,10 +11,29 @@ class EventAdd extends StatefulWidget {
 }
 
 class _EventAddState extends State<EventAdd> {
+  TextEditingController dateController = TextEditingController();
+
+    DateTime selectedDate = DateTime.now();
+get suffixIcon => null;
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime ? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+        dateController.text = picked.toLocal().toString().split(' ')[0];
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Color.fromARGB(255, 212, 119, 110),),
+      appBar: AppBar(backgroundColor: Colors.blue,),
       
 body: 
         
@@ -75,10 +95,28 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Date',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                       GestureDetector(
+                      onTap: () => _selectDate(context),
+                      child: AbsorbPointer(
+                        child: TextFormField(
+                          controller: TextEditingController(
+                            text: "${selectedDate.toLocal()}".split(' ')[0],
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'Date',
+                            fillColor: Color.fromARGB(112, 243, 214, 214),
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                      // TextFormField(decoration: InputDecoration(hintText: 'Date',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      // border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
-                      ),),
+                      // ),),
                    
                         // SizedBox(height: 10,),
                    
@@ -98,19 +136,19 @@ body:
                    
                         // SizedBox(height: 10,),
                    
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Upload Image',),
-                          ),
-                        ],
-                      ),
-                      TextFormField(decoration: InputDecoration(hintText: 'image',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.start,
+                      //   children: [
+                      //     Padding(
+                      //       padding: const EdgeInsets.all(10.0),
+                      //       child: Text('Upload Image',),
+                      //     ),
+                      //   ],
+                      // ),
+                      // TextFormField(decoration: InputDecoration(hintText: 'image',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      //      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
-                      ),),
+                      // ),),
                    
                         // SizedBox(height: 10,),
                    
@@ -138,11 +176,11 @@ body:
                       ElevatedButton(onPressed: (){
 
                           Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return TrackAdd();
+                            return RaceTrackUploadEventimage();
                   },));
                       }, 
-                      style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 240, 124, 130))),
-                      child: Text('SUBMIT',style: TextStyle(color: Colors.white),))
+                      style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 65, 144, 173))),
+                      child: Text('NEXT',style: TextStyle(color: Colors.white),))
                    
                       
                       

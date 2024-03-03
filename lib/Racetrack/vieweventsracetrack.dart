@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:loginrace/User/evntticketbooking.dart';
-import 'package:loginrace/User/viewprofile.dart';
+import 'package:loginrace/Racetrack/event.dart';
+import 'package:loginrace/Racetrack/viewprofileracetrack.dart';
 
-class ViewEvents extends StatefulWidget {
-  const ViewEvents({super.key});
+class RaceTrackViewEvents extends StatefulWidget {
+  const RaceTrackViewEvents({super.key});
 
   @override
-  State<ViewEvents> createState() => _ViewEventsState();
+  State<RaceTrackViewEvents> createState() => _RaceTrackViewEventsState();
 }
-class _ViewEventsState extends State<ViewEvents> {
- TextEditingController _searchController = TextEditingController();
+
+class _RaceTrackViewEventsState extends State<RaceTrackViewEvents> {
+   TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+ appBar: AppBar(
         leading: InkWell(
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return Viewprofile();
+              return RaceTrackViewProfile();
             }));
           },
           child: Row(
@@ -85,9 +85,9 @@ class _ViewEventsState extends State<ViewEvents> {
                                 padding: const EdgeInsets.only(right: 100),
                                 child: InkWell(
                                   onTap: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                      return EventTicketBooking();
-                                    }));
+                                    // Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                    //   return EventTicketBooking();
+                                    // }));
                                   },
                                   child: Text(
                                     'Formula Race Test',
@@ -173,6 +173,16 @@ class _ViewEventsState extends State<ViewEvents> {
           ),
         ],
       ),
+       floatingActionButton: FloatingActionButton(
+        onPressed: () {
+           Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return EventAdd();
+                  },));
+        },
+        child: Icon(Icons.add,color: Colors.black,),
+      ),
+
+
     );
   }
 }

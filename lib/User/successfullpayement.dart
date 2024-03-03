@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/User/navigationuser.dart';
 import 'package:loginrace/User/viewevents.dart';
 
 
@@ -38,7 +39,7 @@ class _SuccessfullPaymentState extends State<SuccessfullPayment> {
             ElevatedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return ViewEvents();
+                  return NavigationUser();
                 }));
               },
               style: ElevatedButton.styleFrom(

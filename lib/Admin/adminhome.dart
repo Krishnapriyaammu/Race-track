@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/Admin/adminviewcommunity.dart';
+import 'package:loginrace/Admin/adminviewracetrack.dart';
+import 'package:loginrace/Admin/adminviewrental.dart';
+import 'package:loginrace/Admin/viewuser.dart';
 
 class AdminHome extends StatefulWidget {
   const AdminHome({super.key});
@@ -32,7 +36,12 @@ class _AdminHomeState extends State<AdminHome> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.person),
+              leading: InkWell(onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return AdminViewUser();
+                  },));
+              },
+                child: Icon(Icons.person)),
               title: Text('Users'),
               onTap: () {
                 // Navigate to Users page
@@ -41,7 +50,12 @@ class _AdminHomeState extends State<AdminHome> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.people),
+              leading: InkWell(onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return AdminViewCommunity();
+                  },));
+              },
+                child: Icon(Icons.people)),
               title: Text('Community'),
               onTap: () {
                 // Navigate to Community page
@@ -50,7 +64,12 @@ class _AdminHomeState extends State<AdminHome> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.directions_car),
+              leading: InkWell(onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return AdminViewRacetrack();
+                  },));
+              },
+                child: Icon(Icons.directions_car)),
               title: Text('Race Track'),
               onTap: () {
                 // Navigate to Race Track page
@@ -59,7 +78,12 @@ class _AdminHomeState extends State<AdminHome> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.shopping_cart),
+              leading: InkWell(onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return AdminViewRental();
+                  },));
+              },
+                child: Icon(Icons.shopping_cart)),
               title: Text('Rental'),
               onTap: () {
                

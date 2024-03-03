@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:loginrace/Race%20track/instructor.dart';
+import 'package:loginrace/Racetrack/trackdetails.dart';
 
-class TrackAdd extends StatefulWidget {
-  const TrackAdd({super.key});
+class Instructor extends StatefulWidget {
+  const Instructor({super.key});
 
   @override
-  State<TrackAdd> createState() => _TrackAddState();
+  State<Instructor> createState() => _InstructorState();
 }
 
-class _TrackAddState extends State<TrackAdd> {
+class _InstructorState extends State<Instructor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
 appBar: AppBar(backgroundColor: Color.fromARGB(255, 212, 119, 110),),
       
 body: 
@@ -35,7 +33,7 @@ body:
                     
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('RACE TRACK', style: TextStyle(
+                      Text('COACH', style: TextStyle(
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
               ),),
@@ -45,30 +43,29 @@ body:
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Track Name',),
+                            child: Text(' Name',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Track Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(decoration: InputDecoration(labelText: ' Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                         ),
                         ),
-                   
-                   
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Track type',),
-                          ),
-                        ],
-                      ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Track type',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                                       
-                      ),),
+                        // SizedBox(height: 10,),
+                      
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.start,
+                      //   children: [
+                      //     Padding(
+                      //       padding: const EdgeInsets.all(10.0),
+                      //       child: Text('Owner',),
+                      //     ),
+                      //   ],
+                      // ),
+                      // TextFormField(decoration: InputDecoration(hintText: 'Owner',fillColor:  Color.fromARGB(112, 243, 214, 214),filled: true,
+                      // border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                      // ),),
                    
                         // SizedBox(height: 10,),
                    
@@ -77,14 +74,22 @@ body:
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Feedback',),
+                            child: Text('About',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Feedback',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                      
-                      ),),
+                     TextFormField(
+                maxLines: null, // This makes the TextFormField grow dynamically
+                keyboardType: TextInputType.multiline,
+                decoration: InputDecoration(
+                  labelText: 'Write something....',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                  contentPadding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 12.0),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+                   
+                        // SizedBox(height: 10,),
+                   
                    
                         // SizedBox(height: 10,),
                    
@@ -109,11 +114,11 @@ body:
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('State',),
+                            child: Text('Experience',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'State',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(decoration: InputDecoration(labelText: 'Experience',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
@@ -127,8 +132,8 @@ body:
                    
                       ElevatedButton(onPressed: (){
 
-                         Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return Instructor();
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return TrackDetails();
                   },));
                       }, 
                       style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 240, 124, 130))),
@@ -149,6 +154,8 @@ body:
            ),
          ),
        )
+
+
 
 
 

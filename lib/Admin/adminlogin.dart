@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/Admin/adminhome.dart';
 
 class AdminLogin extends StatefulWidget {
   const AdminLogin({super.key});
@@ -97,9 +98,9 @@ body: Center(child:
                     SizedBox(height: 40,),
                         ElevatedButton(onPressed: (){
                        
-                  //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  //           return  CommunityAcceptUser();
-                  // },));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return  AdminHome();
+                  },));
 
                         },  style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 217, 149, 149))),
                         child: Text('Login',style: TextStyle(fontSize: 20,color: Colors.white),))

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/Admin/acceptrejectuser.dart';
 
 class AdminViewUser extends StatefulWidget {
   const AdminViewUser({super.key});
@@ -24,7 +25,12 @@ class _AdminViewUserState extends State<AdminViewUser> {
               leading: CircleAvatar(radius: 30,backgroundImage: AssetImage('images/imaaaa.jpg'),),
               title: Text('Krishnapriya'),
               subtitle: Text('krishnaammu123@gmail.com'),
-              trailing: Icon(Icons.navigate_next),
+              trailing: InkWell(onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return Adminaccpetrejectuser();
+                  },));
+              },
+                child: Icon(Icons.navigate_next)),
             );
           },
         ),

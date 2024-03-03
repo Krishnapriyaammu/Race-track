@@ -1,71 +1,67 @@
 import 'package:flutter/material.dart';
-import 'package:loginrace/Race%20track/trackdetails.dart';
+import 'package:loginrace/Racetrack/gallery.dart';
 
-class Instructor extends StatefulWidget {
-  const Instructor({super.key});
+class TrackDetails extends StatefulWidget {
+  const TrackDetails({super.key});
 
   @override
-  State<Instructor> createState() => _InstructorState();
+  State<TrackDetails> createState() => _TrackDetailsState();
 }
 
-class _InstructorState extends State<Instructor> {
+class _TrackDetailsState extends State<TrackDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-appBar: AppBar(backgroundColor: Color.fromARGB(255, 212, 119, 110),),
+appBar: AppBar(backgroundColor: Colors.blue,),
       
 body: 
         
         SafeArea(
-          
   
          child: Center(
            child: Padding(
              padding:  EdgeInsets.all(40.00),
              child: Container(
               
-              
               width: 400,
                child: SingleChildScrollView(
                  child: Padding(
                    padding: const EdgeInsets.only(top:20,bottom: 20),
                    child: Column(
-                    
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('COACH', style: TextStyle(
+                      Text('TRACK', style: TextStyle(
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
               ),),
-                
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text(' Name',),
-                          ),
-                        ],
-                      ),
-                      TextFormField(decoration: InputDecoration(labelText: ' Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                                       
-                        ),
-                        ),
-                        // SizedBox(height: 10,),
-                      
                       // Row(
                       //   mainAxisAlignment: MainAxisAlignment.start,
                       //   children: [
                       //     Padding(
                       //       padding: const EdgeInsets.all(10.0),
-                      //       child: Text('Owner',),
+                      //       child: Text('Track image',),
                       //     ),
                       //   ],
                       // ),
-                      // TextFormField(decoration: InputDecoration(hintText: 'Owner',fillColor:  Color.fromARGB(112, 243, 214, 214),filled: true,
-                      // border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                      // ),),
+                      // TextFormField(decoration: InputDecoration(hintText: 'Track image',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      //   border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                                       
+                      //   ),
+                      //   ),
+                        // SizedBox(height: 10,),
+                      
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text('Name',),
+                          ),
+                        ],
+                      ),
+                      TextFormField(decoration: InputDecoration(hintText: 'Name',fillColor:  Color.fromARGB(112, 243, 214, 214),filled: true,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                      ),),
                    
                         // SizedBox(height: 10,),
                    
@@ -74,22 +70,14 @@ body:
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('About',),
+                            child: Text('Surface',),
                           ),
                         ],
                       ),
-                     TextFormField(
-                maxLines: null, // This makes the TextFormField grow dynamically
-                keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(
-                  labelText: 'Write something....',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                  contentPadding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 12.0),
-                  border: OutlineInputBorder(),
-                ),
-              ),
-                   
-                        // SizedBox(height: 10,),
-                   
+                      TextFormField(decoration: InputDecoration(hintText: 'Surface',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                                       
+                      ),),
                    
                         // SizedBox(height: 10,),
                    
@@ -98,11 +86,27 @@ body:
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Upload Image',),
+                            child: Text('Length',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'image',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: 'Length',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                      
+                      ),),
+                   
+                        // SizedBox(height: 10,),
+                   
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text('Turns',),
+                          ),
+                        ],
+                      ),
+                      TextFormField(decoration: InputDecoration(hintText: 'Turns',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                       ),),
@@ -114,11 +118,11 @@ body:
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Experience',),
+                            child: Text('Race lap record',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(labelText: 'Experience',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: 'lap record',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
@@ -132,12 +136,12 @@ body:
                    
                       ElevatedButton(onPressed: (){
 
-                        Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return TrackDetails();
+                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return Gallery();
                   },));
                       }, 
-                      style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 240, 124, 130))),
-                      child: Text('SUBMIT',style: TextStyle(color: Colors.white),))
+                      style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 231, 227, 227))),
+                      child: Text('DONE',style: TextStyle(color: Colors.black),))
                    
                       
                       
@@ -154,11 +158,6 @@ body:
            ),
          ),
        )
-
-
-
-
-
 
 
 

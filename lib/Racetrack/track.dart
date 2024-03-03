@@ -1,80 +1,73 @@
 import 'package:flutter/material.dart';
-import 'package:loginrace/Race%20track/gallery.dart';
+import 'package:flutter/widgets.dart';
+import 'package:loginrace/Racetrack/instructor.dart';
+import 'package:loginrace/Racetrack/uploadeventimage.dart';
+import 'package:loginrace/Racetrack/uploadracetractimage.dart';
 
-class TrackDetails extends StatefulWidget {
-  const TrackDetails({super.key});
+class TrackAdd extends StatefulWidget {
+  const TrackAdd({super.key});
 
   @override
-  State<TrackDetails> createState() => _TrackDetailsState();
+  State<TrackAdd> createState() => _TrackAddState();
 }
 
-class _TrackDetailsState extends State<TrackDetails> {
+class _TrackAddState extends State<TrackAdd> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-appBar: AppBar(backgroundColor: Color.fromARGB(255, 212, 119, 110),),
+
+appBar: AppBar(backgroundColor: Colors.blue,),
       
 body: 
         
         SafeArea(
+          
   
          child: Center(
            child: Padding(
              padding:  EdgeInsets.all(40.00),
              child: Container(
               
+              
               width: 400,
                child: SingleChildScrollView(
                  child: Padding(
                    padding: const EdgeInsets.only(top:20,bottom: 20),
                    child: Column(
+                    
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('TRACK', style: TextStyle(
+                      Text('RACE TRACK', style: TextStyle(
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
               ),),
+                
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Track image',),
+                            child: Text('Track Name',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Track image',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: 'Track Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                         ),
                         ),
-                        // SizedBox(height: 10,),
-                      
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Name',),
-                          ),
-                        ],
-                      ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Name',fillColor:  Color.fromARGB(112, 243, 214, 214),filled: true,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                      ),),
                    
-                        // SizedBox(height: 10,),
                    
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Surface',),
+                            child: Text('Track type',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Surface',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: 'Track type',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                       ),),
@@ -86,30 +79,30 @@ body:
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Length',),
+                            child: Text('Rating',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Length',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: 'Rating',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
                    
                         // SizedBox(height: 10,),
                    
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Turns',),
-                          ),
-                        ],
-                      ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Turns',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.start,
+                      //   children: [
+                      //     Padding(
+                      //       padding: const EdgeInsets.all(10.0),
+                      //       child: Text('Upload Image',),
+                      //     ),
+                      //   ],
+                      // ),
+                      // TextFormField(decoration: InputDecoration(hintText: 'image',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      //      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
-                      ),),
+                      // ),),
                    
                         // SizedBox(height: 10,),
                    
@@ -118,11 +111,11 @@ body:
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Race lap record',),
+                            child: Text('State',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'lap record',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: 'State',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
@@ -136,12 +129,12 @@ body:
                    
                       ElevatedButton(onPressed: (){
 
-                          Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return Gallery();
+                         Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return UploadRaceTrackImage();
                   },));
                       }, 
-                      style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 240, 124, 130))),
-                      child: Text('DONE',style: TextStyle(color: Colors.white),))
+                      style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 249, 249, 252))),
+                      child: Text('NEXT',style: TextStyle(color: Colors.black),))
                    
                       
                       
@@ -158,6 +151,9 @@ body:
            ),
          ),
        )
+
+
+
 
 
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:loginrace/User/userviewfeedback.dart';
 
 class UserFeedback extends StatefulWidget {
   const UserFeedback({super.key});
@@ -64,10 +65,12 @@ body:
             SizedBox(height: 16),
             Center(
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 250),
+                padding: const EdgeInsets.only(bottom: 200),
                 child: ElevatedButton(
                   onPressed: () {
-                    
+                     Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return FeedbackViewPage();
+                  },));
                     print('Rating: $_userRating');
                   },
                   child: Text('Submit Feedback'),

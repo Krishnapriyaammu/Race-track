@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/Rental/uploadrentimage.dart';
 
 class AddrentalProducts extends StatefulWidget {
   const AddrentalProducts({super.key});
@@ -11,7 +12,7 @@ class _AddrentalProductsState extends State<AddrentalProducts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-appBar: AppBar(backgroundColor: Color.fromARGB(255, 212, 119, 110),),
+appBar: AppBar(backgroundColor: Colors.blue,),
       
 body: 
         
@@ -37,20 +38,20 @@ body:
                 fontWeight: FontWeight.bold,
               ),),
                 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Image',),
-                          ),
-                        ],
-                      ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Image',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.start,
+                      //   children: [
+                      //     Padding(
+                      //       padding: const EdgeInsets.all(10.0),
+                      //       child: Text('Image',),
+                      //     ),
+                      //   ],
+                      // ),
+                      // TextFormField(decoration: InputDecoration(hintText: 'Image',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      //   border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
-                        ),
-                        ),
+                      //   ),
+                      //   ),
                        
                    
                       Row(
@@ -124,12 +125,12 @@ body:
                    
                       ElevatedButton(onPressed: (){
 
-                  //        Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  //           return Instructor();
-                  // },));
+                         Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return RentUploadImage();
+                  },));
                       }, 
                       style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 240, 124, 130))),
-                      child: Text('SUBMIT',style: TextStyle(color: Colors.white),))
+                      child: Text('Next',style: TextStyle(color: Colors.white),))
                    
                       
                       

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:loginrace/Racetrack/trackdetails.dart';
-import 'package:loginrace/User/viewtrackdetails.dart';
+import 'package:loginrace/Racetrack/track.dart';
 
-class ViewRacetrack extends StatefulWidget {
-  const ViewRacetrack({super.key});
+class RaceTrackViewRace extends StatefulWidget {
+  const RaceTrackViewRace({super.key});
 
   @override
-  State<ViewRacetrack> createState() => _ViewRacetrackState();
+  State<RaceTrackViewRace> createState() => _RaceTrackViewRaceState();
 }
 
-class _ViewRacetrackState extends State<ViewRacetrack> {
+class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+
+ appBar: AppBar(
         title: Text('Explore Racetracks'),
       ),
       body:Column(
@@ -64,9 +64,9 @@ class _ViewRacetrackState extends State<ViewRacetrack> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 InkWell(onTap: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return ViewTrackDetails();
-                  },));
+                  //                   Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  //           return ViewTrackDetails();
+                  // },));
                                 },
                                   child: Text(
                                     'Adventurous Race Track',
@@ -148,7 +148,20 @@ class _ViewRacetrackState extends State<ViewRacetrack> {
           ),
         ],
       ),
+       floatingActionButton: FloatingActionButton(
+        onPressed: () {
+           Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return TrackAdd();
+                  },));
+        },
+        child: Icon(Icons.add),
+      ),
+
+
+
+
+
+
     );
   }
 }
-  

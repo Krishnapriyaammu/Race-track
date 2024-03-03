@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loginrace/Race%20track/editprofile.dart';
+import 'package:loginrace/Racetrack/editprofile.dart';
 
 class  RatingScreen extends StatefulWidget {
   const  RatingScreen({super.key});
@@ -49,9 +49,9 @@ appBar: AppBar(
             SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return EditProfile();
-                  },));
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  //           return EditProfile();
+                  // },));
                 print('Selected Rating: $_rating');
               },
               child: Text('Submit Rating'),

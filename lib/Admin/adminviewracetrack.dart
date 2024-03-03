@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/Admin/adminacceptrejectracetrack.dart';
 
 class AdminViewRacetrack extends StatefulWidget {
   const AdminViewRacetrack({super.key});
@@ -22,7 +23,12 @@ appBar: AppBar(
               leading: CircleAvatar(radius: 30,backgroundImage: AssetImage('images/imaaaa.jpg'),),
               title: Text('Kari Motors'),
               subtitle: Text('krishnaammu123@gmail.com'),
-              trailing: Icon(Icons.navigate_next),
+              trailing: InkWell(onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return AdminAcceptrejectRacetrack();
+                  },));
+              },
+                child: Icon(Icons.navigate_next)),
             );
           },
         ),

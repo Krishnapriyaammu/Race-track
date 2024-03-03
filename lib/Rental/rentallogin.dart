@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loginrace/Rental/rentelhome.dart';
+import 'package:loginrace/Rental/rentnavigation.dart';
 
 class RentalLogin extends StatefulWidget {
   const RentalLogin({super.key});
@@ -99,7 +100,7 @@ class _RentalLoginState extends State<RentalLogin> {
                         ElevatedButton(onPressed: (){
                        
                       Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return RentalHome() ;
+                            return RentNavigationbar() ;
                   },));
 
                         },  style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 217, 149, 149))),

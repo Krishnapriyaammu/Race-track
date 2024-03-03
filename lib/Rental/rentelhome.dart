@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/Rental/rentalviewprofile.dart';
+import 'package:loginrace/Rental/rentnotification.dart';
+import 'package:loginrace/Rental/viewrequestrental.dart';
+import 'package:loginrace/Rental/viewuseracceptreject.dart';
 
 class RentalHome extends StatefulWidget {
   const RentalHome({super.key});
@@ -25,14 +29,25 @@ class _RentalHomeState extends State<RentalHome> {
         children: [
           Align(alignment: Alignment.centerLeft,
           child: 
-          CircleAvatar(radius: 30,
-                                  
-                                  backgroundImage: AssetImage('images/imaaaa.jpg'),),
+          InkWell(onTap: () {
+             Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return RentViewProfile();
+                  },));
+          },
+            child: CircleAvatar(radius: 30,
+                                    
+                                    backgroundImage: AssetImage('images/imaaaa.jpg'),),
+          ),
         ),
         Align(alignment: Alignment.centerRight,
                                      child:   Padding(
                                        padding: const EdgeInsets.only(right: 30),
-                                       child: Icon(Icons.notification_add,color: Colors.orange,),
+                                       child: InkWell(onTap: () {
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return NotificationView();
+                  },));
+                                       },
+                                        child: Icon(Icons.notification_add,color: Colors.orange,)),
                                      ),
 )  ],
       ),
@@ -57,7 +72,12 @@ class _RentalHomeState extends State<RentalHome> {
             child: Container(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('Accepted'),
+                child: InkWell(onTap: () {
+                   Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return ViewRentRequest();
+                  },));
+                },
+                  child: Text('Accepted')),
               ),
               height: 50,width: 138,color: Color.fromARGB(255, 175, 72, 63),),
           ),
@@ -99,7 +119,12 @@ class _RentalHomeState extends State<RentalHome> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(right: 60),
-                              child: CircleAvatar(radius: 40,backgroundImage: AssetImage('images/imaaaa.jpg'),)
+                              child: InkWell( onTap: () {
+                                 Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return ViewUserAccept();
+                  },));
+                              },
+                                child: CircleAvatar(radius: 40,backgroundImage: AssetImage('images/imaaaa.jpg'),))
                             ),
                             Padding(
                               padding: const EdgeInsets.only(left: 30),

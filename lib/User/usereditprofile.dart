@@ -43,7 +43,7 @@ SingleChildScrollView(
           
                       width: 100.0,
                       height: 100.0,
-                      margin: EdgeInsets.only(top: 16.0), // Adjust the margin as needed
+                      margin: EdgeInsets.only(top: 16.0),
                       decoration: BoxDecoration(
                         
                         shape: BoxShape.circle,

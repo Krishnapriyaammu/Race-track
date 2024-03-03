@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/Admin/acceptrejectcommunity.dart';
 
 class AdminViewCommunity extends StatefulWidget {
   const AdminViewCommunity({super.key});
@@ -22,7 +23,12 @@ appBar: AppBar(
               leading: CircleAvatar(radius: 30,backgroundImage: AssetImage('images/imaaaa.jpg'),),
               title: Text('Race Vibe hub'),
               subtitle: Text('krishnaammu123@gmail.com'),
-              trailing: Icon(Icons.navigate_next),
+              trailing: InkWell(onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return AdminAcceptRejectCommunity();
+                  },));
+              },
+                child: Icon(Icons.navigate_next)),
             );
           },
         ),
