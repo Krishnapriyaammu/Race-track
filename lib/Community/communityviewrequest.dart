@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/Community/communityacceptrejectuser.dart';
+import 'package:loginrace/Community/viewprofileComm.dart';
 
 class CommunityViewRequest extends StatefulWidget {
   const CommunityViewRequest({super.key});
@@ -26,9 +28,15 @@ class _CommunityViewRequestState extends State<CommunityViewRequest> {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 40),
-            child: CircleAvatar(radius: 40,
-                                    
-                                    backgroundImage: AssetImage('images/imaaaa.jpg'),),
+            child: InkWell(onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return CommViewProfile();
+                  },));
+            },
+              child: CircleAvatar(radius: 40,
+                                      
+                                      backgroundImage: AssetImage('images/imaaaa.jpg'),),
+            ),
           ),
         ],
       ),
@@ -62,42 +70,48 @@ class _CommunityViewRequestState extends State<CommunityViewRequest> {
                      
                      
                     
-                       child:      Column(
-                             
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                               SizedBox(height: 20,width: 20,),
-                                   Text('AWH ENGINEERING COLLEGE'),
-                                   Row(
-                                     children: [
-                                      
-                                       Text('KUTTIKATTOOR'),
-                                       
-                                     ],
-                                   ),
-                                   Row(
-                                     children: [
-                                      
-                                       Text('09-12-2029')
-                                     ],
-                                   ),
-                                    Row(
-                                     children: [
-                                      
-                                       Text('9.A.M')
-                                     ],
-                                   ),
-                                    Row(
-                                     children: [
-                                      
-                                       Text('Total Hours-4Hrs')
-                                     ],
-                                   )
-                                   
-                                  
+                       child:      InkWell(onTap: () {
+                           Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return CommunityAcceptUser();
+                  },));
+                       },
+                         child: Column(
+                               
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                 SizedBox(height: 20,width: 20,),
+                                     Text('AWH ENGINEERING COLLEGE'),
+                                     Row(
+                                       children: [
+                                        
+                                         Text('KUTTIKATTOOR'),
+                                         
+                                       ],
+                                     ),
+                                     Row(
+                                       children: [
+                                        
+                                         Text('09-12-2029')
+                                       ],
+                                     ),
+                                      Row(
+                                       children: [
+                                        
+                                         Text('9.A.M')
+                                       ],
+                                     ),
+                                      Row(
+                                       children: [
+                                        
+                                         Text('Total Hours-4Hrs')
+                                       ],
+                                     )
+                                     
                                     
-                                    
-                            ],),
+                                      
+                                      
+                              ],),
+                       ),
               ),
                         ),
                 ]

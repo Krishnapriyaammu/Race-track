@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loginrace/Community/addcommunitydetails.dart';
+import 'package:loginrace/Community/navigation.dart';
 
 class CommunityLogin extends StatefulWidget {
   const CommunityLogin({super.key});
@@ -99,7 +100,7 @@ body: Center(child:
                         ElevatedButton(onPressed: (){
                        
                       Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return  CommunityAbout();
+                            return  Navigation();
                   },));
 
                         },  style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 217, 149, 149))),

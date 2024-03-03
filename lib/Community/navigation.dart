@@ -1,8 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:loginrace/Community/addcommunitydetails.dart';
-import 'package:loginrace/Community/commeditprofil.dart';
-import 'package:loginrace/Community/communityregis.dart';
+import 'package:loginrace/Community/communityviewrequest.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({super.key});
@@ -16,8 +15,8 @@ class _NavigationState extends State<Navigation> {
 
   static const List<dynamic> _widgetoption= [
     CommunityAbout(),
-    Commueditprofile(),
-    CommunityRegister(),
+    CommunityViewRequest(),
+    // CommunityRegister(),
     
     
   ];
@@ -45,12 +44,13 @@ class _NavigationState extends State<Navigation> {
 
 
        ),
-       BottomNavigationBarItem(icon: Icon(Icons.search,color: Colors.black,),
-       label:'search'),
+       BottomNavigationBarItem(icon: Icon(Icons.repartition,color: Colors.black,),
+       label:'Requests'),
 
 
-       BottomNavigationBarItem(icon: Icon(Icons.person,color: Colors.black,),
-       label: 'profile')],
+      //  BottomNavigationBarItem(icon: Icon(Icons.person,color: Colors.black,),
+      //  label: 'profile')
+       ],
 
        type: BottomNavigationBarType.shifting,
        currentIndex: selectedindex,

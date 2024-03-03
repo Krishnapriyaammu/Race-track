@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loginrace/Community/addcommunitydetails.dart';
+import 'package:loginrace/Community/viewprofileComm.dart';
 
 class Commueditprofile extends StatefulWidget {
   const Commueditprofile({super.key});
@@ -117,7 +118,7 @@ SingleChildScrollView(
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return CommunityAbout();
+                            return CommViewProfile();
                   },));
                       },
                       
