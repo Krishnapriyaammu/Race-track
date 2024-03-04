@@ -9,6 +9,10 @@ class Instructor extends StatefulWidget {
 }
 
 class _InstructorState extends State<Instructor> {
+  var name=TextEditingController();
+  var about=TextEditingController();
+  var image=TextEditingController();
+  var experience=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +51,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(labelText: ' Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: name,
+                        decoration: InputDecoration(labelText: ' Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                         ),
@@ -79,6 +85,7 @@ body:
                         ],
                       ),
                      TextFormField(
+                      controller: about,
                 maxLines: null, // This makes the TextFormField grow dynamically
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
@@ -102,7 +109,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'image',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: image,
+                        decoration: InputDecoration(hintText: 'image',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                       ),),
@@ -118,7 +127,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(labelText: 'Experience',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: experience,
+                        decoration: InputDecoration(labelText: 'Experience',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
@@ -131,6 +142,11 @@ body:
                       SizedBox(height: 40,),
                    
                       ElevatedButton(onPressed: (){
+                        print(name.text);
+                        print(about.text);
+                        print(image.text);
+                        print(experience.text);
+
 
                         Navigator.push(context, MaterialPageRoute(builder: (context) {
                             return TrackDetails();

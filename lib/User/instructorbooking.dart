@@ -11,6 +11,11 @@ class UserInstructorbooking extends StatefulWidget {
 
 class _UserInstructorbookingState extends State<UserInstructorbooking> {
     TextEditingController dateController = TextEditingController();
+    var name=TextEditingController();
+    var age=TextEditingController();
+    var level=TextEditingController();
+    var time=TextEditingController();
+
 
     DateTime selectedDate = DateTime.now();
 get suffixIcon => null;
@@ -63,6 +68,7 @@ get suffixIcon => null;
                       ],
                     ),
                     TextFormField(
+                      controller: name,
                       decoration: InputDecoration(
                         hintText: ' Name',
                         fillColor: Color.fromARGB(112, 243, 214, 214),
@@ -82,6 +88,7 @@ get suffixIcon => null;
                       ],
                     ),
                     TextFormField(
+                      controller: age,
                       decoration: InputDecoration(
                         hintText: 'Age',
                         fillColor: Color.fromARGB(112, 243, 214, 214),
@@ -128,6 +135,7 @@ get suffixIcon => null;
                       ],
                     ),
                     TextFormField(
+                      controller: time,
                       decoration: InputDecoration(
                         hintText: 'Time',
                         fillColor: Color.fromARGB(112, 243, 214, 214),
@@ -147,6 +155,7 @@ get suffixIcon => null;
                       ],
                     ),
                     TextFormField(
+                      controller: level,
                       decoration: InputDecoration(
                         hintText: 'Level',
                         fillColor: Color.fromARGB(112, 243, 214, 214),
@@ -159,6 +168,11 @@ get suffixIcon => null;
                     SizedBox(height: 40),
                     ElevatedButton(
                       onPressed: () {
+                        print(name.text);
+                        print(age.text);
+                        print(dateController.text);
+                        print(time.text);
+                        print(level.text);
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) {

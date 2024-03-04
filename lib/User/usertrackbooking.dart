@@ -9,6 +9,10 @@ class UserTrackBooking extends StatefulWidget {
 }
 
 class _UserTrackBookingState extends State<UserTrackBooking> {
+  var name=TextEditingController();
+  var email=TextEditingController();
+  var phone=TextEditingController();
+  var place=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +31,6 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Add an icon or image for visual appeal
                       Icon(
                         Icons.sports_motorsports,
                         size: 64,
@@ -43,7 +46,9 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
                         ),
                       ),
                       SizedBox(height: 20),
-                      buildTextFieldRow('Name', Icons.person),
+                      buildTextFieldRow(
+                        
+                        'Name', Icons.person),
                       buildTextFieldRow('Email', Icons.email),
                       buildTextFieldRow('Phone Number', Icons.phone),
                       buildTextFieldRow('Place', Icons.location_on),

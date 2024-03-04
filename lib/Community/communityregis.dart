@@ -9,6 +9,14 @@ class CommunityRegister extends StatefulWidget {
 }
 
 class _CommunityRegisterState extends State<CommunityRegister> {
+  var cmname=TextEditingController();
+  var email=TextEditingController();
+  var place=TextEditingController();
+  var number=TextEditingController();
+  var vehicle=TextEditingController();
+  var proof=TextEditingController();
+  var pass=TextEditingController();
+  var confirm=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +42,9 @@ body:SafeArea(
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Name',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: cmname,
+                        decoration: InputDecoration(hintText: 'Name',fillColor: Colors.deepOrange[100],filled: true,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                         ),
@@ -50,7 +60,9 @@ body:SafeArea(
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Email',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: email,
+                        decoration: InputDecoration(hintText: 'Email',fillColor: Colors.deepOrange[100],filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                       ),),
                    
@@ -65,7 +77,9 @@ body:SafeArea(
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Location',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: place,
+                        decoration: InputDecoration(hintText: 'Location',fillColor: Colors.deepOrange[100],filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                       ),),
@@ -81,7 +95,9 @@ body:SafeArea(
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Phone number',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: number,
+                        decoration: InputDecoration(hintText: 'Phone number',fillColor: Colors.deepOrange[100],filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                       
                       ),),
@@ -97,7 +113,9 @@ body:SafeArea(
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Total vehicles',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: vehicle,
+                        decoration: InputDecoration(hintText: 'Total vehicles',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                       ),),
@@ -113,7 +131,9 @@ body:SafeArea(
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Proof',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: proof,
+                        decoration: InputDecoration(hintText: 'Proof',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                       
                       ),),
@@ -129,7 +149,9 @@ body:SafeArea(
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'password',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: pass,
+                        decoration: InputDecoration(hintText: 'password',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                       ),),
@@ -145,7 +167,9 @@ body:SafeArea(
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'confirm password',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: confirm,
+                        decoration: InputDecoration(hintText: 'confirm password',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                       ),),
                    

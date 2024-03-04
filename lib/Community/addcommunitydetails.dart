@@ -9,6 +9,11 @@ class CommunityAbout extends StatefulWidget {
 }
 
 class _CommunityAboutState extends State<CommunityAbout> {
+  var comm_name=TextEditingController();
+  var about=TextEditingController();
+  var awards=TextEditingController();
+  var members=TextEditingController();
+  var join=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,27 +53,14 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Community Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: comm_name,
+                        decoration: InputDecoration(hintText: 'Community Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                         ),
                         ),
-                        // SizedBox(height: 10,),
                       
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.start,
-                      //   children: [
-                      //     Padding(
-                      //       padding: const EdgeInsets.all(10.0),
-                      //       child: Text('Owner',),
-                      //     ),
-                      //   ],
-                      // ),
-                      // TextFormField(decoration: InputDecoration(hintText: 'Owner',fillColor:  Color.fromARGB(112, 243, 214, 214),filled: true,
-                      // border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                      // ),),
-                   
-                        // SizedBox(height: 10,),
                    
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -80,6 +72,7 @@ body:
                         ],
                       ),
                       TextFormField(
+                        controller: about,
                 maxLines: null, // This makes the TextFormField grow dynamically
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
@@ -100,7 +93,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Awards',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: awards,
+                        decoration: InputDecoration(hintText: 'Awards',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
@@ -116,7 +111,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'members',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: members,
+                        decoration: InputDecoration(hintText: 'members',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                       ),),
@@ -146,7 +143,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'year',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: join,
+                        decoration: InputDecoration(hintText: 'year',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
@@ -159,6 +158,11 @@ body:
                       SizedBox(height: 40,),
                    
                       ElevatedButton(onPressed: (){
+                        print(comm_name.text);
+                        print(about.text);
+                        print(members.text);
+                        print(awards.text);
+                        print(join.text);
 
                          Navigator.push(context, MaterialPageRoute(builder: (context) {
                             return Communitygallery();

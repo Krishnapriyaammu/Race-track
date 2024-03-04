@@ -12,6 +12,9 @@ class TrackAdd extends StatefulWidget {
 }
 
 class _TrackAddState extends State<TrackAdd> {
+  var trackname=TextEditingController();
+  var tracktype=TextEditingController();
+  var state=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +54,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Track Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: trackname,
+                        decoration: InputDecoration(hintText: 'Track Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                         ),
@@ -67,7 +72,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Track type',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: tracktype,
+                        decoration: InputDecoration(hintText: 'Track type',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                       ),),
@@ -115,7 +122,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'State',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: state,
+                        decoration: InputDecoration(hintText: 'State',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
@@ -128,6 +137,9 @@ body:
                       SizedBox(height: 40,),
                    
                       ElevatedButton(onPressed: (){
+                        print(trackname.text);
+                        print(tracktype.text);
+                        print(state.text);
 
                          Navigator.push(context, MaterialPageRoute(builder: (context) {
                             return UploadRaceTrackImage();

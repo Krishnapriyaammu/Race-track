@@ -9,6 +9,11 @@ class RentalEditprofile extends StatefulWidget {
 }
 
 class _RentalEditprofileState extends State<RentalEditprofile> {
+  var user=TextEditingController();
+  var email =TextEditingController();
+  var phone = TextEditingController();
+  var place = TextEditingController();
+  var proof = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,6 +62,7 @@ SingleChildScrollView(
       ),
       SizedBox(height: 16.0),
       TextField(
+        controller: user,
                     
                     decoration: InputDecoration(
                       labelText: ' Name',
@@ -65,6 +71,7 @@ SingleChildScrollView(
                   ),
                   SizedBox(height: 16.0),
                    TextField(
+                    controller: email,
                     
                     decoration: InputDecoration(
                       labelText: 'Email',
@@ -74,6 +81,7 @@ SingleChildScrollView(
                   ),
                   SizedBox(height: 16,)  ,                                 
                    TextField(
+                    controller: phone,
                    
                     decoration: InputDecoration(
                       labelText: 'Phone Number',
@@ -84,6 +92,7 @@ SingleChildScrollView(
                   SizedBox(height: 16.0),
       
                    TextField(
+                    controller: place,
                     
                     decoration: InputDecoration(
                       labelText: 'place',
@@ -93,6 +102,7 @@ SingleChildScrollView(
                   SizedBox(height: 16.0),
       
                    TextField(
+                    controller: proof ,
                 
                     decoration: InputDecoration(
                       labelText: 'proof',
@@ -109,6 +119,11 @@ SingleChildScrollView(
                     padding: const EdgeInsets.all(20.0),
                     child: ElevatedButton(
                       onPressed: () {
+                        print(user.text);
+                        print(email.text);
+                        print(phone.text);
+                        print(place.text);
+                        print(proof.text);
                         Navigator.push(context, MaterialPageRoute(builder: (context) {
                             return AddrentalProducts();
                   },));

@@ -9,6 +9,14 @@ class RentalRegister extends StatefulWidget {
 }
 
 class _RentalRegisterState extends State<RentalRegister> {
+  var user=TextEditingController();
+  var email=TextEditingController();
+  var phone=TextEditingController();
+  var image=TextEditingController();
+  var place=TextEditingController();
+  var proof=TextEditingController();
+  var pass=TextEditingController();
+  var confpass=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +44,10 @@ class _RentalRegisterState extends State<RentalRegister> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Name',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: user,
+                        
+                        decoration: InputDecoration(hintText: 'Name',fillColor: Colors.deepOrange[100],filled: true,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                         ),
@@ -52,7 +63,9 @@ class _RentalRegisterState extends State<RentalRegister> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Email',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: email,
+                        decoration: InputDecoration(hintText: 'Email',fillColor: Colors.deepOrange[100],filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                       ),),
                    
@@ -67,7 +80,9 @@ class _RentalRegisterState extends State<RentalRegister> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Location',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: place,
+                        decoration: InputDecoration(hintText: 'Location',fillColor: Colors.deepOrange[100],filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                       ),),
@@ -83,7 +98,9 @@ class _RentalRegisterState extends State<RentalRegister> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Phone number',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: phone,
+                        decoration: InputDecoration(hintText: 'Phone number',fillColor: Colors.deepOrange[100],filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                       
                       ),),
@@ -99,7 +116,9 @@ class _RentalRegisterState extends State<RentalRegister> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'image',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: image,
+                        decoration: InputDecoration(hintText: 'image',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                       ),),
@@ -115,7 +134,9 @@ class _RentalRegisterState extends State<RentalRegister> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Proof',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: proof,
+                        decoration: InputDecoration(hintText: 'Proof',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                       
                       ),),
@@ -131,7 +152,9 @@ class _RentalRegisterState extends State<RentalRegister> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'password',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: pass,
+                        decoration: InputDecoration(hintText: 'password',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                       ),),
@@ -147,7 +170,9 @@ class _RentalRegisterState extends State<RentalRegister> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'confirm password',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: confpass,
+                        decoration: InputDecoration(hintText: 'confirm password',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                       ),),
                    
@@ -155,6 +180,14 @@ class _RentalRegisterState extends State<RentalRegister> {
                       SizedBox(height: 40,),
                    
                       ElevatedButton(onPressed: (){
+                        print(user.text);
+                        print(email.text);
+                        print(phone.text);
+                        print(proof.text);
+                        print(place.text);
+                        print(pass.text);
+                        print(confpass.text);
+
                       Navigator.push(context, MaterialPageRoute(builder: (context) {
                             return RentalEditprofile();
                   },));

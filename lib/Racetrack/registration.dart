@@ -8,6 +8,14 @@ class raceRegistration extends StatefulWidget {
 }
 
 class _raceRegistrationState extends State<raceRegistration> {
+  var name=TextEditingController();
+  var email=TextEditingController();
+  var phone=TextEditingController();
+  var place=TextEditingController();
+  var license=TextEditingController();
+  var image=TextEditingController();
+  var password=TextEditingController();
+  var confirm=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +41,9 @@ class _raceRegistrationState extends State<raceRegistration> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Name',fillColor: Color.fromARGB(114, 234, 70, 70),filled: true,
+                      TextFormField(
+                        controller: name,
+                        decoration: InputDecoration(hintText: 'Name',fillColor: Color.fromARGB(114, 234, 70, 70),filled: true,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                         ),
@@ -49,7 +59,9 @@ class _raceRegistrationState extends State<raceRegistration> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Email',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: email,
+                        decoration: InputDecoration(hintText: 'Email',fillColor: Colors.deepOrange[100],filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                       ),),
                    
@@ -64,7 +76,9 @@ class _raceRegistrationState extends State<raceRegistration> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Location',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: place,
+                        decoration: InputDecoration(hintText: 'Location',fillColor: Colors.deepOrange[100],filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                       ),),
@@ -80,7 +94,9 @@ class _raceRegistrationState extends State<raceRegistration> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Phone number',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: phone,
+                        decoration: InputDecoration(hintText: 'Phone number',fillColor: Colors.deepOrange[100],filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                       
                       ),),
@@ -96,7 +112,9 @@ class _raceRegistrationState extends State<raceRegistration> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'image',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: image,
+                        decoration: InputDecoration(hintText: 'image',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                       ),),
@@ -112,7 +130,9 @@ class _raceRegistrationState extends State<raceRegistration> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'License',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: license,
+                        decoration: InputDecoration(hintText: 'License',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                       
                       ),),
@@ -128,7 +148,9 @@ class _raceRegistrationState extends State<raceRegistration> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'password',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: password,
+                        decoration: InputDecoration(hintText: 'password',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                       ),),
@@ -144,7 +166,9 @@ class _raceRegistrationState extends State<raceRegistration> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'confirm password',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: confirm,
+                        decoration: InputDecoration(hintText: 'confirm password',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                       ),),
                    

@@ -19,7 +19,6 @@ class _ChatPageState extends State<ChatPage> {
           IconButton(
             icon: Icon(Icons.videocam),
             onPressed: () {
-              // Handle video call
             },
           ),
           IconButton(
@@ -34,13 +33,13 @@ class _ChatPageState extends State<ChatPage> {
         children: [
           Expanded(
             child: Container(
-              color: Colors.grey[200], // Background color for messages
+              color: Colors.grey[200],
               child: ListView.builder(
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
                   return ChatBubble(
                     text: messages[index],
-                    isMe: index % 2 == 0, // Alternate alignment
+                    isMe: index % 2 == 0, 
                   );
                 },
               ),
@@ -55,7 +54,7 @@ class _ChatPageState extends State<ChatPage> {
                     decoration: InputDecoration(
                       hintText: 'Write your message...',
                       filled: true,
-                      fillColor: Colors.white, // Text field background color
+                      fillColor: Colors.white, 
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                         borderSide: BorderSide.none,

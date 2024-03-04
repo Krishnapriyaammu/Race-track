@@ -9,6 +9,11 @@ class TrackDetails extends StatefulWidget {
 }
 
 class _TrackDetailsState extends State<TrackDetails> {
+  var name=TextEditingController();
+  var surface=TextEditingController();
+  var length=TextEditingController();
+  var turns=TextEditingController();
+  var record=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,22 +39,7 @@ body:
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
               ),),
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.start,
-                      //   children: [
-                      //     Padding(
-                      //       padding: const EdgeInsets.all(10.0),
-                      //       child: Text('Track image',),
-                      //     ),
-                      //   ],
-                      // ),
-                      // TextFormField(decoration: InputDecoration(hintText: 'Track image',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                      //   border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                                       
-                      //   ),
-                      //   ),
-                        // SizedBox(height: 10,),
-                      
+                     
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -59,7 +49,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Name',fillColor:  Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: name,
+                        decoration: InputDecoration(hintText: 'Name',fillColor:  Color.fromARGB(112, 243, 214, 214),filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       ),),
                    
@@ -74,7 +66,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Surface',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: surface,
+                        decoration: InputDecoration(hintText: 'Surface',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                       ),),
@@ -90,7 +84,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Length',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: length,
+                        decoration: InputDecoration(hintText: 'Length',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
@@ -106,7 +102,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Turns',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: turns,
+                        decoration: InputDecoration(hintText: 'Turns',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                       ),),
@@ -122,7 +120,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'lap record',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: record,
+                        decoration: InputDecoration(hintText: 'lap record',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
@@ -135,6 +135,11 @@ body:
                       SizedBox(height: 40,),
                    
                       ElevatedButton(onPressed: (){
+                        print(name.text);
+                        print(surface.text);
+                        print(turns.text);
+                        print(record.text);
+                        print(length.text);
 
                           Navigator.push(context, MaterialPageRoute(builder: (context) {
                             return Gallery();

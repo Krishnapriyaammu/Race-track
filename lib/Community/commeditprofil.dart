@@ -10,6 +10,12 @@ class Commueditprofile extends StatefulWidget {
 }
 
 class _CommueditprofileState extends State<Commueditprofile> {
+  var name=TextEditingController();
+  var email=TextEditingController();
+  var phone=TextEditingController();
+  var place=TextEditingController();
+  var proof=TextEditingController();
+  var vehicles=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,6 +62,7 @@ SingleChildScrollView(
       ),
       SizedBox(height: 16.0),
       TextField(
+        controller: name,
                     
                     decoration: InputDecoration(
                       labelText: ' Name',
@@ -64,6 +71,7 @@ SingleChildScrollView(
                   ),
                   SizedBox(height: 16.0),
                    TextField(
+                    controller: email,
                     
                     decoration: InputDecoration(
                       labelText: 'Email',
@@ -73,6 +81,7 @@ SingleChildScrollView(
                   ),
                   SizedBox(height: 16,)  ,                                 
                    TextField(
+                    controller: phone,
                    
                     decoration: InputDecoration(
                       labelText: 'Phone Number',
@@ -83,6 +92,7 @@ SingleChildScrollView(
                   SizedBox(height: 16.0),
       
                    TextField(
+                    controller: place,
                     
                     decoration: InputDecoration(
                       labelText: 'place',
@@ -92,6 +102,7 @@ SingleChildScrollView(
                    SizedBox(height: 16.0),
       
                    TextField(
+                    controller: vehicles,
                     
                     decoration: InputDecoration(
                       labelText: 'Total vehicles',
@@ -101,6 +112,7 @@ SingleChildScrollView(
                   SizedBox(height: 16.0),
       
                    TextField(
+                    controller: proof,
                 
                     decoration: InputDecoration(
                       labelText: 'proof',
@@ -117,6 +129,12 @@ SingleChildScrollView(
                     padding: const EdgeInsets.all(20.0),
                     child: ElevatedButton(
                       onPressed: () {
+                        print(name.text);
+                        print(email.text);
+                        print(phone.text);
+                        print(place.text);
+                        print(proof.text);
+                        print(vehicles.text);
                         Navigator.push(context, MaterialPageRoute(builder: (context) {
                             return CommViewProfile();
                   },));

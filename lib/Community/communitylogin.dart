@@ -10,6 +10,8 @@ class CommunityLogin extends StatefulWidget {
 }
 
 class _CommunityLoginState extends State<CommunityLogin> {
+  var user=TextEditingController();
+  var password=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +37,9 @@ body: Center(child:
                             Text('Enter username'),
                           ],
                         ),
-                        TextFormField(decoration: InputDecoration(hintText: 'username',fillColor:  Color.fromARGB(111, 247, 73, 73),filled: true,
+                        TextFormField(
+                          controller: user,
+                          decoration: InputDecoration(hintText: 'username',fillColor:  Color.fromARGB(111, 247, 73, 73),filled: true,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(40))
                         ),
                         ),
@@ -47,7 +51,9 @@ body: Center(child:
                             Text('Enter Password'),
                           ],
                         )),
-                        TextFormField(decoration: InputDecoration(hintText: 'Password',fillColor:  Color.fromARGB(111, 247, 73, 73),filled: true,
+                        TextFormField(
+                          controller: password,
+                          decoration: InputDecoration(hintText: 'Password',fillColor:  Color.fromARGB(111, 247, 73, 73),filled: true,
                         border:OutlineInputBorder(borderRadius: BorderRadius.circular(40))
                         ),),
                         SizedBox(height: 20,),
@@ -71,6 +77,8 @@ body: Center(child:
                       Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(onPressed: (){
+                    print(user.text);
+                    print(password.text);
                   //    Navigator.push(context, MaterialPageRoute(builder: (context) {
                   //           return GridPageView1();
                   // },));

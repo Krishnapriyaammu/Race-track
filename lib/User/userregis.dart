@@ -8,6 +8,14 @@ class UserRgistration extends StatefulWidget {
 }
 
 class _UserRgistrationState extends State<UserRgistration> {
+  var name=TextEditingController();
+  var email=TextEditingController();
+  var phone=TextEditingController();
+  var place=TextEditingController();
+  var image=TextEditingController();
+  var license=TextEditingController();
+  var pass=TextEditingController();
+  var conf=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +41,9 @@ class _UserRgistrationState extends State<UserRgistration> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Name',fillColor: Color.fromARGB(114, 234, 70, 70),filled: true,
+                      TextFormField(
+                        controller: name,
+                        decoration: InputDecoration(hintText: 'Name',fillColor: Color.fromARGB(114, 234, 70, 70),filled: true,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                         ),
@@ -49,7 +59,9 @@ class _UserRgistrationState extends State<UserRgistration> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Email',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: email,
+                        decoration: InputDecoration(hintText: 'Email',fillColor: Colors.deepOrange[100],filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                       ),),
                    
@@ -64,7 +76,9 @@ class _UserRgistrationState extends State<UserRgistration> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Location',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: place,
+                        decoration: InputDecoration(hintText: 'Location',fillColor: Colors.deepOrange[100],filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                       ),),
@@ -80,7 +94,9 @@ class _UserRgistrationState extends State<UserRgistration> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Phone number',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: phone,
+                        decoration: InputDecoration(hintText: 'Phone number',fillColor: Colors.deepOrange[100],filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                       
                       ),),
@@ -96,7 +112,9 @@ class _UserRgistrationState extends State<UserRgistration> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'image',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: image,
+                        decoration: InputDecoration(hintText: 'image',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                       ),),
@@ -112,7 +130,9 @@ class _UserRgistrationState extends State<UserRgistration> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'License',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: license,
+                        decoration: InputDecoration(hintText: 'License',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                       
                       ),),
@@ -128,7 +148,9 @@ class _UserRgistrationState extends State<UserRgistration> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'password',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: pass,
+                        decoration: InputDecoration(hintText: 'password',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                                        
                       ),),
@@ -144,14 +166,30 @@ class _UserRgistrationState extends State<UserRgistration> {
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'confirm password',fillColor: Colors.deepOrange[100],filled: true,
+                      TextFormField(
+                        controller: conf,
+                        decoration: InputDecoration(hintText: 'confirm password',fillColor: Colors.deepOrange[100],filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
                       ),),
                    
                       
                       SizedBox(height: 40,),
                    
-                      ElevatedButton(onPressed: (){}, 
+                      ElevatedButton(onPressed: (){
+                        print(name.text);
+                     print(email.text);
+                      print(phone.text);
+                         print(place.text);
+                             print(image.text);
+                             print(license.text);
+                             print(pass.text);
+                             print(conf.text);
+
+
+
+
+
+                      }, 
                       style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 240, 7, 19))),
                       child: Text('SIGN UP'))
                    

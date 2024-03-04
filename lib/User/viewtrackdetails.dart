@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:loginrace/User/usertrackbooking.dart';
@@ -37,10 +38,11 @@ class _ViewTrackDetailsState extends State<ViewTrackDetails> {
               Text('Kart motor speedway, KOVAI'),
               SizedBox(height: 20),
               Row(
+                
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   buildSessionContainer('LEVEL 1 & 2 (3 DAYS)', '₹21,599/-', Colors.blue),
-                  buildSessionContainer('LEVEL 3 (5 DAYS)', '₹25,999/-', Colors.green),
+                  buildSessionContainer('LEVEL 3 (5 DAYS)', '₹25,999/-', Colors.green,),
                 ],
               ),
               SizedBox(height: 20),

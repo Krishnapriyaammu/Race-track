@@ -12,6 +12,10 @@ class EventAdd extends StatefulWidget {
 
 class _EventAddState extends State<EventAdd> {
   TextEditingController dateController = TextEditingController();
+  var eventname=TextEditingController();
+  var owner=TextEditingController();
+  var tickets=TextEditingController();
+  var price=TextEditingController();
 
     DateTime selectedDate = DateTime.now();
 get suffixIcon => null;
@@ -64,7 +68,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Event Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: eventname,
+                        decoration: InputDecoration(hintText: 'Event Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                         ),
@@ -80,7 +86,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Owner',fillColor:  Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: owner,
+                        decoration: InputDecoration(hintText: 'Owner',fillColor:  Color.fromARGB(112, 243, 214, 214),filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       ),),
                    
@@ -129,28 +137,14 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Total tickets',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: tickets,
+                        decoration: InputDecoration(hintText: 'Total tickets',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
                    
-                        // SizedBox(height: 10,),
-                   
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.start,
-                      //   children: [
-                      //     Padding(
-                      //       padding: const EdgeInsets.all(10.0),
-                      //       child: Text('Upload Image',),
-                      //     ),
-                      //   ],
-                      // ),
-                      // TextFormField(decoration: InputDecoration(hintText: 'image',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                      //      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                                       
-                      // ),),
-                   
-                        // SizedBox(height: 10,),
+                  
                    
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -161,7 +155,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Price',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: price,
+                        decoration: InputDecoration(hintText: 'Price',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
@@ -174,6 +170,10 @@ body:
                       SizedBox(height: 40,),
                    
                       ElevatedButton(onPressed: (){
+                        print(eventname.text);
+                        print(owner.text);
+                        print(tickets.text);
+                        print(price.text);
 
                           Navigator.push(context, MaterialPageRoute(builder: (context) {
                             return RaceTrackUploadEventimage();

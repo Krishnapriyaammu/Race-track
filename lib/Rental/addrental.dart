@@ -9,6 +9,10 @@ class AddrentalProducts extends StatefulWidget {
 }
 
 class _AddrentalProductsState extends State<AddrentalProducts> {
+  var name=TextEditingController();
+  var feature=TextEditingController();
+  var price=TextEditingController();
+  var year=TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,20 +42,6 @@ body:
                 fontWeight: FontWeight.bold,
               ),),
                 
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.start,
-                      //   children: [
-                      //     Padding(
-                      //       padding: const EdgeInsets.all(10.0),
-                      //       child: Text('Image',),
-                      //     ),
-                      //   ],
-                      // ),
-                      // TextFormField(decoration: InputDecoration(hintText: 'Image',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                      //   border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                                       
-                      //   ),
-                      //   ),
                        
                    
                       Row(
@@ -63,7 +53,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: name,
+                        decoration: InputDecoration(hintText: 'Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                       ),),
@@ -79,7 +71,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Features',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: feature,
+                        decoration: InputDecoration(hintText: 'Features',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
@@ -95,7 +89,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Price',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: price,
+                        decoration: InputDecoration(hintText: 'Price',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                       ),),
@@ -111,7 +107,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Year',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: year,
+                        decoration: InputDecoration(hintText: 'Year',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
@@ -124,6 +122,10 @@ body:
                       SizedBox(height: 40,),
                    
                       ElevatedButton(onPressed: (){
+                        print(name.text);
+                        print(feature.text);
+                        print(price.text);
+                        print(year.text);
 
                          Navigator.push(context, MaterialPageRoute(builder: (context) {
                             return RentUploadImage();

@@ -9,6 +9,11 @@ class YourPage extends StatefulWidget {
 }
 
 class _YourPageState extends State<YourPage> {
+  var name=TextEditingController();
+  var email=TextEditingController();
+  var phone=TextEditingController();
+  var place=TextEditingController();
+  var proof=TextEditingController();
   File? _selectedImage;
   final picker = ImagePicker();
 
@@ -65,6 +70,7 @@ class _YourPageState extends State<YourPage> {
               ),
               SizedBox(height: 16.0),
               TextField(
+                controller: name,
                 decoration: InputDecoration(
                   labelText: 'Name',
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
@@ -73,6 +79,7 @@ class _YourPageState extends State<YourPage> {
                             SizedBox(height: 16.0),
 
                TextField(
+                controller: email,
                 decoration: InputDecoration(
                   labelText: 'Email',
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
@@ -81,6 +88,7 @@ class _YourPageState extends State<YourPage> {
                             SizedBox(height: 16.0),
 
                TextField(
+                controller: place,
                 decoration: InputDecoration(
                   labelText: 'location',
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
@@ -89,6 +97,7 @@ class _YourPageState extends State<YourPage> {
                             SizedBox(height: 16.0),
 
                TextField(
+                controller: phone,
                 decoration: InputDecoration(
                   labelText: 'phone number',
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
@@ -97,6 +106,7 @@ class _YourPageState extends State<YourPage> {
                             SizedBox(height: 16.0),
 
                TextField(
+                controller: proof,
                 decoration: InputDecoration(
                   labelText: 'proof',
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
@@ -107,6 +117,11 @@ class _YourPageState extends State<YourPage> {
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
+                  print(name.text);
+                  print(email.text);
+                  print(phone.text);
+                  print(place.text);
+                  print(proof.text);
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return RaceTrackViewProfile();
                   }));

@@ -10,6 +10,7 @@ class UserFeedback extends StatefulWidget {
 }
 
 class _UserFeedbackState extends State<UserFeedback> {
+  var feedback=TextEditingController();
     double _userRating = 0.0;
 
   @override
@@ -55,6 +56,7 @@ body:
             SizedBox(height: 8),
             Expanded(
               child: TextFormField(
+                controller: feedback,
                 maxLines: 5,
                 decoration: InputDecoration(
                   hintText: 'Enter your comments here...',
@@ -68,6 +70,7 @@ body:
                 padding: const EdgeInsets.only(bottom: 200),
                 child: ElevatedButton(
                   onPressed: () {
+                    print(feedback.text);
                      Navigator.push(context, MaterialPageRoute(builder: (context) {
                             return FeedbackViewPage();
                   },));
