@@ -10,91 +10,102 @@ class ViewRentalSearch extends StatefulWidget {
 
 class _ViewRentalSearchState extends State<ViewRentalSearch> {
   @override
-   Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: Colors.blue, 
+      ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Center(
-            child: Container(
-              child: Text(
-                'Rental Service',
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 56, 50, 45)),
-              ),
-            ),
-          ),
-          SizedBox(height: 20),
           Container(
-            height: 500,
-            width: 300,
+            padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
-              color: Color.fromARGB(255, 182, 173, 239),
+              color: Color.fromARGB(255, 147, 113, 233).withOpacity(0.8), 
               borderRadius: BorderRadius.circular(20),
             ),
-            padding: const EdgeInsets.all(16.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  'Find what you want',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 27, 27, 27)),
+                  'Rental Service',
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
                 SizedBox(height: 20),
-                DropdownButton<String>(
-                  hint: Text('Add category'),
-                  onChanged: (String? value) {},
-                  items: <String>['Car', 'Bike', 'other'].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
+                Text(
+                  'Find what you want',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+                SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: DropdownButton<String>(
+                    isExpanded: true,
+                    hint: Text('Select category'),
+                    onChanged: (String? value) {},
+                    items: <String>['Car', 'Bike', 'Other'].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
                 ),
                 SizedBox(height: 10),
-                DropdownButton<String>(
-                  hint: Text('Sub category'),
-                  onChanged: (String? value) {},
-                  items: <String>['Aprila', 'Hero', 'Benz'].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: DropdownButton<String>(
+                    isExpanded: true,
+                    hint: Text('Select subcategory'),
+                    onChanged: (String? value) {},
+                    items: <String>['Aprila', 'Hero', 'Benz'].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
                 ),
                 SizedBox(height: 10),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Expanded(
-                      child: DropdownButton<String>(
-                        hint: Text('Min price'),
-                        onChanged: (String? value) {},
-                        items: <String>['1', '2', '3'].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: DropdownButton<String>(
+                          isExpanded: true,
+                          hint: Text('Min price'),
+                          onChanged: (String? value) {},
+                          items: <String>['1', '2', '3'].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
                     SizedBox(width: 20),
                     Expanded(
-                      child: DropdownButton<String>(
-                        hint: Text('Max price'),
-                        onChanged: (String? value) {},
-                        items: <String>['1', '2', '3'].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: DropdownButton<String>(
+                          isExpanded: true,
+                          hint: Text('Max price'),
+                          onChanged: (String? value) {},
+                          items: <String>['1', '2', '3'].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 50),
+                SizedBox(height: 30),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -105,7 +116,7 @@ class _ViewRentalSearchState extends State<ViewRentalSearch> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), backgroundColor: Color.fromARGB(255, 72, 32, 152),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), 
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),

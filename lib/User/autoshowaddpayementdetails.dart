@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:loginrace/User/autoshowaddpayementdetails.dart';
-import 'package:loginrace/User/bookedsuccesfully.dart';
-import 'package:loginrace/User/instructorbooking.dart';
+import 'package:loginrace/User/payemettype.dart';
 
-class AutoshowBooking extends StatefulWidget {
-  const AutoshowBooking({super.key});
+class AutoshowAddPayement extends StatefulWidget {
+  const AutoshowAddPayement({super.key});
 
   @override
-  State<AutoshowBooking> createState() => _AutoshowBookingState();
+  State<AutoshowAddPayement> createState() => _AutoshowAddPayementState();
 }
 
-class _AutoshowBookingState extends State<AutoshowBooking> {
-   TextEditingController dateController = TextEditingController();
+class _AutoshowAddPayementState extends State<AutoshowAddPayement> {
+    TextEditingController dateController = TextEditingController();
 
-    DateTime selectedDate = DateTime.now();
-get suffixIcon => null;
+  DateTime selectedDate = DateTime.now();
+  
+  get suffixIcon => null;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime ? picked = await showDatePicker(
@@ -34,7 +33,8 @@ get suffixIcon => null;
   Widget build(BuildContext context) {
     return Scaffold(
 
-appBar: AppBar(backgroundColor: Colors.blue),
+
+appBar: AppBar(backgroundColor: Colors.blue,),
       
 body: 
         
@@ -55,17 +55,14 @@ body:
                     
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('BOOK YOUR SHOW', style: TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-              ),),
+             
                 
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('College Name',),
+                            child: Text('Name',),
                           ),
                         ],
                       ),
@@ -74,19 +71,37 @@ body:
                                        
                         ),
                         ),
-                     
+                   
+                   
+                    
                    
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Venue',),
+                            child: Text('phone number',),
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Venue',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(decoration: InputDecoration(hintText: 'phone number',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                      
+                      ),),
+                   
+                        // SizedBox(height: 10,),
+                   
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(' Email',),
+                          ),
+                        ],
+                      ),
+                      TextFormField(decoration: InputDecoration(hintText: 'email',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                       ),),
                    
@@ -97,74 +112,50 @@ body:
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Text('Date of show',),
+                            child: Text('Amount',),
                           ),
                         ],
                       ),
-                      GestureDetector(
-                      onTap: () => _selectDate(context),
-                      child: AbsorbPointer(
-                        child: TextFormField(
-                          controller: TextEditingController(
-                            text: "${selectedDate.toLocal()}".split(' ')[0],
-                          ),
-                          decoration: InputDecoration(
-                            hintText: 'Date',
-                            fillColor: Color.fromARGB(112, 243, 214, 214),
-                            filled: true,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50),
+                      TextFormField(decoration: InputDecoration(hintText: 'amount',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                      
+                      ),),
+                       Row(
+                       
+                        children: [
+                           
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: TextFormField(
+                                readOnly: true,
+                                controller: dateController,
+                                decoration: InputDecoration(
+                                  hintText: 'Select Date',
+                                  fillColor: Color.fromARGB(112, 243, 214, 214),
+                                  filled: true,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                   
-                        // SizedBox(height: 10,),
-                   
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Time',),
-                          ),
+                          SizedBox(width: 16),
+                          // IconButton(
+                          //   icon: Icon(Icons.calendar_today),
+                          //   onPressed: () => _selectDate(context),
+                          // ),
+                       IconButton(
+                icon: Icon(Icons.calendar_today),
+                onPressed: () => _selectDate(context),
+              ),
+                              // onTap: () => _selectDate(context),
+
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'time',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                                       
-                      ),),
                    
-                        // SizedBox(height: 10,),
-                   
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Total vehicles',),
-                          ),
-                        ],
-                      ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Total vehicles',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
-                      ),),
-                   
-                        Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Total Hours',),
-                          ),
-                        ],
-                      ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Total hours',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                      
-                      ),),
                    
                      
                    
@@ -174,16 +165,19 @@ body:
                       ElevatedButton(onPressed: (){
 
                          Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return AutoshowAddPayement();
+                            return PayementType();
                   },));
                       }, 
-                      style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.blue)),
+                      style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 240, 124, 130))),
                       child: Text('Next',style: TextStyle(color: Colors.white),))
                    
                       
                       
-                         
-                     
+                      
+                   
+                   
+                   
+                   
                     ],
                    ),
                  ),
@@ -192,6 +186,7 @@ body:
            ),
          ),
        )
+
 
 
 

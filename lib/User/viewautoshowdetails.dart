@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loginrace/User/bookautoshow.dart';
+import 'package:loginrace/User/chat.dart';
 
 class ViewAutoshowDetails extends StatefulWidget {
   const ViewAutoshowDetails({super.key});
@@ -92,7 +93,12 @@ class _ViewAutoshowDetailsState extends State<ViewAutoshowDetails> {
             SizedBox(height: 10),
             Row(
               children: [
-                Icon(Icons.chat, color: Color.fromARGB(255, 243, 84, 84)),
+                InkWell(onTap: () {
+                   Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return ChatPage();
+                  },));
+                },
+                  child: Icon(Icons.chat, color: Color.fromARGB(255, 243, 84, 84))),
                 SizedBox(width: 8),
                 Text(
                   'For more inquiries',

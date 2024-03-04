@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 
-class RentLogout extends StatefulWidget {
-  const RentLogout({super.key});
+class LogoutRacetrack extends StatefulWidget {
+  const LogoutRacetrack({super.key});
 
   @override
-  State<RentLogout> createState() => _RentLogoutState();
+  State<LogoutRacetrack> createState() => _LogoutRacetrackState();
 }
 
-class _RentLogoutState extends State<RentLogout> {
+class _LogoutRacetrackState extends State<LogoutRacetrack> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
 
-
- body: Center(
+body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -48,6 +47,12 @@ class _RentLogoutState extends State<RentLogout> {
           ),
         ),
       ),
+
+
+
+
+
+
 
 
 

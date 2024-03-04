@@ -21,7 +21,7 @@ import 'package:loginrace/Rental/rentalviewprofile.dart';
 import 'package:loginrace/Rental/rentelhome.dart';
 import 'package:loginrace/Rental/rentnotification.dart';
 import 'package:loginrace/Rental/viewrentproducts.dart';
-import 'package:loginrace/Rental/viewrequestrental.dart';
+import 'package:loginrace/Rental/viewaccepatrequestrental.dart';
 import 'package:loginrace/Rental/viewuseracceptreject.dart';
 import 'package:loginrace/User/addpaymentdetails.dart';
 import 'package:loginrace/User/chat.dart';
