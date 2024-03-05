@@ -38,7 +38,7 @@ import 'package:loginrace/User/viewautoshow.dart';
 import 'package:loginrace/User/viewautoshowdetails.dart';
 import 'package:loginrace/User/viewevents.dart';
 import 'package:loginrace/User/viewgallery.dart';
-import 'package:loginrace/User/viewinstructor.dart';
+import 'package:loginrace/User/viewindividualinstructor.dart';
 import 'package:loginrace/User/viewprofile.dart';
 import 'package:loginrace/User/viewracetrack.dart';
 import 'package:loginrace/User/viewrentalsearch.dart';

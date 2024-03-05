@@ -58,71 +58,71 @@ class _ViewRacetrackState extends State<ViewRacetrack> {
                       children: [
                         // Left Container
                         Expanded(
-                          child: Container(
-                            padding: EdgeInsets.all(12),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                InkWell(onTap: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return ViewTrackDetails();
-                  },));
-                                },
-                                  child: Text(
+                          child: InkWell(onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                              return ViewTrackDetails();
+                                              },));
+                          },
+                            child: Container(
+                              padding: EdgeInsets.all(12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
                                     'Adventurous Race Track',
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [
-                                    RatingBar.builder(
-                                      itemSize: 20,
-                                      initialRating: 3,
-                                      minRating: 1,
-                                      direction: Axis.horizontal,
-                                      allowHalfRating: true,
-                                      itemCount: 5,
-                                      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                                      itemBuilder: (context, _) => Icon(
-                                        Icons.star,
-                                        size: 20,
-                                        color: Colors.amber,
-                                      ),
-                                      onRatingUpdate: (rating) {
-                                        print(rating);
-                                      },
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      '3.0',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  'Car Racing Track',
-                                  style: TextStyle(
-                                    fontSize: 16,
+                                  SizedBox(
+                                    height: 10,
                                   ),
-                                ),
-                                Text(
-                                  'Coimbatore, Tamilnadu',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey,
+                                  Row(
+                                    children: [
+                                      RatingBar.builder(
+                                        itemSize: 20,
+                                        initialRating: 3,
+                                        minRating: 1,
+                                        direction: Axis.horizontal,
+                                        allowHalfRating: true,
+                                        itemCount: 5,
+                                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                        itemBuilder: (context, _) => Icon(
+                                          Icons.star,
+                                          size: 20,
+                                          color: Colors.amber,
+                                        ),
+                                        onRatingUpdate: (rating) {
+                                          print(rating);
+                                        },
+                                      ),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        '3.0',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
+                                  SizedBox(height: 10),
+                                  Text(
+                                    'Car Racing Track',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Coimbatore, Tamilnadu',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),

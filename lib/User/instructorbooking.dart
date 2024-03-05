@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loginrace/User/bookedsuccesfully.dart';
 import 'package:loginrace/User/usertrackbooking.dart';
+import 'package:loginrace/User/viewstatusinstructorbooking.dart';
 
 class UserInstructorbooking extends StatefulWidget {
   const UserInstructorbooking({super.key});
@@ -176,7 +177,7 @@ get suffixIcon => null;
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) {
-                            return Booksuccesfully();
+                            return MyBookingsStatusPage();
                           }),
                         );
                       },

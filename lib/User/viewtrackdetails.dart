@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:loginrace/User/usertrackbooking.dart';
 import 'package:loginrace/User/userviewfeedback.dart';
+import 'package:loginrace/User/viewallinstructors.dart';
 import 'package:loginrace/User/viewgallery.dart';
-import 'package:loginrace/User/viewinstructor.dart';
+import 'package:loginrace/User/viewindividualinstructor.dart';
 import 'package:loginrace/User/viewtrack.dart';
 
 class ViewTrackDetails extends StatefulWidget {
@@ -36,22 +37,25 @@ class _ViewTrackDetailsState extends State<ViewTrackDetails> {
               Text('Motorcycle racing training program'),
               Text('January 26th, 27th & 28th'),
               Text('Kart motor speedway, KOVAI'),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               Row(
                 
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  buildSessionContainer('LEVEL 1 & 2 (3 DAYS)', '₹21,599/-', Colors.blue),
-                  buildSessionContainer('LEVEL 3 (5 DAYS)', '₹25,999/-', Colors.green,),
+                  InkWell(onTap: () {
+                    
+                  },
+                    child: buildSessionContainer('LEVEL 1','299/-', Colors.blue,50,45)),
+                  buildSessionContainer('LEVEL3', '₹25,999/-', Colors.green,50,45),
                 ],
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   buildArrowItem('OUR INSTRUCTORS',Icons.arrow_forward, () {
                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return ViewInstructor();
+                            return UserViewAllCoach();
                   },));
                   }),
                   buildArrowItem('VIEW TRACK', Icons.arrow_forward, () {
@@ -97,13 +101,15 @@ class _ViewTrackDetailsState extends State<ViewTrackDetails> {
     );
   }
 
-  Widget buildSessionContainer(String title, String price, Color color) {
+  Widget buildSessionContainer(String title, String price, Color color, double width, double height) {
     return Container(
-      padding: EdgeInsets.all(16),
-      margin: EdgeInsets.only(right: 16),
+      width: 95,
+      height: 50,
+      // padding: EdgeInsets.all(16),
+      // margin: EdgeInsets.only(right: 16),
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,19 +120,19 @@ class _ViewTrackDetailsState extends State<ViewTrackDetails> {
           ),
           SizedBox(height: 8),
           Text(price, style: TextStyle(color: Colors.white)),
-          SizedBox(height: 8),
-          ElevatedButton(
-            onPressed: () {
-               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return UserTrackBooking();
-                  },));
-              },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-            child: Text(
-              'BOOK NOW',
-              style: TextStyle(color: color),
-            ),
-          ),
+          // SizedBox(height: 8),
+          // ElevatedButton(
+          //   onPressed: () {
+          //      Navigator.push(context, MaterialPageRoute(builder: (context) {
+          //                   return UserTrackBooking();
+          //         },));
+          //     },
+          //   // style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+          //   child: Text(
+          //     'BOOK NOW',
+          //     style: TextStyle(color: color),
+          //   ),
+          // ),
         ],
       ),
     );
