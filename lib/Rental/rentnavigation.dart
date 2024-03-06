@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loginrace/Rental/logoutrent.dart';
+import 'package:loginrace/Rental/addrentalitems.dart';
 import 'package:loginrace/Rental/rentelhome.dart';
 import 'package:loginrace/Rental/viewrentproducts.dart';
 
@@ -15,7 +15,7 @@ class _RentNavigationbarState extends State<RentNavigationbar> {
     static  List<dynamic>option=[
    RentalHome(),
    ProductViewPage(),
-   RentLogout(),
+   RentalServicePage(),
    
   
 
@@ -34,7 +34,7 @@ class _RentNavigationbarState extends State<RentNavigationbar> {
 bottomNavigationBar: BottomNavigationBar(items: [
   BottomNavigationBarItem(icon: Icon(Icons.home,),label: 'home'),
   BottomNavigationBarItem(icon: Icon(Icons.repeat_one,),label: 'products'),
-  BottomNavigationBarItem(icon: Icon(Icons.logout,),label: 'logout')
+  BottomNavigationBarItem(icon: Icon(Icons.logout,),label: 'Service')
 ],
 type: BottomNavigationBarType.shifting,
 currentIndex: selectedindex,

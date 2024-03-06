@@ -9,11 +9,13 @@ class YourPage extends StatefulWidget {
 }
 
 class _YourPageState extends State<YourPage> {
-  var name=TextEditingController();
-  var email=TextEditingController();
-  var phone=TextEditingController();
-  var place=TextEditingController();
-  var proof=TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  var name = TextEditingController();
+  var email = TextEditingController();
+  var phone = TextEditingController();
+  var place = TextEditingController();
+  var proof = TextEditingController();
   File? _selectedImage;
   final picker = ImagePicker();
 
@@ -32,106 +34,136 @@ class _YourPageState extends State<YourPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        
-      ),
+      appBar: AppBar(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(25.0),
         child: Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Align(
-                alignment: Alignment.topCenter,
-                child: InkWell(
-                  onTap: _pickImage,
-                  child: Container(
-                    width: 100.0,
-                    height: 100.0,
-                    margin: EdgeInsets.only(top: 16.0),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color.fromARGB(255, 227, 102, 113),
-                      image: _selectedImage != null
-                          ? DecorationImage(
-                              image: FileImage(_selectedImage!),
-                              fit: BoxFit.cover,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: InkWell(
+                    onTap: _pickImage,
+                    child: Container(
+                      width: 100.0,
+                      height: 100.0,
+                      margin: EdgeInsets.only(top: 16.0),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color.fromARGB(255, 227, 102, 113),
+                        image: _selectedImage != null
+                            ? DecorationImage(
+                                image: FileImage(_selectedImage!),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
+                      ),
+                      child: _selectedImage == null
+                          ? Icon(
+                              Icons.camera_alt,
+                              color: Colors.white,
                             )
                           : null,
                     ),
-                    child: _selectedImage == null
-                        ? Icon(
-                            Icons.camera_alt,
-                            color: Colors.white,
-                          )
-                        : null,
                   ),
                 ),
-              ),
-              SizedBox(height: 16.0),
-              TextField(
-                controller: name,
-                decoration: InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                SizedBox(height: 16.0),
+                TextFormField(
+                  controller: name,
+                  decoration: InputDecoration(
+                    labelText: 'Name',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your name';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-                            SizedBox(height: 16.0),
-
-               TextField(
-                controller: email,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                SizedBox(height: 16.0),
+                TextFormField(
+                  controller: email,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-                            SizedBox(height: 16.0),
-
-               TextField(
-                controller: place,
-                decoration: InputDecoration(
-                  labelText: 'location',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                SizedBox(height: 16.0),
+                TextFormField(
+                  controller: place,
+                  decoration: InputDecoration(
+                    labelText: 'Location',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your location';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-                            SizedBox(height: 16.0),
-
-               TextField(
-                controller: phone,
-                decoration: InputDecoration(
-                  labelText: 'phone number',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                SizedBox(height: 16.0),
+                TextFormField(
+                  controller: phone,
+                  decoration: InputDecoration(
+                    labelText: 'Phone Number',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your phone number';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-                            SizedBox(height: 16.0),
-
-               TextField(
-                controller: proof,
-                decoration: InputDecoration(
-                  labelText: 'proof',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                SizedBox(height: 16.0),
+                TextFormField(
+                  controller: proof,
+                  decoration: InputDecoration(
+                    labelText: 'Proof',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your proof';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-
-
-              SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: () {
-                  print(name.text);
-                  print(email.text);
-                  print(phone.text);
-                  print(place.text);
-                  print(proof.text);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return RaceTrackViewProfile();
-                  }));
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.blue),
+                SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      print(name.text);
+                      print(email.text);
+                      print(phone.text);
+                      print(place.text);
+                      print(proof.text);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) {
+                          return RaceTrackViewProfile();
+                        }),
+                      );
+                    }
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue),
+                  ),
+                  child: Text('SUBMIT', style: TextStyle(color: Colors.white)),
                 ),
-                child: Text('SUBMIT', style: TextStyle(color: Colors.white)),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

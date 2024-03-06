@@ -15,6 +15,8 @@ class _TrackAddState extends State<TrackAdd> {
   var trackname=TextEditingController();
   var tracktype=TextEditingController();
   var state=TextEditingController();
+      final fkey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,6 +58,11 @@ body:
                       ),
                       TextFormField(
                         controller: trackname,
+                        validator: (value) {
+                           if (value!.isEmpty) {
+                        return 'enter track name';
+                      }
+                        },
                         decoration: InputDecoration(hintText: 'Track Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
@@ -74,6 +81,11 @@ body:
                       ),
                       TextFormField(
                         controller: tracktype,
+                        validator: (value) {
+                           if (value!.isEmpty) {
+                        return 'enter track type';
+                      }
+                        },
                         decoration: InputDecoration(hintText: 'Track type',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
@@ -90,7 +102,8 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'Rating',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        decoration: InputDecoration(hintText: 'Rating',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
@@ -124,6 +137,11 @@ body:
                       ),
                       TextFormField(
                         controller: state,
+                        validator: (value) {
+                           if (value!.isEmpty) {
+                        return 'enter state';
+                      }
+                        },
                         decoration: InputDecoration(hintText: 'State',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
@@ -140,10 +158,13 @@ body:
                         print(trackname.text);
                         print(tracktype.text);
                         print(state.text);
+                                                   if (fkey.currentState!.validate()) {
+
 
                          Navigator.push(context, MaterialPageRoute(builder: (context) {
                             return UploadRaceTrackImage();
                   },));
+                                                   }
                       }, 
                       style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 249, 249, 252))),
                       child: Text('NEXT',style: TextStyle(color: Colors.black),))

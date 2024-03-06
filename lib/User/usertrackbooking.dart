@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:loginrace/User/trackbookingpayementadd.dart';
 
 class UserTrackBooking extends StatefulWidget {
-  const UserTrackBooking({super.key});
+  const UserTrackBooking({Key? key}) : super(key: key);
 
   @override
   State<UserTrackBooking> createState() => _UserTrackBookingState();
 }
 
 class _UserTrackBookingState extends State<UserTrackBooking> {
-  var name=TextEditingController();
-  var email=TextEditingController();
-  var phone=TextEditingController();
-  var place=TextEditingController();
+  var name = TextEditingController();
+  var email = TextEditingController();
+  var phone = TextEditingController();
+  var place = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,46 +31,74 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
               child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.only(top: 20, bottom: 20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.sports_motorsports,
-                        size: 64,
-                        color: Colors.blue,
-                      ),
-                      SizedBox(height: 20),
-                      Text(
-                        'Join the Adventure!',
-                        style: TextStyle(
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold,
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.sports_motorsports,
+                          size: 64,
                           color: Colors.blue,
                         ),
-                      ),
-                      SizedBox(height: 20),
-                      buildTextFieldRow(
-                        
-                        'Name', Icons.person),
-                      buildTextFieldRow('Email', Icons.email),
-                      buildTextFieldRow('Phone Number', Icons.phone),
-                      buildTextFieldRow('Place', Icons.location_on),
-                      SizedBox(height: 40),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return TrackBookingPayment();
-                          }));
-                        },
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(Colors.blue),
+                        SizedBox(height: 20),
+                        Text(
+                          'Join the Adventure!',
+                          style: TextStyle(
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                          ),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                          child: Text('Next', style: TextStyle(color: Colors.white)),
+                        SizedBox(height: 20),
+                        buildTextFieldRow('Name', Icons.person, name, (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your name';
+                          }
+                          return null;
+                        }),
+                        buildTextFieldRow('Email', Icons.email, email, (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          // You can add more advanced email validation logic if needed
+                          return null;
+                        }),
+                        buildTextFieldRow('Phone Number', Icons.phone, phone, (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your phone number';
+                          }
+                          // You can add more advanced phone number validation logic if needed
+                          return null;
+                        }),
+                        buildTextFieldRow('Place', Icons.location_on, place, (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your place';
+                          }
+                          return null;
+                        }),
+                        SizedBox(height: 40),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) {
+                                  return TrackBookingPayment();
+                                }),
+                              );
+                            }
+                          },
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(Colors.blue),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            child: Text('Next', style: TextStyle(color: Colors.white)),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -78,7 +109,8 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
     );
   }
 
-  Widget buildTextFieldRow(String label, IconData icon) {
+  Widget buildTextFieldRow(
+      String label, IconData icon, TextEditingController controller, String? Function(String?)? validator) {
     return Column(
       children: [
         Row(
@@ -92,6 +124,8 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
           ],
         ),
         TextFormField(
+          controller: controller,
+          validator: validator,
           decoration: InputDecoration(
             hintText: label,
             fillColor: Color.fromARGB(112, 243, 214, 214),

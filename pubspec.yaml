@@ -70,6 +70,7 @@ flutter:
     - images/cooo.jpg
     - images/track.jpg
     - images/community.jpg
+    - images/pic.jpg
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -5,82 +5,82 @@ import 'package:loginrace/Racetrack/racetracklogin.dart';
 import 'package:loginrace/Rental/rentallogin.dart';
 import 'package:loginrace/User/userlogin.dart';
 
-class UserType extends StatefulWidget {
-  const UserType({super.key});
-
+class MyPage extends StatefulWidget {
   @override
-  State<UserType> createState() => _UserTypeState();
+  _MyPageState createState() => _MyPageState();
 }
 
-class _UserTypeState extends State<UserType> {
-   String selectedRole = '';
-
+class _MyPageState extends State<MyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Select User Type'),
+        centerTitle: true,
+      ),
+      body: Stack(
+        children: [
+          Image.asset(
+            'images/pic.jpg',
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          ),
+          SingleChildScrollView(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 40.0), // Adjust the height as needed
+                    Text(
+                      'Choose your user type:',
+                      style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
+                    SizedBox(height: 20.0),
+                    _buildButton(context, 'User', Icons.person, UserLogin()),
+                    _buildButton(
+                        context, 'Race track', Icons.directions_run, RacetrackLogin()),
+                    _buildButton(
+                        context, 'Rental Service', Icons.shopping_cart, RentalLogin()),
+                    _buildButton(
+                        context, 'Community', Icons.people, CommunityLogin()),
+                    _buildButton(context, 'Admin', Icons.admin_panel_settings, AdminLogin()),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-body:
- Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+  Widget _buildButton(BuildContext context, String label, IconData icon, Widget page) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return page;
+          }));
+        },
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.all(16.0), backgroundColor: Colors.blue, // Change the button color as needed
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 20),
-            Image.asset('images/logo1.png', height: 120, width: 120),
-            SizedBox(height: 20),
+            Icon(icon, size: 30.0, color: Colors.white),
+            SizedBox(width: 10.0),
             Text(
-              'Who you are',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                buildRadioButton('User',),
-                buildRadioButton('Rental'),
-                buildRadioButton('Admin'),
-                buildRadioButton('Race Track'),
-                buildRadioButton('Community'),
-              ],
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return UserLogin();
-                            // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            // return RentalLogin();
-                            //  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            // return RacetrackLogin();
-                            //  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            // return CommunityLogin();
-                            //  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            // return AdminLogin();
-                            
-                  },));
-              },
-              child: Text('Continue'),
+              label,
+              style: TextStyle(fontSize: 18.0, color: Colors.white),
             ),
           ],
         ),
       ),
     );
-  }
-
-  Widget buildRadioButton(String value) {
-    return ListTile(
-      title: Text(value),
-      leading: Radio(
-        value: value,
-        groupValue: selectedRole,
-        onChanged: (newValue) {
-          setState(() {
-            selectedRole = newValue.toString();
-          });
-        },
-      ),
-    );
-
-    
   }
 }

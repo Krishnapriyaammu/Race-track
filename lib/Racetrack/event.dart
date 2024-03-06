@@ -16,6 +16,8 @@ class _EventAddState extends State<EventAdd> {
   var owner=TextEditingController();
   var tickets=TextEditingController();
   var price=TextEditingController();
+    final _formKey = GlobalKey<FormState>();
+
 
     DateTime selectedDate = DateTime.now();
 get suffixIcon => null;
@@ -46,150 +48,177 @@ body:
          child: Center(
            child: Padding(
              padding:  EdgeInsets.all(40.00),
-             child: Container(
-              
-              width: 400,
-               child: SingleChildScrollView(
-                 child: Padding(
-                   padding: const EdgeInsets.only(top:20,bottom: 20),
-                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('EVENTS', style: TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-              ),),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Event Name',),
+             child: Form(
+              key: _formKey,
+               child: Container(
+                
+                width: 400,
+                 child: SingleChildScrollView(
+                   child: Padding(
+                     padding: const EdgeInsets.only(top:20,bottom: 20),
+                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('EVENTS', style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold,
+                ),),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text('Event Name',),
+                            ),
+                          ],
+                        ),
+                        TextFormField(
+                          controller: eventname,
+                          validator: (value) {
+                             if (value!.isEmpty) {
+                          return 'enter event name';
+                        }
+                          },
+                          decoration: InputDecoration(hintText: 'Event Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                                         
                           ),
-                        ],
-                      ),
-                      TextFormField(
-                        controller: eventname,
-                        decoration: InputDecoration(hintText: 'Event Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                          ),
+                          // SizedBox(height: 10,),
+                        
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text('Owner',),
+                            ),
+                          ],
+                        ),
+                        TextFormField(
+                          controller: owner,
+                          validator: (value) {
+                             if (value!.isEmpty) {
+                          return 'enter owner name';
+                        }
+                          },
+                          decoration: InputDecoration(hintText: 'Owner',fillColor:  Color.fromARGB(112, 243, 214, 214),filled: true,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                                       
+                        ),),
+                     
+                          // SizedBox(height: 10,),
+                     
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text('Date',),
+                            ),
+                          ],
                         ),
-                        ),
-                        // SizedBox(height: 10,),
-                      
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Owner',),
-                          ),
-                        ],
-                      ),
-                      TextFormField(
-                        controller: owner,
-                        decoration: InputDecoration(hintText: 'Owner',fillColor:  Color.fromARGB(112, 243, 214, 214),filled: true,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                      ),),
-                   
-                        // SizedBox(height: 10,),
-                   
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Date',),
-                          ),
-                        ],
-                      ),
-                       GestureDetector(
-                      onTap: () => _selectDate(context),
-                      child: AbsorbPointer(
-                        child: TextFormField(
-                          controller: TextEditingController(
-                            text: "${selectedDate.toLocal()}".split(' ')[0],
-                          ),
-                          decoration: InputDecoration(
-                            hintText: 'Date',
-                            fillColor: Color.fromARGB(112, 243, 214, 214),
-                            filled: true,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50),
+                         GestureDetector(
+                        onTap: () => _selectDate(context),
+                        child: AbsorbPointer(
+                          child: TextFormField(
+                            controller: TextEditingController(
+                              text: "${selectedDate.toLocal()}".split(' ')[0],
+                            ),
+                            decoration: InputDecoration(
+                              hintText: 'Date',
+                              fillColor: Color.fromARGB(112, 243, 214, 214),
+                              filled: true,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                      // TextFormField(decoration: InputDecoration(hintText: 'Date',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                      // border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                                       
-                      // ),),
-                   
-                        // SizedBox(height: 10,),
-                   
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Total Tickets',),
-                          ),
-                        ],
-                      ),
-                      TextFormField(
-                        controller: tickets,
-                        decoration: InputDecoration(hintText: 'Total tickets',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                      
-                      ),),
-                   
-                  
-                   
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Price',),
-                          ),
-                        ],
-                      ),
-                      TextFormField(
-                        controller: price,
-                        decoration: InputDecoration(hintText: 'Price',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                      
-                      ),),
-                   
-                      
-                   
+                        // TextFormField(decoration: InputDecoration(hintText: 'Date',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                        // border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                                         
+                        // ),),
                      
-                   
-                      
-                      SizedBox(height: 40,),
-                   
-                      ElevatedButton(onPressed: (){
-                        print(eventname.text);
-                        print(owner.text);
-                        print(tickets.text);
-                        print(price.text);
+                          // SizedBox(height: 10,),
+                     
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text('Total Tickets',),
+                            ),
+                          ],
+                        ),
+                        TextFormField(
+                          controller: tickets,
+                          validator: (value) {
+                             if (value!.isEmpty) {
+                          return 'enter total tickets';
+                        }
+                          },
+                          decoration: InputDecoration(hintText: 'Total tickets',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                        
+                        ),),
+                     
+                    
+                     
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text('Price',),
+                            ),
+                          ],
+                        ),
+                        TextFormField(
+                          controller: price,
+                          validator: (value) {
+                             if (value!.isEmpty) {
+                          return 'enter price';
+                        }
+                          },
+                          decoration: InputDecoration(hintText: 'Price',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                        
+                        ),),
+                     
+                        
+                     
+                       
+                     
+                        
+                        SizedBox(height: 40,),
+                     
+                        ElevatedButton(onPressed: (){
 
-                          Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return RaceTrackUploadEventimage();
-                  },));
-                      }, 
-                      style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 65, 144, 173))),
-                      child: Text('NEXT',style: TextStyle(color: Colors.white),))
-                   
-                      
-                      
-                      
-                   
-                   
-                   
-                   
-                    ],
+                          print(eventname.text);
+                          print(owner.text);
+                          print(tickets.text);
+                          print(price.text);
+                           if (_formKey.currentState!.validate()) {
+               
+               
+                            Navigator.push(context, MaterialPageRoute(builder: (context) {
+                              return RaceTrackUploadEventimage();
+                    },));
+                           }
+                        }, 
+                        style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 65, 144, 173))),
+                        child: Text('NEXT',style: TextStyle(color: Colors.white),))
+                     
+                        
+                        
+                        
+                     
+                     
+                     
+                     
+                      ],
+                     ),
                    ),
                  ),
                ),

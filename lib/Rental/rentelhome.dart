@@ -16,13 +16,13 @@ class _RentalHomeState extends State<RentalHome> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Rental Home'),
-        backgroundColor: Color.fromARGB(255, 235, 142, 148),
+        backgroundColor: Colors.blue,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -50,39 +50,15 @@ class _RentalHomeState extends State<RentalHome> {
           ),
           SizedBox(height: 20),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 40),
-                child: Container(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text('Request'),
-                  ),
-                  height: 50,
-                  width: 140,
-                  color: Color.fromARGB(255, 249, 126, 126),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 40),
-                child: Container(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) {
-                          return ViewRentRequest();
-                        }));
-                      },
-                      child: Text('Accepted'),
-                    ),
-                  ),
-                  height: 50,
-                  width: 138,
-                  color: Color.fromARGB(255, 175, 72, 63),
-                ),
-              ),
+              _buildCategoryButton('Request', Color.fromARGB(255, 221, 224, 231),),
+              _buildCategoryButton('Accepted', Color.fromRGBO(147, 203, 237, 1),
+                  onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return ViewRentRequest();
+                }));
+              }),
             ],
           ),
           Expanded(
@@ -90,48 +66,60 @@ class _RentalHomeState extends State<RentalHome> {
               itemCount: 5,
               itemBuilder: (context, index) {
                 return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: 200,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Color.fromARGB(255, 254, 199, 199),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                return ViewUserAccept();
-                              }));
-                            },
-                            child: CircleAvatar(
+                  padding: const EdgeInsets.all(12.0),
+                  child: InkWell(onTap: () {
+                     Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                  return ViewUserAccept();
+                                }));
+                  },
+                    child: Container(
+                      height: 200,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Color.fromARGB(255, 200, 225, 255),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 3,
+                            blurRadius: 7,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CircleAvatar(
                               radius: 40,
                               backgroundImage: AssetImage('images/imaaaa.jpg'),
                             ),
-                          ),
-                          SizedBox(width: 10),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Krishnapriya',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                            SizedBox(width: 16),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Krishnapriya',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              Text('Chennai'),
-                              Text('8129724516'),
-                              Text('Rent date - 08/9/2020'),
-                              Text('Due date - 10/9/2020'),
-                            ],
-                          ),
-                        ],
+                                SizedBox(height: 4),
+                                Text('Chennai'),
+                                SizedBox(height: 4),
+                                Text('8129724516'),
+                                SizedBox(height: 4),
+                                Text('Rent date - 08/9/2020'),
+                                SizedBox(height: 4),
+                                Text('Due date - 10/9/2020'),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -140,6 +128,27 @@ class _RentalHomeState extends State<RentalHome> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCategoryButton(String title, Color color, {VoidCallback? onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
+        decoration: BoxDecoration(
+          // borderRadius: BorderRadius.circular(20),
+          color: color,
+        ),
+        child: Text(
+          title,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:loginrace/login2.dart';
 import 'package:loginrace/usertype.dart';
 
 void main() {
@@ -20,7 +19,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home:  UserType(),
+      home:  MyPage(),
     );
   }
 }

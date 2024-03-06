@@ -13,6 +13,7 @@ class RentUploadImage extends StatefulWidget {
 
 class _RentUploadImageState extends State<RentUploadImage> {
   File? _pickedImage;
+  TextEditingController _descriptionController = TextEditingController();
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -28,13 +29,13 @@ class _RentUploadImageState extends State<RentUploadImage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: AppBar(
+      appBar: AppBar(
         backgroundColor: Colors.blue,
       ),
       body: SafeArea(
         child: Center(
           child: Padding(
-            padding: EdgeInsets.all(20.00),
+            padding: const EdgeInsets.all(20.0),
             child: Container(
               width: 400,
               child: SingleChildScrollView(
@@ -50,25 +51,47 @@ class _RentUploadImageState extends State<RentUploadImage> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      SizedBox(height: 20),
                       GestureDetector(
                         onTap: _pickImage,
                         child: _pickedImage != null
-                            ? Image.file(
-                                _pickedImage!,
+                            ? Container(
                                 height: 200,
                                 width: 200,
-                                fit: BoxFit.cover,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  image: DecorationImage(
+                                    image: FileImage(_pickedImage!),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                               )
                             : Container(
                                 height: 200,
                                 width: 200,
-                                color: Color.fromARGB(112, 243, 214, 214),
+                                decoration: BoxDecoration(
+                                  color: Color.fromARGB(112, 243, 214, 214),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                                 child: Icon(Icons.add_a_photo, size: 50),
                               ),
+                      ),
+                      SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: TextField(
+                          controller: _descriptionController,
+                          decoration: InputDecoration(
+                            labelText: 'Description',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
                       ),
                       SizedBox(height: 40),
                       ElevatedButton(
                         onPressed: () {
+                          // Handle submit action
+                          // You can access description using _descriptionController.text
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) {
@@ -77,7 +100,8 @@ class _RentUploadImageState extends State<RentUploadImage> {
                           );
                         },
                         style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 218, 209, 210))),
+                          backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 218, 209, 210)),
+                        ),
                         child: Text('SUBMIT', style: TextStyle(color: Colors.black)),
                       ),
                     ],
@@ -88,10 +112,6 @@ class _RentUploadImageState extends State<RentUploadImage> {
           ),
         ),
       ),
-
-
-
-
     );
   }
 }
