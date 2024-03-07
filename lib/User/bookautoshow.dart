@@ -1,7 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/User/autoshowaddpayementdetails.dart';
 import 'package:loginrace/User/bookedsuccesfully.dart';
-import 'package:loginrace/User/instructorbooking.dart';
 
 class AutoshowBooking extends StatefulWidget {
   const AutoshowBooking({super.key});
@@ -216,7 +216,17 @@ body:
                         
                         SizedBox(height: 40,),
                      
-                        ElevatedButton(onPressed: (){
+                        ElevatedButton(onPressed:  
+                        ()async
+                         {
+                           await FirebaseFirestore.instance.collection("userbookautoshow").add({
+                     'name':clgname.text,
+                     'place':place.text,
+                     'date':dateController.text,
+                     'time':time.text,
+                     'vehicles':vehicle.text,
+                     'hours':hours.text,
+               });
                           print(clgname.text);
                           print(place.text);
                           print(time.text);

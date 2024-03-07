@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/User/navigationuser.dart';
 import 'package:loginrace/User/userregis.dart';
@@ -127,7 +128,14 @@ body: Center(child:
                               
                             
                         SizedBox(height: 40,),
-                            ElevatedButton(onPressed: (){
+                            ElevatedButton(onPressed: () async{
+                             
+
+                          await FirebaseFirestore.instance.collection("userlogin").add({
+                         'name':user.text,
+                         'email':pass.text,
+                       
+                     });
                               print(user.text);
                               print(pass.text);
                         if (fkey.currentState!.validate()) {

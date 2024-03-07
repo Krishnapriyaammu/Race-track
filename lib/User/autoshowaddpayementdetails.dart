@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/User/payemettype.dart';
 
@@ -10,6 +11,11 @@ class AutoshowAddPayement extends StatefulWidget {
 
 class _AutoshowAddPayementState extends State<AutoshowAddPayement> {
     TextEditingController dateController = TextEditingController();
+     var name= TextEditingController();
+        var  number=TextEditingController();
+        var email= TextEditingController();
+        
+     
 
   DateTime selectedDate = DateTime.now();
   
@@ -66,7 +72,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: ' Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: name,
+                        decoration: InputDecoration(hintText: ' Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                         ),
@@ -84,7 +92,8 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'phone number',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(controller: number,
+                        decoration: InputDecoration(hintText: 'phone number',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                       
                       ),),
@@ -100,7 +109,9 @@ body:
                           ),
                         ],
                       ),
-                      TextFormField(decoration: InputDecoration(hintText: 'email',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                      TextFormField(
+                        controller: email,
+                        decoration: InputDecoration(hintText: 'email',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                                        
                       ),),
@@ -142,14 +153,14 @@ body:
                             ),
                           ),
                           SizedBox(width: 16),
-                          // IconButton(
-                          //   icon: Icon(Icons.calendar_today),
-                          //   onPressed: () => _selectDate(context),
-                          // ),
-                       IconButton(
-                icon: Icon(Icons.calendar_today),
-                onPressed: () => _selectDate(context),
-              ),
+                          IconButton(
+                            icon: Icon(Icons.calendar_today),
+                            onPressed: () => _selectDate(context),
+                          ),
+              //          IconButton(
+              //   icon: Icon(Icons.calendar_today),
+              //   onPressed: () => _selectDate(context),
+              // ),
                               // onTap: () => _selectDate(context),
 
                         ],
@@ -162,7 +173,14 @@ body:
                       
                       SizedBox(height: 40,),
                    
-                      ElevatedButton(onPressed: (){
+                      ElevatedButton(onPressed: ()
+                      async{
+                         await FirebaseFirestore.instance.collection("userautoshowpayementdetails").add({
+                     'name':name.text,
+                     'number':number.text,
+                     'email':email.text,
+                     'date':dateController.text,
+                          });
 
                          Navigator.push(context, MaterialPageRoute(builder: (context) {
                             return PayementType();

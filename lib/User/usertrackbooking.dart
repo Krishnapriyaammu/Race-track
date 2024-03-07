@@ -1,5 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:loginrace/User/trackbookingpayementadd.dart';
+import 'package:loginrace/User/payemettype.dart';
 
 class UserTrackBooking extends StatefulWidget {
   const UserTrackBooking({Key? key}) : super(key: key);
@@ -13,6 +14,9 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
   var email = TextEditingController();
   var phone = TextEditingController();
   var place = TextEditingController();
+  var track = TextEditingController();
+  var date=TextEditingController();
+
 
   final _formKey = GlobalKey<FormState>();
 
@@ -77,14 +81,35 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
                           }
                           return null;
                         }),
+                          buildTextFieldRow('Track', Icons.art_track, track, (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your track';
+                          }
+                          return null;
+                        }),
+                          buildTextFieldRow('date', Icons.date_range, date, (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter date';
+                          }
+                          return null;
+                        }),
                         SizedBox(height: 40),
                         ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
+                             await FirebaseFirestore.instance.collection("usetrackbooking").add({
+                         'name':name.text,
+                         'email':email.text,
+                         'phone':phone.text,
+                         'place':place.text,
+                         'track':track.text,
+                         'date':date.text,
+                         
+                     });
                             if (_formKey.currentState!.validate()) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) {
-                                  return TrackBookingPayment();
+                                  return PayementType();
                                 }),
                               );
                             }

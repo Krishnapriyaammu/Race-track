@@ -45,7 +45,13 @@ class _ViewTrackDetailsState extends State<ViewTrackDetails> {
                   InkWell(onTap: () {
                     
                   },
-                    child: buildSessionContainer('LEVEL 1','299/-', Colors.blue,50,45)),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return UserTrackBooking();
+                  },));
+                      },
+                      child: buildSessionContainer('LEVEL 1','299/-', Colors.blue,50,45))),
                   buildSessionContainer('LEVEL3', '₹25,999/-', Colors.green,50,45),
                 ],
               ),

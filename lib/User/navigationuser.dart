@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loginrace/User/viewautoshow.dart';
 import 'package:loginrace/User/viewevents.dart';
 import 'package:loginrace/User/viewracetrack.dart';
-import 'package:loginrace/User/viewrentalsearch.dart';
+import 'package:loginrace/User/viewrentitems.dart';
 
 class NavigationUser extends StatefulWidget {
   const NavigationUser({super.key});
@@ -13,10 +13,9 @@ class NavigationUser extends StatefulWidget {
 
 class _NavigationUserState extends State<NavigationUser> {
     int selectedindex=1;
-static const List<dynamic>option=[
+static  List<dynamic>option=[
   ViewEvents(),
   ViewRacetrack(),
-  ViewRentalSearch(),
   ViewAutoshow(),
 ];
   void ontop(int index){
