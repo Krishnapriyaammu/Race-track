@@ -16,7 +16,9 @@ class _NavigationUserState extends State<NavigationUser> {
 static  List<dynamic>option=[
   ViewEvents(),
   ViewRacetrack(),
+  UserViewFullRenters(),
   ViewAutoshow(),
+
 ];
   void ontop(int index){
     setState(() {
