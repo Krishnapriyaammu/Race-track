@@ -31,152 +31,139 @@ body:
          child: Center(
            child: Padding(
              padding:  EdgeInsets.all(40.00),
-             child: Container(
-              
-              
-              width: 400,
-               child: SingleChildScrollView(
-                 child: Padding(
-                   padding: const EdgeInsets.only(top:20,bottom: 20),
-                   child: Column(
-                    
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('RACE TRACK', style: TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-              ),),
+             child: Form(
+              key: fkey,
+               child: Container(
                 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Track Name',),
-                          ),
-                        ],
-                      ),
-                      TextFormField(
-                        controller: trackname,
-                        validator: (value) {
-                           if (value!.isEmpty) {
-                        return 'enter track name';
-                      }
-                        },
-                        decoration: InputDecoration(hintText: 'Track Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                                       
+                
+                width: 400,
+                 child: SingleChildScrollView(
+                   child: Padding(
+                     padding: const EdgeInsets.only(top:20,bottom: 20),
+                     child: Column(
+                      
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('RACE TRACK', style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold,
+                ),),
+                  
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text('Track Name',),
+                            ),
+                          ],
                         ),
-                        ),
-                   
-                   
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Track type',),
+                        TextFormField(
+                          controller: trackname,
+                          validator: (value) {
+                             if (value!.isEmpty) {
+                          return 'enter track name';
+                        }
+                          },
+                          decoration: InputDecoration(hintText: 'Track Name',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                                         
                           ),
-                        ],
-                      ),
-                      TextFormField(
-                        controller: tracktype,
-                        validator: (value) {
-                           if (value!.isEmpty) {
-                        return 'enter track type';
-                      }
-                        },
-                        decoration: InputDecoration(hintText: 'Track type',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                                       
-                      ),),
-                   
-                        // SizedBox(height: 10,),
-                   
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('Rating',),
                           ),
-                        ],
-                      ),
-                      TextFormField(
-                        decoration: InputDecoration(hintText: 'Rating',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                      
-                      ),),
-                   
-                        // SizedBox(height: 10,),
-                   
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.start,
-                      //   children: [
-                      //     Padding(
-                      //       padding: const EdgeInsets.all(10.0),
-                      //       child: Text('Upload Image',),
-                      //     ),
-                      //   ],
-                      // ),
-                      // TextFormField(decoration: InputDecoration(hintText: 'image',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                      //      border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                                       
-                      // ),),
-                   
-                        // SizedBox(height: 10,),
-                   
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text('State',),
-                          ),
-                        ],
-                      ),
-                      TextFormField(
-                        controller: state,
-                        validator: (value) {
-                           if (value!.isEmpty) {
-                        return 'enter state';
-                      }
-                        },
-                        decoration: InputDecoration(hintText: 'State',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
-                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                      
-                      ),),
-                   
-                      
-                   
                      
-                   
-                      
-                      SizedBox(height: 40,),
-                   
-                      ElevatedButton(onPressed: (){
-                        print(trackname.text);
-                        print(tracktype.text);
-                        print(state.text);
-                                                   if (fkey.currentState!.validate()) {
-
-
-                         Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return UploadRaceTrackImage();
-                  },));
-                                                   }
-                      }, 
-                      style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 249, 249, 252))),
-                      child: Text('NEXT',style: TextStyle(color: Colors.black),))
-                   
-                      
-                      
-                      
-                   
-                   
-                   
-                   
-                    ],
+                     
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text('Track type',),
+                            ),
+                          ],
+                        ),
+                        TextFormField(
+                          controller: tracktype,
+                          validator: (value) {
+                             if (value!.isEmpty) {
+                          return 'enter track type';
+                        }
+                          },
+                          decoration: InputDecoration(hintText: 'Track type',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                                         
+                        ),),
+                     
+                          // SizedBox(height: 10,),
+                     
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text('Rating',),
+                            ),
+                          ],
+                        ),
+                        TextFormField(
+                          decoration: InputDecoration(hintText: 'Rating',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                        
+                        ),),
+                     
+                        
+                     
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text('State',),
+                            ),
+                          ],
+                        ),
+                        TextFormField(
+                          controller: state,
+                          validator: (value) {
+                             if (value!.isEmpty) {
+                          return 'enter state';
+                        }
+                          },
+                          decoration: InputDecoration(hintText: 'State',fillColor: Color.fromARGB(112, 243, 214, 214),filled: true,
+                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+                        
+                        ),),
+                     
+                        
+                     
+                       
+                     
+                        
+                        SizedBox(height: 40,),
+                     
+                        ElevatedButton(onPressed: (){
+                          print(trackname.text);
+                          print(tracktype.text);
+                          print(state.text);
+                                                     if (fkey.currentState!.validate()) {
+               
+               
+                           Navigator.push(context, MaterialPageRoute(builder: (context) {
+                              return UploadRaceTrackImage();
+                    },));
+                                                     }
+                        }, 
+                        style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 249, 249, 252))),
+                        child: Text('NEXT',style: TextStyle(color: Colors.black),))
+                     
+                        
+                        
+                        
+                     
+                     
+                     
+                     
+                      ],
+                     ),
                    ),
                  ),
                ),

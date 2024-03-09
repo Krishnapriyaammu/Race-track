@@ -68,22 +68,7 @@ body:
                                          
                           ),
                           ),
-                          // SizedBox(height: 10,),
-                        
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.start,
-                        //   children: [
-                        //     Padding(
-                        //       padding: const EdgeInsets.all(10.0),
-                        //       child: Text('Owner',),
-                        //     ),
-                        //   ],
-                        // ),
-                        // TextFormField(decoration: InputDecoration(hintText: 'Owner',fillColor:  Color.fromARGB(112, 243, 214, 214),filled: true,
-                        // border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                        // ),),
-                     
-                          // SizedBox(height: 10,),
+                         
                      
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,

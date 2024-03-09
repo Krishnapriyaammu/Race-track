@@ -190,7 +190,7 @@ body:
                      
                         ElevatedButton(onPressed: ()
                         async{
-                           await FirebaseFirestore.instance.collection("userautoshowpayementdetails").add({
+                           await FirebaseFirestore.instance.collection("useraddpayementdetails").add({
                        'name':name.text,
                        'number':number.text,
                        'email':email.text,

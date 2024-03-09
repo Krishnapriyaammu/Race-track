@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:loginrace/Racetrack/event.dart';
+import 'package:loginrace/Racetrack/uploadeventimage.dart';
 import 'package:loginrace/Racetrack/viewprofileracetrack.dart';
 
 class RaceTrackViewEvents extends StatefulWidget {
@@ -176,7 +176,7 @@ class _RaceTrackViewEventsState extends State<RaceTrackViewEvents> {
        floatingActionButton: FloatingActionButton(
         onPressed: () {
            Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return EventAdd();
+                            return RaceTrackUploadEventimage();
                   },));
         },
         child: Icon(Icons.add,color: Colors.black,),

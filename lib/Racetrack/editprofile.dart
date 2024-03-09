@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loginrace/Racetrack/viewprofileracetrack.dart';
@@ -9,7 +10,7 @@ class YourPage extends StatefulWidget {
 }
 
 class _YourPageState extends State<YourPage> {
-  final _formKey = GlobalKey<FormState>();
+  final fkey = GlobalKey<FormState>();
 
   var name = TextEditingController();
   var email = TextEditingController();
@@ -39,7 +40,7 @@ class _YourPageState extends State<YourPage> {
         padding: const EdgeInsets.all(25.0),
         child: Container(
           child: Form(
-            key: _formKey,
+            key: fkey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -142,21 +143,24 @@ class _YourPageState extends State<YourPage> {
                 ),
                 SizedBox(height: 16.0),
                 ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      print(name.text);
-                      print(email.text);
-                      print(phone.text);
-                      print(place.text);
-                      print(proof.text);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) {
-                          return RaceTrackViewProfile();
-                        }),
-                      );
-                    }
-                  },
+                  onPressed: () 
+                  async
+                  {
+                      await FirebaseFirestore.instance.collection("racetrackeditprofile").add({
+                         'name':name.text,
+                         'email':email.text,
+                         'phone':phone.text,
+                         'place':place.text,
+                     });
+                     if (fkey.currentState!.validate()) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) {
+                                return RaceTrackViewProfile();
+                              }),
+                            );
+                          }
+                        },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.blue),
                   ),
