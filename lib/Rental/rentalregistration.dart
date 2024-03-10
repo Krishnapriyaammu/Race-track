@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/Rental/renteditprofile.dart';
 
@@ -223,7 +224,17 @@ class _RentalRegisterState extends State<RentalRegister> {
                         
                         SizedBox(height: 40,),
                      
-                        ElevatedButton(onPressed: (){
+                        ElevatedButton(onPressed: () async{
+                           await FirebaseFirestore.instance.collection("rentalregister").add({
+                       'name':user.text,
+                       'place':place.text,
+                        'phone':phone.text,
+                       'email':email.text,
+                       'proof':proof.text,
+                       'pass':pass.text,
+                       'confirm':confpass.text
+                      
+                                         });
                           print(user.text);
                           print(email.text);
                           print(phone.text);

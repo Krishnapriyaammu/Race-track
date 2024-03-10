@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/Rental/rentalregistration.dart';
 import 'package:loginrace/Rental/rentelhome.dart';
@@ -110,7 +111,12 @@ class _RentalLoginState extends State<RentalLogin> {
                     height: 40,
                   ),
                   ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                         await FirebaseFirestore.instance.collection("rentallogin").add({
+                       'name':username.text,
+                       'email':pass.text,
+                      
+                                         });
                         print(username.text);
                         print(pass.text);
                          if (fkey.currentState!.validate()) {

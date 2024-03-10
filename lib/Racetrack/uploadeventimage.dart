@@ -1,9 +1,10 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:flutter/material.dart';
 import 'package:loginrace/Racetrack/navigationracetrack.dart';
-import 'package:loginrace/Racetrack/vieweventsracetrack.dart';
+import 'package:loginrace/Racetrack/racetrackhome1.dart';
 
 class RaceTrackUploadEventimage extends StatefulWidget {
   const RaceTrackUploadEventimage({super.key});
@@ -94,7 +95,11 @@ class _RaceTrackUploadEventimageState extends State<RaceTrackUploadEventimage> {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                   await FirebaseFirestore.instance.collection("racetrackupploadevent").add({
+                       'email':DescriptionEdit.text,
+                      
+                                         });
                   if (fkey.currentState!.validate()) {
                     print(DescriptionEdit.text);
                     Navigator.push(context, MaterialPageRoute(builder: (context) {

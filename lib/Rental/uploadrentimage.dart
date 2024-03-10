@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loginrace/Rental/viewrentproducts.dart';
@@ -12,103 +13,102 @@ class RentUploadImage extends StatefulWidget {
 }
 
 class _RentUploadImageState extends State<RentUploadImage> {
-  File? _pickedImage;
-  TextEditingController _descriptionController = TextEditingController();
+   var DescriptionEdit = TextEditingController();
+  final fkey = GlobalKey<FormState>();
+  File? _selectedImage;
+  final picker = ImagePicker();
 
   Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
-    if (pickedImage != null) {
-      setState(() {
-        _pickedImage = File(pickedImage.path);
-      });
-    }
+    setState(() {
+      if (pickedFile != null) {
+        _selectedImage = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        title: Text('Add events'),
       ),
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Container(
-              width: 400,
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 20, bottom: 20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'GALLERY',
-                        style: TextStyle(
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      GestureDetector(
-                        onTap: _pickImage,
-                        child: _pickedImage != null
-                            ? Container(
-                                height: 200,
-                                width: 200,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  image: DecorationImage(
-                                    image: FileImage(_pickedImage!),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              )
-                            : Container(
-                                height: 200,
-                                width: 200,
-                                decoration: BoxDecoration(
-                                  color: Color.fromARGB(112, 243, 214, 214),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Icon(Icons.add_a_photo, size: 50),
-                              ),
-                      ),
-                      SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: TextField(
-                          controller: _descriptionController,
-                          decoration: InputDecoration(
-                            labelText: 'Description',
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 40),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Handle submit action
-                          // You can access description using _descriptionController.text
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) {
-                              return ProductViewPage();
-                            }),
-                          );
-                        },
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 218, 209, 210)),
-                        ),
-                        child: Text('SUBMIT', style: TextStyle(color: Colors.black)),
-                      ),
-                    ],
+      body: SingleChildScrollView(
+        child: Form(
+          key: fkey,
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  // Text('ENTER THE DETAILS:'),
+                ],
+              ),
+              InkWell(
+                onTap: _pickImage,
+                child: Container(
+                  height: 300,
+                  width: 300,
+                  decoration: BoxDecoration(
+                    image: _selectedImage != null
+                        ? DecorationImage(
+                            image: FileImage(_selectedImage!),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                  ),
+                  child: _selectedImage == null
+                      ? Icon(
+                          Icons.camera_alt,
+                          size: 40,
+                          color: Colors.grey[600],
+                        )
+                      : null,
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: TextFormField(
+                  maxLines: 5,
+                  controller: DescriptionEdit,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Field is empty';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Describe here',
+                    fillColor: Color.fromARGB(255, 180, 206, 251),
+                    filled: true,
+                    border: UnderlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.elliptical(20, 20)),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                 ),
               ),
-            ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                   await FirebaseFirestore.instance.collection("rentaluploadimage").add({
+                       'about':DescriptionEdit.text,
+                      
+                                         });
+                  if (fkey.currentState!.validate()) {
+                    print(DescriptionEdit.text);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                      return ProductViewPage();
+                    }));
+                  }
+                },
+                child: Text('UPLOAD'),
+              )
+            ],
           ),
         ),
       ),

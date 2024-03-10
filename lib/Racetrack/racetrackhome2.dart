@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:image_picker/image_picker.dart';
@@ -65,10 +66,10 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                 ),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: 5,
+                    itemCount: 1,
                     itemBuilder: ((context, index) {
                       return Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(16.0),
                         child: Card(
                           elevation: 5,
                           child: Row(
@@ -235,7 +236,11 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                   child: Text('Cancel'),
                 ),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: ()  async{
+                     await FirebaseFirestore.instance.collection("racetrackuploadtrack").add({
+                       'email':_descriptionController.text,
+                      
+                                         });
                     Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) {

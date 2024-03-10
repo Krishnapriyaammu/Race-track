@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class RentalServicePage extends StatefulWidget {
@@ -16,6 +17,8 @@ class Product {
 }
 
 class _RentalServicePageState extends State<RentalServicePage> {
+  // var name=TextEditingController();
+  
   List<Product> products = [];
 
   @override
@@ -66,7 +69,8 @@ class _RentalServicePageState extends State<RentalServicePage> {
   }
 
   void _showAddProductDialog() {
-    String name = '';
+    var name=TextEditingController();
+    // String name = '';
     String description = '';
 
     showDialog(
@@ -78,17 +82,18 @@ class _RentalServicePageState extends State<RentalServicePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
+                controller: name,
                 decoration: InputDecoration(labelText: 'Name'),
                 onChanged: (value) {
-                  name = value;
+                  // name = value;
                 },
               ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Description'),
-                onChanged: (value) {
-                  description = value;
-                },
-              ),
+              // TextField(
+              //   decoration: InputDecoration(labelText: 'Description'),
+              //   onChanged: (value) {
+              //     description = value;
+              //   },
+              // ),
             ],
           ),
           actions: [
@@ -99,12 +104,17 @@ class _RentalServicePageState extends State<RentalServicePage> {
               child: Text('Cancel'),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: ()  async{
+                 await FirebaseFirestore.instance.collection("rentaladdservice").add({
+                       'name':name.text,
+                      
+                      
+                                         });
                 setState(() {
-                  products.add(Product(
-                    name: name,
-                    description: description,
-                  ));
+                  // products.add(Product(
+                  //   // name: name,
+                  //   description: description,
+                  // ));
                 });
                 Navigator.pop(context);
               },

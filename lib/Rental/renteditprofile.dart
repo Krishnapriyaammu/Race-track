@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:loginrace/Rental/rentalviewprofile.dart';
 
 class RentalEditprofile extends StatefulWidget {
@@ -9,30 +13,28 @@ class RentalEditprofile extends StatefulWidget {
 }
 
 class _RentalEditprofileState extends State<RentalEditprofile> {
-  var user = TextEditingController();
+   var name = TextEditingController();
   var email = TextEditingController();
   var phone = TextEditingController();
   var place = TextEditingController();
-  var proof = TextEditingController();
-
+  var proof=TextEditingController();
   final _formKey = GlobalKey<FormState>();
+    File? _image;
+ Future<void> _pickImage() async {
+    final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
+
+    setState(() {
+      _image = pickedFile != null ? File(pickedFile.path) : null;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () {
-              setState(() {});
-            },
-          ),
-        ],
-      ),
+      appBar: AppBar(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(25.0),
-        child: Container(
+        child:  Container(
           child: Form(
             key: _formKey,
             child: Column(
@@ -40,38 +42,97 @@ class _RentalEditprofileState extends State<RentalEditprofile> {
               children: [
                 Align(
                   alignment: Alignment.topCenter,
-                  child: Container(
-                    width: 100.0,
-                    height: 100.0,
-                    margin: EdgeInsets.only(top: 16.0),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color.fromARGB(255, 227, 102, 113),
-                    ),
+                  child: Stack(
+                    children: [
+                      Container(
+                        child: _image != null
+                            ? CircleAvatar(
+                                radius: 50.0,
+                                backgroundImage: FileImage(_image!),
+                              )
+                            : Image.asset('images/imaaaa.jpg'),
+                        width: 100.0,
+                        height: 100.0,
+                        margin: EdgeInsets.only(top: 16.0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color.fromARGB(255, 227, 102, 113),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: IconButton(
+                          icon: Icon(Icons.add_a_photo),
+                          onPressed: _pickImage,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+                // SizedBox(height: 16.0),
                 SizedBox(height: 16.0),
-                _buildTextField('Name', user, 'Enter your name', TextInputType.text),
+                _buildTextField('Name', 'Enter your name', TextInputType.text, (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your name';
+                  }
+                  // return null;
+                }),
                 SizedBox(height: 16.0),
-                _buildTextField('Email', email, 'Enter your email', TextInputType.emailAddress),
+                _buildTextField('Email', 'Enter your email', TextInputType.emailAddress, (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your email';
+                  }
+                  // You can add more advanced email validation logic if needed
+                  // return null;
+                }),
                 SizedBox(height: 16.0),
-                _buildTextField('Phone Number', phone, 'Enter your phone number', TextInputType.phone),
+                _buildTextField('Phone Number', 'Enter your phone number', TextInputType.phone, (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your phone number';
+                  }
+                  // You can add more advanced phone number validation logic if needed
+                  // return null;
+                }),
                 SizedBox(height: 16.0),
-                _buildTextField('Place', place, 'Enter your place', TextInputType.text),
+                _buildTextField('Place', 'Enter your place', TextInputType.text, (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your place';
+                  }
+                  // return null;
+                }),
                 SizedBox(height: 16.0),
-                _buildTextField('Proof', proof, 'Enter your proof', TextInputType.text),
+                _buildTextField('license', 'Enter your proof', TextInputType.text, (value) {
+                  if (value!.isEmpty) {
+                    return 'Please upload license';
+                  }
+                  // return null;
+                }),
                 SizedBox(height: 16.0),
                 SizedBox(height: 20.0),
                 Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () 
+                     async{
+                             
+
+                          await FirebaseFirestore.instance.collection("renteditprofile").add({
+                         'name':name.text,
+                         'email':email.text,
+                         'phone':phone.text,
+                         'place':place.text,
+                         'license':proof.text,
+                       
+                     });
+                      print(name.text);
+                              print(email.text);
+                              print(phone.text);
+                              print(place.text);
+                              print(proof.text);
+                            
                       if (_formKey.currentState!.validate()) {
-                        print(user.text);
-                        print(email.text);
-                        print(phone.text);
-                        print(place.text);
-                        print(proof.text);
+                        // Form is valid, proceed with submission
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) {
@@ -81,12 +142,9 @@ class _RentalEditprofileState extends State<RentalEditprofile> {
                       }
                     },
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 240, 124, 130)),
+                      backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 53, 37, 133)),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      child: Text('SUBMIT', style: TextStyle(color: Colors.white)),
-                    ),
+                    child: Text('SUBMIT', style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ],
@@ -97,29 +155,18 @@ class _RentalEditprofileState extends State<RentalEditprofile> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller, String hintText, TextInputType inputType) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label),
-        TextFormField(
-          controller: controller,
-          decoration: InputDecoration(
-            hintText: hintText,
-            fillColor: Color.fromARGB(112, 243, 214, 214),
-            filled: true,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-          ),
-          keyboardType: inputType,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter $label';
-            }
-            return null;
-          },
-        ),
-        SizedBox(height: 16.0),
-      ],
+  Widget _buildTextField(
+      String labelText, String hintText, TextInputType inputType, String? Function(String?)? validator) {
+    return TextFormField(
+      controller: name,
+      
+      decoration: InputDecoration(
+        labelText: labelText,
+        hintText: hintText,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+      ),
+      keyboardType: inputType,
+      validator: validator,
     );
   }
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/Racetrack/racetrackhome3.dart';
 import 'package:loginrace/Racetrack/notificationracetrack.dart';
-import 'package:loginrace/Racetrack/racetrackviewracetrackers.dart';
-import 'package:loginrace/Racetrack/vieweventsracetrack.dart';
-import 'package:loginrace/Racetrack/viewfeedbackracetrack.dart';
+import 'package:loginrace/Racetrack/racetrackhome2.dart';
+import 'package:loginrace/Racetrack/racetrackhome1.dart';
+import 'package:loginrace/Racetrack/racetrackhome4.dart';
 
 class RaceTrackNavigation extends StatefulWidget {
   const RaceTrackNavigation({super.key});
@@ -16,8 +17,8 @@ class _RaceTrackNavigationState extends State<RaceTrackNavigation> {
 static  List<dynamic>option=[
  RaceTrackViewEvents(),
  RaceTrackViewRace(),
- FeedbackViewPageRaceTrack(),
- NotificationPage(),
+ InstructorHomePage(),
+ TrackDetailsGallery(),
  
  
    
