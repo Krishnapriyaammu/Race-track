@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loginrace/User/viewprofile.dart';
@@ -13,160 +14,238 @@ class UserEditProfile extends StatefulWidget {
 }
 
 class _UserEditProfileState extends State<UserEditProfile> {
-  var name = TextEditingController();
-  var email = TextEditingController();
-  var phone = TextEditingController();
-  var place = TextEditingController();
-  var proof=TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-    File? _image;
- Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
+  var profileImage;
+  XFile? pickedFile;
+  File? image;
+  var Name = TextEditingController();
+  var Email = TextEditingController();
+  var Place = TextEditingController();
+    var Mobile = TextEditingController();
+ 
+  final fkey = GlobalKey<FormState>();
+  String imageUrl='';
 
-    setState(() {
-      _image = pickedFile != null ? File(pickedFile.path) : null;
-    });
-  }
+  // List of years of experience options
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(25.0),
-        child:  Container(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Stack(
-                    children: [
-                      Container(
-                        child: _image != null
-                            ? CircleAvatar(
-                                radius: 50.0,
-                                backgroundImage: FileImage(_image!),
-                              )
-                            : Image.asset('images/imaaaa.jpg'),
-                        width: 100.0,
-                        height: 100.0,
-                        margin: EdgeInsets.only(top: 16.0),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color.fromARGB(255, 227, 102, 113),
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: IconButton(
-                          icon: Icon(Icons.add_a_photo),
-                          onPressed: _pickImage,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // SizedBox(height: 16.0),
-                SizedBox(height: 16.0),
-                _buildTextField('Name', 'Enter your name', TextInputType.text, (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your name';
-                  }
-                  // return null;
-                }),
-                SizedBox(height: 16.0),
-                _buildTextField('Email', 'Enter your email', TextInputType.emailAddress, (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  // You can add more advanced email validation logic if needed
-                  // return null;
-                }),
-                SizedBox(height: 16.0),
-                _buildTextField('Phone Number', 'Enter your phone number', TextInputType.phone, (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your phone number';
-                  }
-                  // You can add more advanced phone number validation logic if needed
-                  // return null;
-                }),
-                SizedBox(height: 16.0),
-                _buildTextField('Place', 'Enter your place', TextInputType.text, (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your place';
-                  }
-                  // return null;
-                }),
-                SizedBox(height: 16.0),
-                _buildTextField('license', 'Enter your proof', TextInputType.text, (value) {
-                  if (value!.isEmpty) {
-                    return 'Please upload license';
-                  }
-                  // return null;
-                }),
-                SizedBox(height: 16.0),
-                SizedBox(height: 20.0),
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: ElevatedButton(
-                    onPressed: () 
-                     async{
-                             
+      appBar: AppBar(
+        title: Center(child: Text('Edit')),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 20, bottom: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Form(key: fkey,
+                child: Container(
+                  width: 300,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () async {
+                            ImagePicker picker = ImagePicker();
+                            pickedFile = await picker.pickImage(
+                                source: ImageSource.gallery);
 
-                          await FirebaseFirestore.instance.collection("usereditprofile").add({
-                         'name':name.text,
-                         'email':email.text,
-                         'phone':phone.text,
-                         'place':place.text,
-                         'license':proof.text,
+                            setState(() {
+                              if (pickedFile != null) {
+                                profileImage = File(pickedFile!.path);
+                              }
+                            });
+                          },
+                          child: ClipOval(
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundImage: profileImage != null
+                                  ? FileImage(profileImage)
+                                  : null,
+                              child: profileImage == null
+                                  ? Icon(
+                                      Icons.camera_alt,
+                                      size: 30,
+                                    )
+                                  : null,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text('Name'),
+                            ),
+                          ],
+                        ),
+                        TextFormField(controller: Name,
+                         validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'enter Name';
+                            }
+                          },
+                          decoration: InputDecoration(
+                            fillColor: Color.fromARGB(255, 224, 206, 221),
+                            filled: true,
+                            border: UnderlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(40)),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text('Email'),
+                            ),
+                          ],
+                        ),
+                        TextFormField(controller: Email,
+                         validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'enter email';
+                            }
+                          },
+                          decoration: InputDecoration(
+                            fillColor: Color.fromARGB(255, 224, 206, 221),
+                            filled: true,
+                            border: UnderlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(40)),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text('Place'),
+                            ),
+                          ],
+                        ),
+                        TextFormField(controller: Name,
+                         validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'enter place';
+                            }
+                          },
+                          decoration: InputDecoration(
+                            fillColor: Color.fromARGB(255, 224, 206, 221),
+                            filled: true,
+                            border: UnderlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(40)),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
                        
-                     });
-                      print(name.text);
-                              print(email.text);
-                              print(phone.text);
-                              print(place.text);
-                              print(proof.text);
-                            
-                      if (_formKey.currentState!.validate()) {
-                        // Form is valid, proceed with submission
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) {
-                            return Viewprofile();
-                          }),
-                        );
-                      }
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 240, 124, 130)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text('Mobile Number'),
+                            ),
+                          ],
+                        ),
+                        TextFormField(
+                          controller: Mobile,
+                           validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'field is empty';
+                            }
+                          },
+                          keyboardType: TextInputType.phone,
+                          decoration: InputDecoration(
+                              fillColor: Color.fromARGB(255, 224, 206, 221),
+                              filled: true,
+                              border: UnderlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(40)),
+                                  borderSide: BorderSide.none)),
+                        ),
+                       
+                       
+                        // ... (remaining code)
+                
+                        SizedBox(
+                          height: 50,
+                        ),
+                        ElevatedButton(
+                          
+                          onPressed: () async {
+                            await uploadImage();
+                            await FirebaseFirestore.instance
+                                .collection('user edit profile')
+                                .add({
+                              'name': Name.text,
+                              'email': Email.text,
+                               'place':Place.text,
+                              'mobile no': Mobile.text,
+                             
+                            });
+                            print(Name.text);
+                              print(Email.text);
+                             
+                              print(Mobile.text);
+                            print(Place.text);
+                               if (fkey.currentState!.validate()) {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return Viewprofile();
+                                
+                            }));
+                               }
+                          },
+                          child: Text('Done'),
+                        ),
+                      ],
                     ),
-                    child: Text('SUBMIT', style: TextStyle(color: Colors.white)),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
+  
+Future<void> uploadImage() async {
+    try {
+      if (profileImage != null) {
+        
+        Reference storageReference =
+            FirebaseStorage.instance
+                .ref()
+                .child('image/${pickedFile!.name}');
 
-  Widget _buildTextField(
-      String labelText, String hintText, TextInputType inputType, String? Function(String?)? validator) {
-    return TextFormField(
-      controller: name,
-      
-      decoration: InputDecoration(
-        labelText: labelText,
-        hintText: hintText,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-      ),
-      keyboardType: inputType,
-      validator: validator,
-    );
+        await storageReference.putFile(profileImage!);
+
+        // Get the download URL
+         imageUrl = await storageReference.getDownloadURL();
+
+        // Now you can use imageUrl as needed (e.g., save it to Firestore)
+        print('Image URL: $imageUrl');
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
+    }
   }
 }

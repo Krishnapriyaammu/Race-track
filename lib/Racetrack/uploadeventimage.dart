@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:flutter/material.dart';
@@ -14,9 +15,14 @@ class RaceTrackUploadEventimage extends StatefulWidget {
 }
 
 class _RaceTrackUploadEventimageState extends State<RaceTrackUploadEventimage> {
-     var DescriptionEdit = TextEditingController();
+      var DescriptionEdit = TextEditingController();
   final fkey = GlobalKey<FormState>();
+  var profileImage;
+  XFile? pickedFile;
+
   File? _selectedImage;
+  String imageUrl = '';
+
   final picker = ImagePicker();
 
   Future<void> _pickImage() async {
@@ -96,13 +102,17 @@ class _RaceTrackUploadEventimageState extends State<RaceTrackUploadEventimage> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
-                   await FirebaseFirestore.instance.collection("racetrackupploadevent").add({
-                       'email':DescriptionEdit.text,
-                      
-                                         });
+                  await uploadImage();
+                  await FirebaseFirestore.instance
+                      .collection("racetrack upload event")
+                      .add({
+                    'description': DescriptionEdit.text,
+                    'image_url': imageUrl,
+                  });
                   if (fkey.currentState!.validate()) {
                     print(DescriptionEdit.text);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
                       return RaceTrackNavigation();
                     }));
                   }
@@ -114,5 +124,25 @@ class _RaceTrackUploadEventimageState extends State<RaceTrackUploadEventimage> {
         ),
       ),
     );
+  }
+
+  Future<void> uploadImage() async {
+    try {
+      if (_selectedImage != null) {
+        Reference storageReference = FirebaseStorage.instance
+            .ref()
+            .child('image/${_selectedImage!.path.split('/').last}');
+
+        await storageReference.putFile(_selectedImage!);
+
+        // Get the download URL
+        imageUrl = await storageReference.getDownloadURL();
+
+        // Now you can use imageUrl as needed (e.g., save it to Firestore)
+        print('Image URL: $imageUrl');
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
+    }
   }
 }

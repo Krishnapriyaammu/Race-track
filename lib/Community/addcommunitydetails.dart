@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/Community/addimages.dart';
 
@@ -186,7 +187,15 @@ body:
                         
                         SizedBox(height: 40,),
                      
-                        ElevatedButton(onPressed: (){
+                        ElevatedButton(onPressed: ()async{
+                           await FirebaseFirestore.instance.collection("communityadddetail").add({
+                         'name':comm_name.text,
+                         'email':about.text,
+                         'phone':members.text,
+                         'place':awards.text,
+                         'proof':join.text,
+                      
+                     });
                           print(comm_name.text);
                           print(about.text);
                           print(members.text);

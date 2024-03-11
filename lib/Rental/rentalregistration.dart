@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:loginrace/Rental/rentallogin.dart';
 import 'package:loginrace/Rental/renteditprofile.dart';
 
 class RentalRegister extends StatefulWidget {
@@ -10,273 +15,324 @@ class RentalRegister extends StatefulWidget {
 }
 
 class _RentalRegisterState extends State<RentalRegister> {
-  var user=TextEditingController();
-  var email=TextEditingController();
-  var phone=TextEditingController();
-  var image=TextEditingController();
-  var place=TextEditingController();
-  var proof=TextEditingController();
-  var pass=TextEditingController();
-  var confpass=TextEditingController();
-    final fkey = GlobalKey<FormState>();
+     var profileImage;
+  XFile? pickedFile;
+  File? image;
+  var Name = TextEditingController();
+  var Email = TextEditingController();
+  var Place = TextEditingController();
+  var Proof = TextEditingController();
+  var password = TextEditingController();
+  var confirmPass = TextEditingController();
+    var Mobile = TextEditingController();
+  final fkey = GlobalKey<FormState>();
+String imageUrl='';
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      body:SafeArea(
-         child: Center(
-           child: Padding(
-             padding:  EdgeInsets.all(20.0),
-             child: Container(
-              
-              width: 400,
-               child: SingleChildScrollView(
-                 child: Padding(
-                   padding: const EdgeInsets.only(top:20,bottom: 20),
-                   child: Form(
-                    key: fkey,
-                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+      appBar: AppBar(
+        title: Center(child: Text('Rental Register')),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 20, bottom: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Form(key: fkey,
+                child: Container(
+                  width: 300,
+                  child: SingleChildScrollView(
+                    child: Column(
                       children: [
-                        Text('SIGN UP',style: TextStyle(fontWeight: FontWeight.bold),),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text('Name',),
-                            ),
-                          ],
-                        ),
-                        TextFormField(
-                          controller: user,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                        return 'enter username';
-                      }
+                        GestureDetector(
+                          onTap: () async {
+                            ImagePicker picker = ImagePicker();
+                            pickedFile = await picker.pickImage(
+                                source: ImageSource.gallery);
+
+                            setState(() {
+                              if (pickedFile != null) {
+                                profileImage = File(pickedFile!.path);
+                              }
+                            });
                           },
-                          
-                          decoration: InputDecoration(hintText: 'Name',fillColor: Colors.deepOrange[100],filled: true,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                                         
+                          child: ClipOval(
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundImage: profileImage != null
+                                  ? FileImage(profileImage)
+                                  : null,
+                              child: profileImage == null
+                                  ? Icon(
+                                      Icons.camera_alt,
+                                      size: 30,
+                                    )
+                                  : null,
+                            ),
                           ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text('Name'),
+                            ),
+                          ],
+                        ),
+                        TextFormField(controller: Name,
+                         validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'enter Name';
+                            }
+                          },
+                          decoration: InputDecoration(
+                            fillColor: Color.fromARGB(255, 192, 221, 224),
+                            filled: true,
+                            border: UnderlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(40)),
+                              borderSide: BorderSide.none,
+                            ),
                           ),
-                          // SizedBox(height: 10,),
-                        
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text('Email',),
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text('Email'),
                             ),
                           ],
                         ),
-                        TextFormField(
-                          controller: email,
-                          validator: (value) {
+                        TextFormField(controller: Email,
+                         validator: (value) {
                             if (value!.isEmpty) {
-                        return 'enter email';
-                      }
+                              return 'enter email';
+                            }
                           },
-                          decoration: InputDecoration(hintText: 'Email',fillColor: Colors.deepOrange[100],filled: true,
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                        ),),
-                     
-                          // SizedBox(height: 10,),
-                     
-                        Row(
+                          decoration: InputDecoration(
+                            fillColor: Color.fromARGB(255, 192, 221, 224),
+                            filled: true,
+                            border: UnderlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(40)),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                          Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text('Location',),
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text('Place'),
                             ),
                           ],
                         ),
-                        TextFormField(
-                          controller: place,
-                          validator: (value) {
+                        TextFormField(controller: Email,
+                         validator: (value) {
                             if (value!.isEmpty) {
-                        return 'enter location';
-                      }
+                              return 'enter place';
+                            }
                           },
-                          decoration: InputDecoration(hintText: 'Location',fillColor: Colors.deepOrange[100],filled: true,
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                                         
-                        ),),
-                     
-                          // SizedBox(height: 10,),
-                     
-                        Row(
+                          decoration: InputDecoration(
+                            fillColor: Color.fromARGB(255, 192, 221, 224),
+                            filled: true,
+                            border: UnderlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(40)),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text('Phone Number',),
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text('Proof'),
                             ),
                           ],
                         ),
                         TextFormField(
-                          controller: phone,
-                          validator: (value) {
+                          controller: Mobile,
+                           validator: (value) {
                             if (value!.isEmpty) {
-                        return 'enter phone';
-                      }
+                              return 'field is empty';
+                            }
                           },
-                          decoration: InputDecoration(hintText: 'Phone number',fillColor: Colors.deepOrange[100],filled: true,
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                        
-                        ),),
-                     
-                          // SizedBox(height: 10,),
-                     
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text('Upload Image',),
-                            ),
-                          ],
+                          keyboardType: TextInputType.phone,
+                          decoration: InputDecoration(
+                              fillColor: Color.fromARGB(255, 192, 221, 224),
+                              filled: true,
+                              border: UnderlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(40)),
+                                  borderSide: BorderSide.none)),
                         ),
-                        TextFormField(
-                          controller: image,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                        return 'upload image';
-                      }
-                          },
-                          decoration: InputDecoration(hintText: 'image',fillColor: Colors.deepOrange[100],filled: true,
-                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                                         
-                        ),),
-                     
-                          // SizedBox(height: 10,),
-                     
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text('Proof',),
-                            ),
-                          ],
-                        ),
-                        TextFormField(
-                          controller: proof,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                        return 'upload proof';
-                      }
-                          },
-                          decoration: InputDecoration(hintText: 'Proof',fillColor: Colors.deepOrange[100],filled: true,
-                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                        
-                        ),),
-                     
-                          // SizedBox(height: 10,),
-                     
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text('Password',),
-                            ),
-                          ],
-                        ),
-                        TextFormField(
-                          controller: pass,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                        return 'enter password';
-                      }
-                          },
-                          decoration: InputDecoration(hintText: 'password',fillColor: Colors.deepOrange[100],filled: true,
-                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                                         
-                        ),),
-                          // SizedBox(height: 10,),
-                     
-                     
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text('Confirm Password',),
-                            ),
-                          ],
-                        ),
-                        TextFormField(
-                          controller: confpass,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                        return 'enter confirm pasword';
-                      }
-                          },
-                          decoration: InputDecoration(hintText: 'confirm password',fillColor: Colors.deepOrange[100],filled: true,
-                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(40)),
-                        ),),
-                     
-                        
-                        SizedBox(height: 40,),
-                     
-                        ElevatedButton(onPressed: () async{
-                           await FirebaseFirestore.instance.collection("rentalregister").add({
-                       'name':user.text,
-                       'place':place.text,
-                        'phone':phone.text,
-                       'email':email.text,
-                       'proof':proof.text,
-                       'pass':pass.text,
-                       'confirm':confpass.text
+
+                       
+                       
                       
-                                         });
-                          print(user.text);
-                          print(email.text);
-                          print(phone.text);
-                          print(proof.text);
-                          print(place.text);
-                          print(pass.text);
-                          print(confpass.text);
-                           if (fkey.currentState!.validate()) {
-                     
-                        Navigator.push(context, MaterialPageRoute(builder: (context) {
-                              return RentalEditprofile();
-                                       },));
-                        }
-                        },
-                     
-                        
-                        style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 237, 142, 146))),
-                        child: Text('SIGN UP'))
-                     
-                        
-                        
-                        
-                     
-                     
-                     
-                     
+                      
+                      
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text('Mobile Number'),
+                            ),
+                          ],
+                        ),
+                        TextFormField(
+                          controller: Mobile,
+                           validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'field is empty';
+                            }
+                          },
+                          keyboardType: TextInputType.phone,
+                          decoration: InputDecoration(
+                              fillColor: Color.fromARGB(255, 192, 221, 224),
+                              filled: true,
+                              border: UnderlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(40)),
+                                  borderSide: BorderSide.none)),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text('Password'),
+                            ),
+                          ],
+                        ),
+                        TextFormField(
+                          controller: password,
+                           validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'field is empty';
+                            }
+                          },
+                          decoration: InputDecoration(
+                              fillColor: Color.fromARGB(255, 192, 221, 224),
+                              filled: true,
+                              border: UnderlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(40)),
+                                  borderSide: BorderSide.none)),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text('confirm password'),
+                            ),
+                          ],
+                        ),
+                        TextFormField(
+                          controller: confirmPass,
+                           validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'field is empty';
+                            }
+                          },
+                          decoration: InputDecoration(
+                              fillColor: Color.fromARGB(255, 192, 221, 224),
+                              filled: true,
+                              border: UnderlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(40)),
+                                  borderSide: BorderSide.none)),
+                        ),
+                
+                      
+                
+                        SizedBox(
+                          height: 50,
+                        ),
+                        ElevatedButton(
+                          
+                          
+                          onPressed: () async {
+                            await uploadImage();
+                            
+                            await FirebaseFirestore.instance
+                                .collection('rental register')
+                                .add({
+                              'name': Name.text,
+                              'email': Email.text,
+                              'place':Place.text,
+                              'proof':Proof.text,
+                              
+                              'mobile no': Mobile.text,
+                              'password': password.text,
+                              'conform password': confirmPass.text,
+                             
+                              'image_url': imageUrl,
+                            });
+                            print(Name.text);
+                              print(Email.text);
+                             
+                              print(Mobile.text);
+                              print(password.text);
+                              print(confirmPass.text);
+                               if (fkey.currentState!.validate()) {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return RentalLogin();
+                                
+                            }));
+                               }
+                          },
+                          child: Text('register'),
+                        ),
                       ],
-                     ),
-                   ),
-                 ),
-               ),
-             ),
-           ),
-         ),
-       )
-
-
-
-
-
-
-
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
+
+  }
+Future<void> uploadImage() async {
+    try {
+      if (profileImage != null) {
+        
+        Reference storageReference =
+            FirebaseStorage.instance
+                .ref()
+                .child('image/${pickedFile!.name}');
+
+        await storageReference.putFile(profileImage!);
+
+        // Get the download URL
+         imageUrl = await storageReference.getDownloadURL();
+
+        // Now you can use imageUrl as needed (e.g., save it to Firestore)
+        print('Image URL: $imageUrl');
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
+    }
   }
 }

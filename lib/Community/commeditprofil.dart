@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:loginrace/Community/addcommunitydetails.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:loginrace/Community/viewprofileComm.dart';
 
 class Commueditprofile extends StatefulWidget {
@@ -10,161 +14,238 @@ class Commueditprofile extends StatefulWidget {
 }
 
 class _CommueditprofileState extends State<Commueditprofile> {
-  var name = TextEditingController();
-  var email = TextEditingController();
-  var phone = TextEditingController();
-  var place = TextEditingController();
-  var proof = TextEditingController();
-  var vehicles = TextEditingController();
+ var profileImage;
+  XFile? pickedFile;
+  File? image;
+  var Name = TextEditingController();
+  var Email = TextEditingController();
+  var Place = TextEditingController();
+    var Mobile = TextEditingController();
+ 
   final fkey = GlobalKey<FormState>();
+  String imageUrl='';
+
+  // List of years of experience options
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () {
-              setState(() {});
-            },
-          ),
-        ],
+        title: Center(child: Text('Edit')),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(25.0),
-        child: Form(
-          key: fkey,
-          child: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Container(
-                    width: 100.0,
-                    height: 100.0,
-                    margin: EdgeInsets.only(top: 16.0),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color.fromARGB(255, 227, 102, 113),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 20, bottom: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Form(key: fkey,
+                child: Container(
+                  width: 300,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () async {
+                            ImagePicker picker = ImagePicker();
+                            pickedFile = await picker.pickImage(
+                                source: ImageSource.gallery);
+
+                            setState(() {
+                              if (pickedFile != null) {
+                                profileImage = File(pickedFile!.path);
+                              }
+                            });
+                          },
+                          child: ClipOval(
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundImage: profileImage != null
+                                  ? FileImage(profileImage)
+                                  : null,
+                              child: profileImage == null
+                                  ? Icon(
+                                      Icons.camera_alt,
+                                      size: 30,
+                                    )
+                                  : null,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text('Name'),
+                            ),
+                          ],
+                        ),
+                        TextFormField(controller: Name,
+                         validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'enter Name';
+                            }
+                          },
+                          decoration: InputDecoration(
+                            fillColor: Color.fromARGB(255, 224, 206, 221),
+                            filled: true,
+                            border: UnderlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(40)),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text('Email'),
+                            ),
+                          ],
+                        ),
+                        TextFormField(controller: Email,
+                         validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'enter email';
+                            }
+                          },
+                          decoration: InputDecoration(
+                            fillColor: Color.fromARGB(255, 224, 206, 221),
+                            filled: true,
+                            border: UnderlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(40)),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text('Place'),
+                            ),
+                          ],
+                        ),
+                        TextFormField(controller: Name,
+                         validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'enter place';
+                            }
+                          },
+                          decoration: InputDecoration(
+                            fillColor: Color.fromARGB(255, 224, 206, 221),
+                            filled: true,
+                            border: UnderlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(40)),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                       
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text('Mobile Number'),
+                            ),
+                          ],
+                        ),
+                        TextFormField(
+                          controller: Mobile,
+                           validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'field is empty';
+                            }
+                          },
+                          keyboardType: TextInputType.phone,
+                          decoration: InputDecoration(
+                              fillColor: Color.fromARGB(255, 224, 206, 221),
+                              filled: true,
+                              border: UnderlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(40)),
+                                  borderSide: BorderSide.none)),
+                        ),
+                       
+                       
+                        // ... (remaining code)
+                
+                        SizedBox(
+                          height: 50,
+                        ),
+                        ElevatedButton(
+                          
+                          onPressed: () async {
+                            await uploadImage();
+                            await FirebaseFirestore.instance
+                                .collection('user edit profile')
+                                .add({
+                              'name': Name.text,
+                              'email': Email.text,
+                               'place':Place.text,
+                              'mobile no': Mobile.text,
+                             
+                            });
+                            print(Name.text);
+                              print(Email.text);
+                             
+                              print(Mobile.text);
+                            print(Place.text);
+                               if (fkey.currentState!.validate()) {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return CommViewProfile();
+                                
+                            }));
+                               }
+                          },
+                          child: Text('Done'),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                SizedBox(height: 16.0),
-                TextFormField(
-                  controller: name,
-                  decoration: InputDecoration(
-                    labelText: ' Name',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your name';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16.0),
-                TextFormField(
-                  controller: email,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
-                    } else if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(value)) {
-                      return 'Please enter a valid email address';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16,),
-                TextFormField(
-                  controller: phone,
-                  decoration: InputDecoration(
-                    labelText: 'Phone Number',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your phone number';
-                    } else if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
-                      return 'Please enter a valid 10-digit phone number';
-                    }
-                    return null;
-                  },
-                  keyboardType: TextInputType.phone,
-                ),
-                SizedBox(height: 16.0),
-                TextFormField(
-                  controller: place,
-                  decoration: InputDecoration(
-                    labelText: 'Place',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your place';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16.0),
-                TextFormField(
-                  controller: vehicles,
-                  decoration: InputDecoration(
-                    labelText: 'Total vehicles',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the total number of vehicles';
-                    } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                      return 'Please enter a valid number';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16.0),
-                TextFormField(
-                  controller: proof,
-                  decoration: InputDecoration(
-                    labelText: 'Proof',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your proof';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16.0),
-                SizedBox(height: 20.0),
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (fkey.currentState!.validate()) {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) {
-                          return CommViewProfile();
-                        }));
-                      }
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 240, 124, 130)),
-                    ),
-                    child: Text('DONE', style: TextStyle(color: Colors.white)),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
+  }
+  
+Future<void> uploadImage() async {
+    try {
+      if (profileImage != null) {
+        
+        Reference storageReference =
+            FirebaseStorage.instance
+                .ref()
+                .child('image/${pickedFile!.name}');
+
+        await storageReference.putFile(profileImage!);
+
+        // Get the download URL
+         imageUrl = await storageReference.getDownloadURL();
+
+        // Now you can use imageUrl as needed (e.g., save it to Firestore)
+        print('Image URL: $imageUrl');
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
+    }
   }
 }

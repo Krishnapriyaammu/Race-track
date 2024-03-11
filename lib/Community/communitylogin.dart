@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/Community/addcommunitydetails.dart';
 import 'package:loginrace/Community/navigation.dart';
@@ -119,7 +120,16 @@ body: Center(child:
                             
                           
                       SizedBox(height: 40,),
-                          ElevatedButton(onPressed: (){
+                          ElevatedButton(onPressed: ()
+                          async{
+                            
+                           await FirebaseFirestore.instance.collection("communitylogin").add({
+                         'name':user.text,
+                         'email':password.text,
+                        
+                         
+
+                     });
                             print(user.text);
                             print(password.text);
                             if (fkey.currentState!.validate()) {
