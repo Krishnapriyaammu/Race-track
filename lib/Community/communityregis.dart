@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:loginrace/Community/communitylogin.dart';
 
 class CommunityRegister extends StatefulWidget {
   const CommunityRegister({super.key});
@@ -288,11 +287,11 @@ String imageUrl='';
                               print(password.text);
                               print(confirmPass.text);
                                if (fkey.currentState!.validate()) {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return CommunityLogin();
+                            // Navigator.push(context,
+                            //     MaterialPageRoute(builder: (context) {
+                            //   return CommunityLogin();
                                 
-                            }));
+                            // }));
                                }
                           },
                           child: Text('register'),

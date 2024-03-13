@@ -198,6 +198,8 @@ class _UserEditProfileState extends State<UserEditProfile> {
                               'email': Email.text,
                                'place':Place.text,
                               'mobile no': Mobile.text,
+                              'image_url': imageUrl,
+
                              
                             });
                             print(Name.text);

@@ -192,12 +192,14 @@ class _RentalEditprofileState extends State<RentalEditprofile> {
                           onPressed: () async {
                             await uploadImage();
                             await FirebaseFirestore.instance
-                                .collection('user edit profile')
+                                .collection('rental edit profile')
                                 .add({
                               'name': Name.text,
                               'email': Email.text,
                                'place':Place.text,
                               'mobile no': Mobile.text,
+                              'image_url': imageUrl,
+
                              
                             });
                             print(Name.text);

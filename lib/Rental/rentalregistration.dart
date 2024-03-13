@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:loginrace/Rental/rentallogin.dart';
 import 'package:loginrace/Rental/renteditprofile.dart';
 
 class RentalRegister extends StatefulWidget {
@@ -293,11 +292,11 @@ String imageUrl='';
                               print(password.text);
                               print(confirmPass.text);
                                if (fkey.currentState!.validate()) {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return RentalLogin();
+                            // Navigator.push(context,
+                            //     MaterialPageRoute(builder: (context) {
+                            //   return RentalLogin();
                                 
-                            }));
+                            // }));
                                }
                           },
                           child: Text('register'),

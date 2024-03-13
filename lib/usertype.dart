@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loginrace/Admin/adminlogin.dart';
-import 'package:loginrace/Community/communitylogin.dart';
-import 'package:loginrace/Racetrack/racetracklogin.dart';
-import 'package:loginrace/Rental/rentallogin.dart';
-import 'package:loginrace/User/userlogin.dart';
+import 'package:loginrace/Common/Login.dart';
 
 class MyPage extends StatefulWidget {
   @override
@@ -39,14 +35,14 @@ class _MyPageState extends State<MyPage> {
                       style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
                     SizedBox(height: 20.0),
-                    _buildButton(context, 'User', Icons.person, UserLogin()),
+                    _buildButton(context, 'User', Icons.person, Login(type:'user')),
                     _buildButton(
-                        context, 'Race track', Icons.directions_run, RacetrackLogin()),
+                        context, 'Race track', Icons.directions_run,Login(type:'race track')),
                     _buildButton(
-                        context, 'Rental Service', Icons.shopping_cart, RentalLogin()),
+                        context, 'Rental Service', Icons.shopping_cart, Login(type: 'rental')),
                     _buildButton(
-                        context, 'Community', Icons.people, CommunityLogin()),
-                    _buildButton(context, 'Admin', Icons.admin_panel_settings, AdminLogin()),
+                        context, 'Community', Icons.people, Login(type: 'community')),
+                    _buildButton(context, 'Admin', Icons.admin_panel_settings, Login(type: 'admin')),
                   ],
                 ),
               ),

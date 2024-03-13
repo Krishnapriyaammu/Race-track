@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:loginrace/User/userlogin.dart';
 
 class UserRgistration extends StatefulWidget {
   const UserRgistration({super.key});
@@ -267,11 +266,11 @@ String imageUrl='';
                               print(password.text);
                               print(confirmPass.text);
                                if (fkey.currentState!.validate()) {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return UserLogin();
+                            // Navigator.push(context,
+                            //     MaterialPageRoute(builder: (context) {
+                            //   return UserLogin();
                                 
-                            }));
+                            // }));
                                }
                           },
                           child: Text('register'),

@@ -22,7 +22,6 @@ class _YourPageState extends State<YourPage> {
   final fkey = GlobalKey<FormState>();
   String imageUrl='';
 
-  // List of years of experience options
   
 
   @override
@@ -189,12 +188,14 @@ class _YourPageState extends State<YourPage> {
                           onPressed: () async {
                             await uploadImage();
                             await FirebaseFirestore.instance
-                                .collection('user edit profile')
+                                .collection('race track edit profile')
                                 .add({
                               'name': Name.text,
                               'email': Email.text,
                                'place':Place.text,
                               'mobile no': Mobile.text,
+                             'image_url': imageUrl,
+
                              
                             });
                             print(Name.text);
