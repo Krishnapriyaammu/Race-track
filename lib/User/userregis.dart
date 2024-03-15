@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loginrace/Common/Login.dart';
+import 'package:loginrace/User/navigationuser.dart';
 
 class UserRgistration extends StatefulWidget {
   const UserRgistration({super.key});
@@ -142,13 +144,13 @@ String imageUrl='';
                           ],
                         ),
                         TextFormField(
-                          controller: Mobile,
+                          controller: Place,
                            validator: (value) {
                             if (value!.isEmpty) {
                               return 'field is empty';
                             }
                           },
-                          keyboardType: TextInputType.phone,
+                          // keyboardType: TextInputType.phone,
                           decoration: InputDecoration(
                               fillColor: Color.fromARGB(255, 192, 221, 224),
                               filled: true,
@@ -247,7 +249,7 @@ String imageUrl='';
                             await uploadImage();
                             
                             await FirebaseFirestore.instance
-                                .collection('user register')
+                                .collection('user_register')
                                 .add({
                               'name': Name.text,
                               'email': Email.text,
@@ -266,11 +268,11 @@ String imageUrl='';
                               print(password.text);
                               print(confirmPass.text);
                                if (fkey.currentState!.validate()) {
-                            // Navigator.push(context,
-                            //     MaterialPageRoute(builder: (context) {
-                            //   return UserLogin();
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return NavigationUser();
                                 
-                            // }));
+                            }));
                                }
                           },
                           child: Text('register'),

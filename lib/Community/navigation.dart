@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:loginrace/Community/addcommunitydetails.dart';
 import 'package:loginrace/Community/communityviewrequest.dart';
+import 'package:loginrace/Community/uploadcommunity.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({super.key});
@@ -16,6 +17,7 @@ class _NavigationState extends State<Navigation> {
   static const List<dynamic> _widgetoption= [
     CommunityAbout(),
     CommunityViewRequest(),
+    UploadCommunity(),
     // CommunityRegister(),
     
     
@@ -48,8 +50,8 @@ class _NavigationState extends State<Navigation> {
        label:'Requests'),
 
 
-      //  BottomNavigationBarItem(icon: Icon(Icons.person,color: Colors.black,),
-      //  label: 'profile')
+       BottomNavigationBarItem(icon: Icon(Icons.person,color: Colors.black,),
+       label: 'profile')
        ],
 
        type: BottomNavigationBarType.shifting,

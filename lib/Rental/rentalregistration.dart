@@ -272,7 +272,7 @@ String imageUrl='';
                             await uploadImage();
                             
                             await FirebaseFirestore.instance
-                                .collection('rental register')
+                                .collection('rentalregister')
                                 .add({
                               'name': Name.text,
                               'email': Email.text,
