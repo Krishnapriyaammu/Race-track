@@ -106,7 +106,7 @@ class _LoginState extends State<Login> {
     if (widget.type == 'community') {
       final QuerySnapshot commSnapshot = await FirebaseFirestore.instance
           .collection('community register')
-          .where('username', isEqualTo: user.text)
+          .where('name', isEqualTo: user.text)
           .where('password', isEqualTo: pass.text)
           .get();
 
@@ -210,9 +210,33 @@ class _LoginState extends State<Login> {
                             decoration: TextDecoration.underline,
                           ),
                         ),
+                        
                         TextButton(
                           onPressed: () {
-                            // Handle sign-up logic based on widget type
+                      if(widget.type=='user')
+                      {
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+          return UserRgistration();
+        }));
+                      }
+                      if(widget.type=='race track')
+                      {
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+          return raceRegistration();
+        }));
+                      }
+                      if(widget.type=='rental')
+                      {
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+          return RentalRegister();
+        }));
+                      }
+                      if(widget.type=='community')
+                      {
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+          return CommunityRegister();
+        }));
+                      }
                           },
                           child: Text('SIGN UP'),
                         ),

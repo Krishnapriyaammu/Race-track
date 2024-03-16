@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loginrace/Racetrack/approvereject.dart';
@@ -24,7 +25,6 @@ class InstructorHomePage extends StatefulWidget {
 
 class _InstructorHomePageState extends State<InstructorHomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-     var profileImage;
 
  File? _selectedImage;
   @override
@@ -65,10 +65,15 @@ class _InstructorHomePageState extends State<InstructorHomePage> with SingleTick
 }
 
 class CoachTab extends StatelessWidget {
+  var profileImage;
+  XFile? pickedFile;
+  File? image;
   final File? selectedImage;
    var name=TextEditingController();
   var about=TextEditingController();
   var exp=TextEditingController();
+  String imageUrl='';
+
 
   CoachTab({Key? key, this.selectedImage}) : super(key: key);
 
@@ -120,37 +125,33 @@ class CoachTab extends StatelessWidget {
                 title: Text('Add Coach'),
                 content: Column(
                   children: [
-                    InkWell(
-                      onTap: () async {
-                        final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
+                    GestureDetector(
+                          onTap: () async {
+                            ImagePicker picker = ImagePicker();
+                            pickedFile = await picker.pickImage(
+                                source: ImageSource.gallery);
 
-                        setState(() {
-                        if (pickedFile != null) {
-                          var selectedImage = File(pickedFile.path);
-                          }
-                        });
-                      },
-                      child: Container(
-                        width: 120,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          image: selectedImage != null
-                              ? DecorationImage(
-                                  image: FileImage(selectedImage!),
-                                  fit: BoxFit.cover,
-                                )
-                              : null,
+                            setState(() {
+                              if (pickedFile != null) {
+                                profileImage = File(pickedFile!.path);
+                              }
+                            });
+                          },
+                          child: ClipOval(
+                            child: CircleAvatar(
+                              radius: 50,
+                              backgroundImage: profileImage != null
+                                  ? FileImage(profileImage)
+                                  : null,
+                              child: profileImage == null
+                                  ? Icon(
+                                      Icons.camera_alt,
+                                      size: 30,
+                                    )
+                                  : null,
+                            ),
+                          ),
                         ),
-                        child: selectedImage == null
-                            ? Icon(
-                                Icons.camera_alt,
-                                size: 40,
-                                color: Colors.grey[600],
-                              )
-                            : null,
-                      ),
-                    ),
                     SizedBox(height: 16),
                     TextFormField(
                       controller: name,
@@ -162,6 +163,7 @@ class CoachTab extends StatelessWidget {
                     DropdownButton<String>(
                       value: selectedExperience,
                       
+                      
                       onChanged: (String? newValue) {
                         setState(() {
                           selectedExperience = newValue;
@@ -170,6 +172,7 @@ class CoachTab extends StatelessWidget {
                       items: experiences.map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
+                          
                           child: Text(value),
                         );
                       }).toList(),
@@ -193,10 +196,14 @@ class CoachTab extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () async{
+                                                  await uploadImage();
+
                        await FirebaseFirestore.instance.collection("racetrackaddcoach").add({
                        'name':name.text,
                        'about':about.text,
                        'experience':exp.text,
+                                                     'image_url': imageUrl,
+
                       
                                          });
                       
@@ -213,6 +220,27 @@ class CoachTab extends StatelessWidget {
         );
       },
     );
+  }
+Future<void> uploadImage() async {
+    try {
+      if (profileImage != null) {
+        
+        Reference storageReference =
+            FirebaseStorage.instance
+                .ref()
+                .child('image/${pickedFile!.name}');
+
+        await storageReference.putFile(profileImage!);
+
+        // Get the download URL
+         imageUrl = await storageReference.getDownloadURL();
+
+        // Now you can use imageUrl as needed (e.g., save it to Firestore)
+        print('Image URL: $imageUrl');
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
+    }
   }
 }
 

@@ -1,23 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/User/viewrentalhome.dart';
-class Professional {
-  final String name;
-  final String experience;
-  final bool isAvailable;
 
-  Professional({
-    required this.name,
-    required this.experience,
-    required this.isAvailable,
-  });
-}
 
 class UserViewFullRenters extends StatelessWidget {
-  final List<Professional> professionals = [
-    Professional(
-        name: 'John Doe', experience: 'Race bikes,Race cars,Helmet', isAvailable: true),
-    Professional(name: 'Jane Smith', experience: 'Race grocery', isAvailable: false),
-  ];
+
+
+   Future<List<DocumentSnapshot>> getData() async {
+  try {
+    final QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection('rentaladdservice').get();
+    print('Fetched ${snapshot.docs.length} documents');
+    return snapshot.docs;
+  } catch (e) {
+    print('Error fetching data: $e');
+    throw e; // Rethrow the error to handle it in the FutureBuilder
+  }
+}
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -57,49 +57,90 @@ class UserViewFullRenters extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-                    itemCount: professionals.length,
-                    itemBuilder: (context, index) {
-                      final professional = professionals[index];
-                      return InkWell(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return UserViewRentHome();
-                  },));
-            },
-            child: ListTile(
-              leading: CircleAvatar(
-                // You can use an Icon or an Image here
-                child: Icon(Icons.person),
-              ),
-              title: Text(professional.name),
-              subtitle: Text(professional.experience),
-              trailing: ElevatedButton(
-                onPressed: () {},
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                      return professional.isAvailable
-                          ? Colors.green
-                          : Colors.red;
-                    },
-                  ),
-                ),
-                child: Text(
-                  professional.isAvailable ? 'Available' : 'Not Available',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
+            child: FutureBuilder(
+              future: getData(),
+              builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting)
+                   {
+                    return Center(child: CircularProgressIndicator());
+                  } 
+                  else if (snapshot.hasError) {
+
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+                   else
+                    {
+                    return ListView.builder(
+                        itemCount: snapshot.data?.length ?? 0,
+                        itemBuilder: (context, index) {
+                         final document = snapshot.data![index];
+                        final data =
+                            document.data() as Map<String, dynamic>;
+                             final imageUrl = data['image_url'];
+                return ListTile(
+                   onTap: () {},
+                       title: Text(data['name'] ?? 'Name not available'),
+
+                                    
+                  subtitle: Text(data['service'] ?? 'service not available'),
+
+                    leading: imageUrl != null
+
+                          ? CircleAvatar(
+                                  backgroundImage: NetworkImage(imageUrl),
+                            radius: 30,
+                          )
+                            : CircleAvatar(
+                                  child: Icon(Icons.person),
+                                  radius: 30,
+                                ),                  
+                  trailing: ElevatedButton(
+                    onPressed: () {
+
+                     Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => UserViewRentHome(),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 16.0),
+                              backgroundColor: Color.fromARGB(255, 28, 43, 129),
+                            ),
+                            child: Text(
+                              'AVAILABLE',
+                              style: TextStyle(
+                                color:
+                                    const Color.fromARGB(255, 231, 234, 236),
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+              );
+                      },
+                    );
+                  }
+              },
             ),
-                      );
-                    },
-                  ),
-    ),
+          ),
+
         ],
       ),
     );
 
+
+
   }
 }
+              
+            
+          
+        
+      
+  
+  
+
 
 

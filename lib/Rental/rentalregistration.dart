@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loginrace/Common/Login.dart';
 import 'package:loginrace/Rental/renteditprofile.dart';
 
 class RentalRegister extends StatefulWidget {
@@ -140,7 +141,8 @@ String imageUrl='';
                             ),
                           ],
                         ),
-                        TextFormField(controller: Email,
+                        TextFormField(
+                          controller: Place,
                          validator: (value) {
                             if (value!.isEmpty) {
                               return 'enter place';
@@ -165,7 +167,7 @@ String imageUrl='';
                           ],
                         ),
                         TextFormField(
-                          controller: Mobile,
+                          controller: Proof,
                            validator: (value) {
                             if (value!.isEmpty) {
                               return 'field is empty';
@@ -292,11 +294,11 @@ String imageUrl='';
                               print(password.text);
                               print(confirmPass.text);
                                if (fkey.currentState!.validate()) {
-                            // Navigator.push(context,
-                            //     MaterialPageRoute(builder: (context) {
-                            //   return RentalLogin();
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return Login(type: 'rental');
                                 
-                            // }));
+                            }));
                                }
                           },
                           child: Text('register'),

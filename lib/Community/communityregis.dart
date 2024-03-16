@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loginrace/Common/Login.dart';
 
 class CommunityRegister extends StatefulWidget {
   const CommunityRegister({super.key});
@@ -139,7 +140,7 @@ String imageUrl='';
                             ),
                           ],
                         ),
-                        TextFormField(controller: Email,
+                        TextFormField(controller: Place,
                          validator: (value) {
                             if (value!.isEmpty) {
                               return 'enter place';
@@ -163,7 +164,7 @@ String imageUrl='';
                             ),
                           ],
                         ),
-                        TextFormField(controller: Email,
+                        TextFormField(controller: proof,
                          validator: (value) {
                             if (value!.isEmpty) {
                               return 'enter proof';
@@ -287,11 +288,12 @@ String imageUrl='';
                               print(password.text);
                               print(confirmPass.text);
                                if (fkey.currentState!.validate()) {
-                            // Navigator.push(context,
-                            //     MaterialPageRoute(builder: (context) {
-                            //   return CommunityLogin();
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return Login(type: 'community'
+                              );
                                 
-                            // }));
+                            }));
                                }
                           },
                           child: Text('register'),

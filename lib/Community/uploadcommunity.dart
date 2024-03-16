@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loginrace/Community/addcommunitydetails.dart';
 
 class UploadCommunity extends StatefulWidget {
   const UploadCommunity({super.key});
@@ -106,7 +108,7 @@ class _AddCommunityDetailsPageState extends State<AddCommunityDetailsPage> {
   var profileImage;
   XFile? pickedFile;
 
-  File? _selectedImage;
+  // File? _selectedImage;
   String imageUrl = '';
 
   final picker = ImagePicker();
@@ -116,7 +118,7 @@ class _AddCommunityDetailsPageState extends State<AddCommunityDetailsPage> {
 
     setState(() {
       if (pickedFile != null) {
-        _selectedImage = File(pickedFile.path);
+        profileImage = File(pickedFile.path);
       } else {
         print('No image selected.');
       }
@@ -146,14 +148,14 @@ class _AddCommunityDetailsPageState extends State<AddCommunityDetailsPage> {
                   height: 300,
                   width: 300,
                   decoration: BoxDecoration(
-                    image: _selectedImage != null
+                    image: profileImage!= null
                         ? DecorationImage(
-                            image: FileImage(_selectedImage!),
+                            image: FileImage(profileImage!),
                             fit: BoxFit.cover,
                           )
                         : null,
                   ),
-                  child: _selectedImage == null
+                  child: profileImage== null
                       ? Icon(
                           Icons.camera_alt,
                           size: 40,
@@ -196,10 +198,10 @@ class _AddCommunityDetailsPageState extends State<AddCommunityDetailsPage> {
                   });
                   if (fkey.currentState!.validate()) {
                     print(DescriptionEdit.text);
-                    // Navigator.push(context,
-                    //     MaterialPageRoute(builder: (context) {
-                    //   return RaceTrackNavigation();
-                    // }));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return CommunityAbout();
+                    }));
                   }
                 },
                 child: Text('UPLOAD'),
@@ -211,24 +213,40 @@ class _AddCommunityDetailsPageState extends State<AddCommunityDetailsPage> {
         )
               );
             
-          
-          
-     
-    
 
+  }
+Future<void> uploadImage() async {
+    try {
+      if (profileImage != null) {
+        
+        Reference storageReference =
+            FirebaseStorage.instance
+                .ref()
+                .child('image/${pickedFile!.name}');
 
+        await storageReference.putFile(profileImage!);
+
+        // Get the download URL
+         imageUrl = await storageReference.getDownloadURL();
+
+        // Now you can use imageUrl as needed (e.g., save it to Firestore)
+        print('Image URL: $imageUrl');
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
+    }
   }
 }
 
 
 
+
+
+
+
+
+
+
               
-                  // if (fkey.currentState!.validate()) {
-                  //   print(DescriptionEdit.text);
-                    // Navigator.push(context,
-                    //     MaterialPageRoute(builder: (context) {
-                    //   return RaceTrackNavigation();
-                    // }));
-         
 
  
