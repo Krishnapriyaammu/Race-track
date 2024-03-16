@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:loginrace/User/viewindividualinstructor.dart';
@@ -10,61 +11,100 @@ class UserViewAllCoach extends StatefulWidget {
 }
 
 class _UserViewAllCoachState extends State<UserViewAllCoach> {
-    List<double> coachRatings = [4.5, 3.8, 5.0, 4.2, 3.5, 4.8, 4.0];
-
+    // List<double> coachRatings = [4.5, 3.8, 5.0, 4.2, 3.5, 4.8, 4.0];
+   Future<List<DocumentSnapshot>> getData() async {
+  try {
+    final QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection('racetrackaddcoach').get();
+    print('Fetched ${snapshot.docs.length} documents');
+    return snapshot.docs;
+  } catch (e) {
+    print('Error fetching data: $e');
+    throw e; // Rethrow the error to handle it in the FutureBuilder
+  }
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('View all coaches'),
       ),
-      body: ListView.builder(
-        itemCount: coachRatings.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            leading: CircleAvatar(
-              radius: 30,
-              backgroundImage: AssetImage('images/imaaaa.jpg'),
-            ),
-            title: Text('Navaneeth Sheti'),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    RatingBar.builder(
-                      itemSize: 20,
-                      initialRating: coachRatings[index],
-                      minRating: 1,
-                      direction: Axis.horizontal,
-                      allowHalfRating: true,
-                      itemCount: 5,
-                      itemBuilder: (context, _) => Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                      ),
-                      onRatingUpdate: (rating) {
-                        // Handle the rating update if needed
-                        print(rating);
+      body:Expanded(
+              child: FutureBuilder(
+                future: getData(),
+                builder: (context,
+                    AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else {
+                    return ListView.builder(
+                      itemCount: snapshot.data?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        final document = snapshot.data![index];
+                        final data =
+                            document.data() as Map<String, dynamic>;
+                        return ListTile(
+                          onTap: () {},
+                          title: Text(data['name'] ?? 'Name not available'),
+                          subtitle: SizedBox(
+                            width: 5,
+                            child: RatingBar.builder(
+                              itemSize: 20,
+                              initialRating:
+                                  (data['rating'] ?? 0).toDouble(),
+                              minRating: 1,
+                              direction: Axis.horizontal,
+                              allowHalfRating: true,
+                              itemCount: 5,
+                              itemBuilder: (context, _) => Icon(
+                                Icons.star,
+                                size: 3,
+                                color: Color.fromARGB(255, 124, 4, 94),
+                              ),
+                              onRatingUpdate: (rating) {
+                                print(rating);
+                              },
+                            ),
+                          ),
+                          leading: CircleAvatar(
+                            backgroundImage: AssetImage('images/coo.jpg'),
+                            radius: 30,
+                          ),
+                          trailing: ElevatedButton(
+                            onPressed: () {
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => DesignerWork(),
+                              //   ),
+                              // );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 16.0),
+                              backgroundColor: Colors.deepPurple,
+                            ),
+                            child: Text(
+                              'CHOOSE',
+                              style: TextStyle(
+                                color:
+                                    const Color.fromARGB(255, 231, 234, 236),
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        );
                       },
-                    ),
-                    SizedBox(width: 8),
-                    Text('Rating: ${coachRatings[index].toString()}'),
-                  ],
-                ),
-              ],
+                    );
+                  }
+                },
+              ),
             ),
-            trailing: InkWell(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return ViewInstructor();
-                }));
-              },
-              child: Icon(Icons.navigate_next),
-            ),
-          );
-        },
-      ),
-    );
+          
+        );
+      
+  
   }
 }

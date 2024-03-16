@@ -58,10 +58,10 @@ class UserViewFullRenters extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-        itemCount: professionals.length,
-        itemBuilder: (context, index) {
-          final professional = professionals[index];
-          return InkWell(
+                    itemCount: professionals.length,
+                    itemBuilder: (context, index) {
+                      final professional = professionals[index];
+                      return InkWell(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                             return UserViewRentHome();
@@ -91,9 +91,9 @@ class UserViewFullRenters extends StatelessWidget {
                 ),
               ),
             ),
-          );
-        },
-      ),
+                      );
+                    },
+                  ),
     ),
         ],
       ),

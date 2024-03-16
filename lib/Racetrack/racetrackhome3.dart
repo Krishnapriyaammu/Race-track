@@ -24,9 +24,9 @@ class InstructorHomePage extends StatefulWidget {
 
 class _InstructorHomePageState extends State<InstructorHomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
- 
-   File? _selectedImage;
+     var profileImage;
 
+ File? _selectedImage;
   @override
   void initState() {
     super.initState();
@@ -125,8 +125,8 @@ class CoachTab extends StatelessWidget {
                         final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
 
                         setState(() {
-                          if (pickedFile != null) {
-                            var _selectedImage = File(pickedFile.path);
+                        if (pickedFile != null) {
+                          var selectedImage = File(pickedFile.path);
                           }
                         });
                       },
@@ -195,7 +195,8 @@ class CoachTab extends StatelessWidget {
                     onPressed: () async{
                        await FirebaseFirestore.instance.collection("racetrackaddcoach").add({
                        'name':name.text,
-                       'email':about.text,
+                       'about':about.text,
+                       'experience':exp.text,
                       
                                          });
                       

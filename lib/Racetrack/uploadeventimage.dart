@@ -18,6 +18,8 @@ class _RaceTrackUploadEventimageState extends State<RaceTrackUploadEventimage> {
       var DescriptionEdit = TextEditingController();
   final fkey = GlobalKey<FormState>();
   var profileImage;
+    String? nm;
+
   XFile? pickedFile;
 
   File? _selectedImage;
@@ -104,7 +106,7 @@ class _RaceTrackUploadEventimageState extends State<RaceTrackUploadEventimage> {
                 onPressed: () async {
                   await uploadImage();
                   await FirebaseFirestore.instance
-                      .collection("racetrack upload event")
+                      .collection("racetrack_upload_event")
                       .add({
                     'description': DescriptionEdit.text,
                     'image_url': imageUrl,
@@ -129,12 +131,12 @@ class _RaceTrackUploadEventimageState extends State<RaceTrackUploadEventimage> {
   Future<void> uploadImage() async {
     try {
       if (_selectedImage != null) {
+        print('_______________');
         Reference storageReference = FirebaseStorage.instance
             .ref()
-            .child('image/${_selectedImage!.path.split('/').last}');
+            .child('image/${nm}');
 
         await storageReference.putFile(_selectedImage!);
-
         // Get the download URL
         imageUrl = await storageReference.getDownloadURL();
 
