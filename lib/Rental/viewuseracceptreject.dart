@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/Rental/viewaccepatrequestrental.dart';
 
@@ -51,6 +52,7 @@ class _ViewUserAcceptState extends State<ViewUserAccept> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: Text(
+                    
                     'Chennai',
                     style: TextStyle(fontSize: 18),
                   ),
@@ -119,7 +121,15 @@ class _ViewUserAcceptState extends State<ViewUserAccept> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                         await FirebaseFirestore.instance
+                                .collection('rent_accept_user')
+                                .add({
+                             
+                              
+                             
+                            });
+                           
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) {

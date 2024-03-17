@@ -9,7 +9,7 @@ class UserViewFullRenters extends StatelessWidget {
    Future<List<DocumentSnapshot>> getData() async {
   try {
     final QuerySnapshot snapshot =
-        await FirebaseFirestore.instance.collection('rentaladdservice').get();
+        await FirebaseFirestore.instance.collection('rental_add_service').get();
     print('Fetched ${snapshot.docs.length} documents');
     return snapshot.docs;
   } catch (e) {
@@ -79,10 +79,10 @@ class UserViewFullRenters extends StatelessWidget {
                              final imageUrl = data['image_url'];
                 return ListTile(
                    onTap: () {},
-                       title: Text(data['name'] ?? 'Name not available'),
+                       title: Text(data['Renter Name'] ?? 'Name not available'),
 
                                     
-                  subtitle: Text(data['service'] ?? 'service not available'),
+                  subtitle: Text(data['Rental Service'] ?? 'service not available'),
 
                     leading: imageUrl != null
 

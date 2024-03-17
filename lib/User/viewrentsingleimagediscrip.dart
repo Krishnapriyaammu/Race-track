@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/User/userrentviewstatus.dart';
 class RentalItem {
@@ -10,10 +11,26 @@ class RentalItem {
 
 
 class UserViewSingleItem extends StatelessWidget {
-    final RentalItem item;
+  var Name=TextEditingController();
+  var Mobile=TextEditingController();
+  var address=TextEditingController();
+  var duedate=TextEditingController();
+  var hours=TextEditingController();
+    Future<List<DocumentSnapshot>> getData() async {
+    try {
+      final QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('rentaluploadimage')
+          .get();
+      print('Fetched ${snapshot.docs.length} documents');
+      return snapshot.docs;
+    } catch (e) {
+      print('Error fetching data: $e');
+      throw e; // Rethrow the error to handle it in the FutureBuilder
+    }
+  }
+  String imageUrl='';
 
-const UserViewSingleItem({Key? key, required this.item}) : super(key: key);
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,25 +41,25 @@ appBar: AppBar(
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Column(
+          
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12.0),
-              child: Image.asset(
-                item.imagePath,
-                fit: BoxFit.cover,
-              ),
+              
+             child: imageUrl != null
+                          ? Image.network(imageUrl, fit: BoxFit.cover)
+                          : Icon(Icons.image),
             ),
             SizedBox(height: 8.0),
-            Text(
-              item.name,
-              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8.0),
-            Text(
-              item.description,
-              style: TextStyle(fontSize: 16.0),
-            ),
+            // Text(
+            //   // style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+            // ),
+            // SizedBox(height: 8.0),
+            // Text(
+            //   item.description,
+            //   style: TextStyle(fontSize: 16.0),
+            // ),
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
@@ -60,23 +77,49 @@ appBar: AppBar(
                                     Text('Enter your details to rent the item:'),
                                     SizedBox(height: 10.0),
                                     TextFormField(
+                                      controller: Name,
                                       decoration: InputDecoration(labelText: 'Full Name'),
                                     ),
                                     SizedBox(height: 8.0),
                                     TextFormField(
+                                      controller: Mobile,
                                       decoration: InputDecoration(labelText: 'Contact Number'),
                                     ),
                                     SizedBox(height: 8.0),
                                     TextFormField(
+                                      controller: address,
                                       decoration: InputDecoration(labelText: 'Address'),
                                     ),
                                       SizedBox(height: 8.0),
                                     TextFormField(
+                                      controller: duedate,
                                       decoration: InputDecoration(labelText: 'Due date'),
+                                    ),
+                                       SizedBox(height: 8.0),
+
+                                    TextFormField(
+                                      controller: hours,
+                                      decoration: InputDecoration(labelText: 'Total hours'),
                                     ),
                                     SizedBox(height: 10.0),
                                     ElevatedButton(
-                                      onPressed: () {
+                                      onPressed: ()async {
+                                         await FirebaseFirestore.instance
+                                .collection('user_rent_booking')
+                                .add({
+                              'name': Name.text,
+                              'address':address.text,
+                              
+                              'mobile no': Mobile.text,
+                              'due date':duedate.text,
+                              'hours':hours.text,
+                             
+                            });
+                            print(Name.text);
+                            
+                             
+                              print(Mobile.text);
+                             
                                        Navigator.push(context, MaterialPageRoute(builder: (context) {
                             return UserRentViewStatus();
                   },));

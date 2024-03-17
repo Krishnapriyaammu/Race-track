@@ -269,7 +269,7 @@ String imageUrl='';
                             await uploadImage();
                             
                             await FirebaseFirestore.instance
-                                .collection('community register')
+                                .collection('community_register')
                                 .add({
                               'name': Name.text,
                               'email': Email.text,

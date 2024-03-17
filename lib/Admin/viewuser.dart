@@ -65,7 +65,12 @@ class _AdminViewUserState extends State<AdminViewUser> {
                                   radius: 30,
                                 ),    
                 
-                    trailing: Icon(Icons.navigate_next));
+                    trailing: InkWell(onTap: () {
+                  //      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  //           return AdminAcceptrejectRental();
+                  // },));
+                    },
+                      child: Icon(Icons.navigate_next)));
                 
               },
             );
