@@ -64,103 +64,119 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                     ),
                   ),
                 ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: 1,
-                    itemBuilder: ((context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Card(
-                          elevation: 5,
-                          child: Row(
-                            children: [
-                              // Left Container
-                              Expanded(
-                                child: Container(
-                                  padding: EdgeInsets.all(12),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      InkWell(
-                                        onTap: () {},
-                                        child: Text(
-                                          'Adventurous Race Track',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        children: [
-                                          RatingBar.builder(
-                                            itemSize: 20,
-                                            initialRating: 3,
-                                            minRating: 1,
-                                            direction: Axis.horizontal,
-                                            allowHalfRating: true,
-                                            itemCount: 5,
-                                            itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                                            itemBuilder: (context, _) => Icon(
-                                              Icons.star,
-                                              size: 20,
-                                              color: Colors.amber,
-                                            ),
-                                            onRatingUpdate: (rating) {
-                                              print(rating);
-                                            },
-                                          ),
-                                          SizedBox(width: 10),
-                                          Text(
-                                            '3.0',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        'Car Racing Track',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Coimbatore, Tamilnadu',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                              // Right Container
-                              Container(
-                                width: 120,
-                                height: 120,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  image: DecorationImage(
-                                    image: AssetImage('images/racing.jpg'),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
-                  ),
-                ),
+          //       Expanded(
+          //         child: FutureBuilder(
+          //           future: getData(),
+          //           builder: (context,AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+          // if (snapshot.connectionState == ConnectionState.waiting) {
+          //   return Center(child: CircularProgressIndicator());
+          // } else if (snapshot.hasError) {
+          //   return Center(child: Text('Error: ${snapshot.error}'));
+          // } else {
+          //   return ListView.builder(
+          //               itemCount: snapshot.data?.length ?? 0,
+          //               itemBuilder: ((context, index) {
+          //                  final document = snapshot.data![index];
+          //                  final data = document.data() as Map<String, dynamic>;
+          //                  final imageUrl = data['image_url'];
+          //                 return Padding(
+          //                   padding: const EdgeInsets.all(16.0),
+          //                   child: Card(
+          //                     elevation: 5,
+          //                     child: Row(
+          //                       children: [
+          //                         // Left Container
+          //                         Expanded(
+          //                           child: Container(
+          //                             padding: EdgeInsets.all(12),
+          //                             child: Column(
+          //                               crossAxisAlignment: CrossAxisAlignment.start,
+          //                               children: [
+          //                                 InkWell(
+          //                                   onTap: () {},
+          //                                   child: Text(
+          //                                     data['Renter Name'] ?? 'Name not available',
+          //                                     style: TextStyle(
+          //                                       fontSize: 18,
+          //                                       fontWeight: FontWeight.bold,
+          //                                     ),
+          //                                   ),
+          //                                 ),
+          //                                 SizedBox(
+          //                                   height: 10,
+          //                                 ),
+          //                                 Row(
+          //                                   children: [
+          //                                     RatingBar.builder(
+          //                                       itemSize: 20,
+          //                                       initialRating: 3,
+          //                                       minRating: 1,
+          //                                       direction: Axis.horizontal,
+          //                                       allowHalfRating: true,
+          //                                       itemCount: 5,
+          //                                       itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+          //                                       itemBuilder: (context, _) => Icon(
+          //                                         Icons.star,
+          //                                         size: 20,
+          //                                         color: Colors.amber,
+          //                                       ),
+          //                                       onRatingUpdate: (rating) {
+          //                                         print(rating);
+          //                                       },
+          //                                     ),
+          //                                     SizedBox(width: 10),
+          //                                     Text(
+          //                                       '3.0',
+          //                                       style: TextStyle(
+          //                                         fontSize: 16,
+          //                                         fontWeight: FontWeight.bold,
+          //                                       ),
+          //                                     ),
+          //                                   ],
+          //                                 ),
+          //                                 SizedBox(height: 10),
+          //                                 Text(
+          //                                   'Car Racing Track',
+          //                                   style: TextStyle(
+          //                                     fontSize: 16,
+          //                                   ),
+          //                                 ),
+          //                                 Text(
+          //                                   'Coimbatore, Tamilnadu',
+          //                                   style: TextStyle(
+          //                                     fontSize: 14,
+          //                                     color: Colors.grey,
+          //                                   ),
+          //                                 ),
+          //                               ],
+          //                             ),
+          //                           ),
+          //                         ),
+                      
+          //                         // Right Container
+          //                         Container(
+          //                           width: 120,
+          //                           height: 120,
+          //                           decoration: BoxDecoration(
+          //                             borderRadius: BorderRadius.circular(8),
+          //                             image: DecorationImage(
+          //                               image: AssetImage('images/racing.jpg'),
+          //                               fit: BoxFit.cover,
+          //                             ),
+          //                           ),
+          //                            child: imageUrl != null
+          //                           ? Image.network(imageUrl, fit: BoxFit.cover)
+          //                          : Icon(Icons.image),
+          //                         ),
+          //                       ],
+          //                     ),
+          //                   ),
+          //                 );
+          //               }),
+          //             );
+          //           }
+          //         ),
+          //       ),
               ],
             ),
 
@@ -260,27 +276,27 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
   }
 }
 class ViewBookedUsers extends StatelessWidget {
-  final List<User> bookedUsers = [
-    User(name: 'John Doe', email: 'john@example.com', phoneNumber: '123-456-7890'),
-    User(name: 'Jane Doe', email: 'jane@example.com', phoneNumber: '987-654-3210'),
-    // Add more users as needed
-  ];
+  // final List<User> bookedUsers = [
+  //   User(name: 'John Doe', email: 'john@example.com', phoneNumber: '123-456-7890'),
+  //   User(name: 'Jane Doe', email: 'jane@example.com', phoneNumber: '987-654-3210'),
+  //   // Add more users as needed
+  // ];
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: bookedUsers.length,
+      itemCount: 0,
       itemBuilder: (context, index) {
-        User user = bookedUsers[index];
+        // User user = bookedUsers[index];
         return Card(
           margin: EdgeInsets.all(8.0),
           child: ListTile(
-            title: Text(user.name),
+            // title: Text(user.name),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Email: ${user.email}'),
-                Text('Phone: ${user.phoneNumber}'),
+                // Text('Email: ${user.email}'),
+                // Text('Phone: ${user.phoneNumber}'),
                 // Add more details as needed
               ],
             ),

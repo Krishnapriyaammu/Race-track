@@ -1,36 +1,35 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/User/userrentviewstatus.dart';
-class RentalItem {
-  final String name;
-  final String description;
-  final String imagePath;
 
-  RentalItem({required this.name, required this.description, required this.imagePath});
+class UserViewSingleItem extends StatefulWidget {
+  var img;
+   UserViewSingleItem({super.key, required this.img});
+
+  @override
+  State<UserViewSingleItem> createState() => _UserViewSingleItemState();
 }
 
-
-class UserViewSingleItem extends StatelessWidget {
-  var Name=TextEditingController();
-  var Mobile=TextEditingController();
-  var address=TextEditingController();
-  var duedate=TextEditingController();
-  var hours=TextEditingController();
-    Future<List<DocumentSnapshot>> getData() async {
-    try {
-      final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('rentaluploadimage')
-          .get();
-      print('Fetched ${snapshot.docs.length} documents');
-      return snapshot.docs;
-    } catch (e) {
-      print('Error fetching data: $e');
-      throw e; // Rethrow the error to handle it in the FutureBuilder
+class _UserViewSingleItemState extends State<UserViewSingleItem> {
+  
+String? imageUrl;
+    var Name=TextEditingController();
+    var Mobile=TextEditingController();
+    var address=TextEditingController();
+    var duedate=TextEditingController();
+    var hours=TextEditingController();
+      Future<List<DocumentSnapshot>> getData() async {
+      try {
+        final QuerySnapshot snapshot = await FirebaseFirestore.instance
+            .collection('rentaluploadimage')
+            .get();
+        print('Fetched ${snapshot.docs.length} documents');
+        return snapshot.docs;
+      } catch (e) {
+        print('Error fetching data: $e');
+        throw e; // Rethrow the error to handle it in the FutureBuilder
+      }
     }
-  }
-  String imageUrl='';
-
- 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +47,7 @@ appBar: AppBar(
               borderRadius: BorderRadius.circular(12.0),
               
              child: imageUrl != null
-                          ? Image.network(imageUrl, fit: BoxFit.cover)
+                          ? Image.network(widget.img, fit: BoxFit.cover)
                           : Icon(Icons.image),
             ),
             SizedBox(height: 8.0),
@@ -140,9 +139,6 @@ appBar: AppBar(
         ),
       ),
     );
+
   }
 }
-
-
-    
-  

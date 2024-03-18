@@ -102,7 +102,7 @@ class _UploadRaceTrackImageState extends State<UploadRaceTrackImage> {
               onPressed: ()async {
                   await uploadImage();
                   await FirebaseFirestore.instance
-                      .collection("racetrack upload racetrack")
+                      .collection("racetrack_upload_racetrack")
                       .add({
                                    'description': DescriptionEdit.text,
 

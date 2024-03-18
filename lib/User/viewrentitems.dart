@@ -74,6 +74,8 @@ class UserViewFullRenters extends StatelessWidget {
                         itemCount: snapshot.data?.length ?? 0,
                         itemBuilder: (context, index) {
                          final document = snapshot.data![index];
+                         final id = snapshot.data![index].id;
+                         print(id);
                         final data =
                             document.data() as Map<String, dynamic>;
                              final imageUrl = data['image_url'];
@@ -100,7 +102,7 @@ class UserViewFullRenters extends StatelessWidget {
                      Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => UserViewRentHome(),
+                                  builder: (context) => UserViewRentHome(id:data['pro_id']),
                                 ),
                               );
                             },

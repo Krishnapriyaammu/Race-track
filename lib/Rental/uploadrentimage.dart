@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loginrace/Rental/viewrentproducts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RentUploadImage extends StatefulWidget {
   const RentUploadImage({super.key});
@@ -135,11 +136,13 @@ class _RentUploadImageState extends State<RentUploadImage> {
                   await storageReference.putFile(_selectedImage!);
 
                   String imageUrl = await storageReference.getDownloadURL();
-
+                    SharedPreferences sp = await SharedPreferences.getInstance();
+                  var uid = sp.getString('uid');
                   await FirebaseFirestore.instance.collection("rentaluploadimage").add({
                     'category': selectedCategory,
                     'description': DescriptionEdit.text,
                     'image_url': imageUrl,
+                    'pro_id':uid
                   });
 
                   Navigator.pushReplacement(context,
