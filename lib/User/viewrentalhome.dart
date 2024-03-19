@@ -18,17 +18,17 @@ class _UserViewRentHomeState extends State<UserViewRentHome>
   late TabController _tabController;
 
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _tabController = TabController(length: 3, vsync: this);
-  // }
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
 
-  // @override
-  // void dispose() {
-  //   _tabController.dispose();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,13 +90,14 @@ class _UserViewRentHomeState extends State<UserViewRentHome>
               itemCount:  snapshot.data?.length ?? 0,
               itemBuilder: (context, index) {
                  final document = snapshot.data![index];
-                final data = document.data() as Map<String, dynamic>;
-                final imageUrl = data['image_url'];
+                  final data = document.data() as Map<String, dynamic>;
+                  final imageUrl = data['image_url'];
+                  final desc = data['description'];
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-                                  return UserViewSingleItem(img:imageUrl);
+                                  return UserViewSingleItem(img:imageUrl,desc:desc);
                                     
                                 }));
                   },
@@ -166,7 +167,7 @@ Future<List<DocumentSnapshot>> getdata() async {
                   onTap: () {
                     Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-                                  return UserViewSingleItem(img:imageUrl);
+                                  return UserViewSingleItem(img:imageUrl,desc:data['description'],);
                                     
                                 }));
                   },
@@ -231,11 +232,12 @@ Future<List<DocumentSnapshot>> getdata() async {
                  final document = snapshot.data![index];
                 final data = document.data() as Map<String, dynamic>;
                 final imageUrl = data['image_url'];
+
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-                                  return UserViewSingleItem(img:imageUrl);
+                                  return UserViewSingleItem(img:imageUrl,desc: data['description'],);
                                     
                                 }));
                   },

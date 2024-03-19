@@ -4,16 +4,35 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:loginrace/User/viewstatusinstructorbooking.dart';
 
 class ViewInstructor extends StatefulWidget {
-  const ViewInstructor({super.key});
+  String id;
+  var img;
+  var name;
+  var desc;
+   ViewInstructor({super.key, required this.id,required this.name,required this.desc,required this.img});
   
 
   @override
   State<ViewInstructor> createState() => _ViewInstructorState();
 }
 class _ViewInstructorState extends State<ViewInstructor> {
+
+   Future<List<DocumentSnapshot>> getData() async {
+    try {
+      final QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('race_track_add_coach')
+          .get();
+      print('Fetched ${snapshot.docs.length} documents');
+      return snapshot.docs;
+    } catch (e) {
+      print('Error fetching data: $e');
+      throw e; // Rethrow the error to handle it in the FutureBuilder
+    }
+  }
   final TextEditingController bookingDetailsController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
+    String imageUrl='';
+
   // String selectedLevel = "LEVEL 1";
 
   final List<String> _list = ['LEVEL 1', 'LEVEL 2', 'LEVEL 3', 'LEVEL 4'];
@@ -125,46 +144,73 @@ class _ViewInstructorState extends State<ViewInstructor> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Align(
-                alignment: Alignment.topCenter,
-                child: Text(
-                  'Our Instructors',
-                  style: GoogleFonts.getFont(
-                    'Josefin Sans',
-                    fontSize: 29,
-                    fontWeight: FontWeight.bold,
+          child: FutureBuilder(
+            future: getData(),
+            builder: (context,AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            //  final document = snapshot.data![];
+            //     final data = document.data() as Map<String, dynamic>;
+            //     final imageUrl = data['image_url'];
+            //     final desc = data['description'];
+            //     final name =data['name'];
+           
+            return Column(
+              
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Align(
+                   
+
+                    alignment: Alignment.topCenter,
+                    child: Text(
+                      'Our Instructors',
+                      style: GoogleFonts.getFont(
+                        'Josefin Sans',
+                        fontSize: 29,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              SizedBox(height: 8),
-              CircleAvatar(
-                radius: 80,
-                backgroundImage: AssetImage('images/cooo.jpg'),
-              ),
-              SizedBox(height: 16),
-              Text(
-                'NAVANEETH MURALI',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: () {
-                  showBookingRequestPopup(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black,
-                  backgroundColor: Colors.blue,
-                ),
-                child: Text('BE MY COACH'),
-              ),
-              SizedBox(height: 16),
-              Text('Started his track riding days in Dec 2013'),
-              SizedBox(height: 8),
-              Text('He is an expert in teaching beginners'),
-            ],
+                  SizedBox(height: 8),
+                  Container(
+                    height: 130,
+                    width: 90,
+                    child: widget.img != null
+                           ? Image.network(widget.img, fit: BoxFit.cover)
+                           : Icon(Icons.image),
+                  ),
+                   
+                  SizedBox(height: 16),
+                  Text(
+                      
+                   widget.name ?? 'name not available',
+                    // style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 8),
+                  ElevatedButton(
+                    onPressed: () {
+                      showBookingRequestPopup(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      backgroundColor: Colors.blue,
+                    ),
+                    child: Text('BE MY COACH'),
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+
+                  widget.desc ?? 'description not available',
+                  ),
+                
+                ],
+              );
+            }
+            }
           ),
         ),
       ),

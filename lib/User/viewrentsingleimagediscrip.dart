@@ -4,7 +4,8 @@ import 'package:loginrace/User/userrentviewstatus.dart';
 
 class UserViewSingleItem extends StatefulWidget {
   var img;
-   UserViewSingleItem({super.key, required this.img});
+  var desc;
+   UserViewSingleItem({super.key, required this.img, required this.desc});
 
   @override
   State<UserViewSingleItem> createState() => _UserViewSingleItemState();
@@ -12,7 +13,7 @@ class UserViewSingleItem extends StatefulWidget {
 
 class _UserViewSingleItemState extends State<UserViewSingleItem> {
   
-String? imageUrl;
+
     var Name=TextEditingController();
     var Mobile=TextEditingController();
     var address=TextEditingController();
@@ -43,22 +44,21 @@ appBar: AppBar(
           
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12.0),
-              
-             child: imageUrl != null
-                          ? Image.network(widget.img, fit: BoxFit.cover)
-                          : Icon(Icons.image),
+            Container(
+             
+              child: widget.img != null
+                           ? Image.network(widget.img, fit: BoxFit.cover)
+                           : Icon(Icons.image),
             ),
             SizedBox(height: 8.0),
             // Text(
             //   // style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             // ),
-            // SizedBox(height: 8.0),
-            // Text(
-            //   item.description,
-            //   style: TextStyle(fontSize: 16.0),
-            // ),
+            SizedBox(height: 8.0),
+            Text(
+                         widget.desc ?? 'description not available',
+              style: TextStyle(fontSize: 16.0),
+            ),
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {

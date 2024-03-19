@@ -5,6 +5,7 @@ import 'package:loginrace/User/viewindividualinstructor.dart';
 
 class UserViewAllCoach extends StatefulWidget {
   const UserViewAllCoach({super.key});
+  
 
   @override
   State<UserViewAllCoach> createState() => _UserViewAllCoachState();
@@ -15,7 +16,7 @@ class _UserViewAllCoachState extends State<UserViewAllCoach> {
   Future<List<DocumentSnapshot>> getData() async {
     try {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('racetrackaddcoach')
+          .collection('race_track_add_coach')
           .get();
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;
@@ -43,9 +44,11 @@ class _UserViewAllCoachState extends State<UserViewAllCoach> {
               return ListView.builder(
                 itemCount: snapshot.data?.length ?? 0,
                 itemBuilder: (context, index) {
-                  final document = snapshot.data![index];
-                  final data = document.data() as Map<String, dynamic>;
-                  final imageUrl = data['image_url'];
+                 final document = snapshot.data![index];
+                final data = document.data() as Map<String, dynamic>;
+                final imageUrl = data['image_url'];
+                final desc = data['about'];
+                final name = data['name'];
 
                   return ListTile(
                     onTap: () {},
@@ -79,11 +82,11 @@ class _UserViewAllCoachState extends State<UserViewAllCoach> {
                             radius: 30,
                           ),
                     trailing: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () {print(imageUrl);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ViewInstructor(),
+                            builder: (context) => ViewInstructor(id:data['pro_id'],img:imageUrl,desc:desc,name:name),
                           ),
                         );
                       },

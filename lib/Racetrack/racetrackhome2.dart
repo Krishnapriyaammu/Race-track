@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,8 +17,36 @@ class RaceTrackViewRace extends StatefulWidget {
 }
 
 class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
-  var _descriptionController=TextEditingController();
-  File? _selectedImage;
+  var Racetrackname=TextEditingController();
+  var Rating=TextEditingController();
+  var tracktype=TextEditingController();
+  var Place=TextEditingController();
+  String imageUrl='';
+  var profileImage;
+  XFile? pickedFile;
+  File? image;
+
+
+
+    Future<List<DocumentSnapshot>> getData() async {
+    try {
+      final QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('racetrack_upload_track')
+          .get();
+      print('Fetched ${snapshot.docs.length} documents');
+      return snapshot.docs;
+    } catch (e) {
+      print('Error fetching data: $e');
+      throw e; // Rethrow the error to handle it in the FutureBuilder
+    }
+  }
+
+
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -64,124 +93,126 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                     ),
                   ),
                 ),
-          //       Expanded(
-          //         child: FutureBuilder(
-          //           future: getData(),
-          //           builder: (context,AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
-          // if (snapshot.connectionState == ConnectionState.waiting) {
-          //   return Center(child: CircularProgressIndicator());
-          // } else if (snapshot.hasError) {
-          //   return Center(child: Text('Error: ${snapshot.error}'));
-          // } else {
-          //   return ListView.builder(
-          //               itemCount: snapshot.data?.length ?? 0,
-          //               itemBuilder: ((context, index) {
-          //                  final document = snapshot.data![index];
-          //                  final data = document.data() as Map<String, dynamic>;
-          //                  final imageUrl = data['image_url'];
-          //                 return Padding(
-          //                   padding: const EdgeInsets.all(16.0),
-          //                   child: Card(
-          //                     elevation: 5,
-          //                     child: Row(
-          //                       children: [
-          //                         // Left Container
-          //                         Expanded(
-          //                           child: Container(
-          //                             padding: EdgeInsets.all(12),
-          //                             child: Column(
-          //                               crossAxisAlignment: CrossAxisAlignment.start,
-          //                               children: [
-          //                                 InkWell(
-          //                                   onTap: () {},
-          //                                   child: Text(
-          //                                     data['Renter Name'] ?? 'Name not available',
-          //                                     style: TextStyle(
-          //                                       fontSize: 18,
-          //                                       fontWeight: FontWeight.bold,
-          //                                     ),
-          //                                   ),
-          //                                 ),
-          //                                 SizedBox(
-          //                                   height: 10,
-          //                                 ),
-          //                                 Row(
-          //                                   children: [
-          //                                     RatingBar.builder(
-          //                                       itemSize: 20,
-          //                                       initialRating: 3,
-          //                                       minRating: 1,
-          //                                       direction: Axis.horizontal,
-          //                                       allowHalfRating: true,
-          //                                       itemCount: 5,
-          //                                       itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-          //                                       itemBuilder: (context, _) => Icon(
-          //                                         Icons.star,
-          //                                         size: 20,
-          //                                         color: Colors.amber,
-          //                                       ),
-          //                                       onRatingUpdate: (rating) {
-          //                                         print(rating);
-          //                                       },
-          //                                     ),
-          //                                     SizedBox(width: 10),
-          //                                     Text(
-          //                                       '3.0',
-          //                                       style: TextStyle(
-          //                                         fontSize: 16,
-          //                                         fontWeight: FontWeight.bold,
-          //                                       ),
-          //                                     ),
-          //                                   ],
-          //                                 ),
-          //                                 SizedBox(height: 10),
-          //                                 Text(
-          //                                   'Car Racing Track',
-          //                                   style: TextStyle(
-          //                                     fontSize: 16,
-          //                                   ),
-          //                                 ),
-          //                                 Text(
-          //                                   'Coimbatore, Tamilnadu',
-          //                                   style: TextStyle(
-          //                                     fontSize: 14,
-          //                                     color: Colors.grey,
-          //                                   ),
-          //                                 ),
-          //                               ],
-          //                             ),
-          //                           ),
-          //                         ),
+                Expanded(
+                  child: FutureBuilder(
+                    future: getData(),
+                    builder: (context,AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            return ListView.builder(
+                        itemCount: snapshot.data?.length ?? 0,
+                        itemBuilder: ((context, index) {
+                           final document = snapshot.data![index];
+                           final data = document.data() as Map<String, dynamic>;
+                           final imageUrl = data['image_url'];
+                          return Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Card(
+                              elevation: 5,
+                              child: Row(
+                                children: [
+                                  // Left Container
+                                  Expanded(
+                                    child: Container(
+                                      padding: EdgeInsets.all(12),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          InkWell(
+                                            onTap: () {},
+                                            child: Text(
+                                              data['track name'] ?? 'Name not available',
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            children: [
+                                              RatingBar.builder(
+                                                itemSize: 20,
+                                                initialRating: 3,
+                                                minRating: 1,
+                                                direction: Axis.horizontal,
+                                                allowHalfRating: true,
+                                                itemCount: 5,
+                                                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                                itemBuilder: (context, _) => Icon(
+                                                  Icons.star,
+                                                  size: 20,
+                                                  color: Colors.amber,
+                                                ),
+                                                onRatingUpdate: (rating) {
+                                                  print(rating);
+                                                },
+                                              ),
+                                              SizedBox(width: 10),
+                                              Text(
+                                                '3.0',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 10),
+                                          Text(
+                                            data['state'] ?? 'Name not available',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          Text(
+                                            data['place'] ?? 'Name not available',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                       
-          //                         // Right Container
-          //                         Container(
-          //                           width: 120,
-          //                           height: 120,
-          //                           decoration: BoxDecoration(
-          //                             borderRadius: BorderRadius.circular(8),
-          //                             image: DecorationImage(
-          //                               image: AssetImage('images/racing.jpg'),
-          //                               fit: BoxFit.cover,
-          //                             ),
-          //                           ),
-          //                            child: imageUrl != null
-          //                           ? Image.network(imageUrl, fit: BoxFit.cover)
-          //                          : Icon(Icons.image),
-          //                         ),
-          //                       ],
-          //                     ),
-          //                   ),
-          //                 );
-          //               }),
-          //             );
-          //           }
-          //         ),
-          //       ),
+                                  // Right Container
+                                  Container(
+                                    width: 120,
+                                    height: 120,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      image: DecorationImage(
+                                        image: AssetImage('images/racing.jpg'),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                     child: imageUrl != null
+                          ? Image.network(imageUrl, fit: BoxFit.cover)
+                          : Icon(Icons.image),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+                      );
+                    }
+                    }
+                  ),
+                ),
               ],
             ),
 
-            // View Booked Users Tab
-            ViewBookedUsers(), 
+                   ViewBookedUsers(), 
+
+            
           ],
         ),
      floatingActionButton: FloatingActionButton(
@@ -200,121 +231,262 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, setState) {
-            return AlertDialog(
-              title: Text('Add Track'),
-              content: Column(
-                children: [
-                  InkWell(
-                    onTap: () async {
-                      final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
+            return SingleChildScrollView(
+              child: AlertDialog(
+                title: Text('Add Track'),
+                content: Column(
+                  children: [
+                  GestureDetector(
+              onTap: () async {
+                ImagePicker picker = ImagePicker();
+                pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
-                      setState(() {
-                        if (pickedFile != null) {
-                          _selectedImage = File(pickedFile.path);
-                        }
-                      });
+                setState(() {
+                  if (pickedFile != null) {
+                    profileImage = File(pickedFile!.path);
+                  }
+                });
+              },
+              child: ClipOval(
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundImage: profileImage != null ? FileImage(profileImage) : null,
+                  child: profileImage == null ? Icon(Icons.camera_alt, size: 30) : null,
+                ),
+              ),
+            ),
+                    SizedBox(height: 16),
+                     Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text('Name'),
+                              ),
+                            ],
+                          ),
+                          TextFormField(
+                            controller: Racetrackname,
+                           validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'enter Name';
+                              }
+                            },
+                            decoration: InputDecoration(
+                              fillColor: Color.fromARGB(255, 192, 221, 224),
+                              filled: true,
+                              border: UnderlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(40)),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                           Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text('Rating'),
+                              ),
+                            ],
+                          ),
+                          TextFormField(
+                            controller: Rating,
+                           validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'enter Name';
+                              }
+                            },
+                            decoration: InputDecoration(
+                              fillColor: Color.fromARGB(255, 192, 221, 224),
+                              filled: true,
+                              border: UnderlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(40)),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                           Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text('Track type'),
+                              ),
+                            ],
+                          ),
+                          TextFormField(
+                            controller: tracktype,
+                           validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'enter Name';
+                              }
+                            },
+                            decoration: InputDecoration(
+                              fillColor: Color.fromARGB(255, 192, 221, 224),
+                              filled: true,
+                              border: UnderlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(40)),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                           Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text('place'),
+                              ),
+                            ],
+                          ),
+                          TextFormField(
+                            controller: Place,
+                           validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'enter Name';
+                              }
+                            },
+                            decoration: InputDecoration(
+                              fillColor: Color.fromARGB(255, 192, 221, 224),
+                              filled: true,
+                              border: UnderlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(40)),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                         
+                          SizedBox(
+                            height: 20,
+                          ),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
                     },
-                    child: Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        image: _selectedImage != null
-                            ? DecorationImage(
-                                image: FileImage(_selectedImage!),
-                                fit: BoxFit.cover,
-                              )
-                            : null,
-                      ),
-                      child: _selectedImage == null
-                          ? Icon(
-                              Icons.camera_alt,
-                              size: 40,
-                              color: Colors.grey[600],
-                            )
-                          : null,
-                    ),
+                    child: Text('Cancel'),
                   ),
-                  SizedBox(height: 16),
-                  TextField(
-                    controller: _descriptionController,
-                    decoration: InputDecoration(
-                      hintText: 'Add Description',
-                    ),
+                  ElevatedButton(
+                    onPressed: ()  async{
+                                      await uploadImage();
+
+                       await FirebaseFirestore.instance.collection("racetrack_upload_track").add({
+                         'track name':Racetrackname.text,
+                         'rating':Rating.text,
+                         'tracktype':tracktype.text,
+                         'place':Place.text,
+                          'image_url': imageUrl,
+
+                        
+                                           });
+                      Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) {
+                                  return RaceTrackNavigation();
+                                }),
+                              );
+                      // Navigator.of(context).pop();
+                    },
+                    child: Text('Upload'),
                   ),
                 ],
               ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('Cancel'),
+            );
+          },
+        );
+      },
+    );
+
+   }
+
+// class ViewBookedUsers extends StatelessWidget {
+ 
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return ListView.builder(
+//       itemCount: 0,
+//       itemBuilder: (context, index) {
+//         // User user = bookedUsers[index];
+//         return Card(
+//           margin: EdgeInsets.all(8.0),
+//           child: ListTile(
+//             // title: Text(user.name),
+//             subtitle: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 // Text('Email: ${user.email}'),
+//                 // Text('Phone: ${user.phoneNumber}'),
+//                 // Add more details as needed
+//               ],
+//             ),
+//           ),
+//         );
+//       },
+//     );
+//   }
+ 
+// }
+Future<void> uploadImage() async {
+    try {
+      if (profileImage != null) {
+        Reference storageReference =
+        FirebaseStorage.instance
+            .ref()
+            .child('image/${pickedFile!.name}');
+
+        await storageReference.putFile(profileImage!);
+
+        // Get the download URL
+        imageUrl = await storageReference.getDownloadURL();
+
+        // Now you can use imageUrl as needed (e.g., save it to Firestore)
+        print('Image URL: $imageUrl');
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
+    }
+  }
+}
+class ViewBookedUsers extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection('booked_users').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Center(child: Text('No booked users available.'));
+        }
+        return ListView.builder(
+          itemCount: snapshot.data!.docs.length,
+          itemBuilder: (context, index) {
+            var userData = snapshot.data!.docs[index].data() as Map<String, dynamic>;
+            return Card(
+              margin: EdgeInsets.all(8.0),
+              child: ListTile(
+                title: Text(userData['name']),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Contact Number: ${userData['contact_number']}'),
+                    Text('Address: ${userData['address']}'),
+                    // Add more details as needed
+                  ],
                 ),
-                ElevatedButton(
-                  onPressed: ()  async{
-                     await FirebaseFirestore.instance.collection("racetrackuploadtrack").add({
-                       'email':_descriptionController.text,
-                      
-                                         });
-                    Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) {
-                                return RaceTrackNavigation();
-                              }),
-                            );
-                    // Navigator.of(context).pop();
-                  },
-                  child: Text('Upload'),
-                ),
-              ],
+              ),
             );
           },
         );
       },
     );
   }
-}
-class ViewBookedUsers extends StatelessWidget {
-  // final List<User> bookedUsers = [
-  //   User(name: 'John Doe', email: 'john@example.com', phoneNumber: '123-456-7890'),
-  //   User(name: 'Jane Doe', email: 'jane@example.com', phoneNumber: '987-654-3210'),
-  //   // Add more users as needed
-  // ];
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: 0,
-      itemBuilder: (context, index) {
-        // User user = bookedUsers[index];
-        return Card(
-          margin: EdgeInsets.all(8.0),
-          child: ListTile(
-            // title: Text(user.name),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Text('Email: ${user.email}'),
-                // Text('Phone: ${user.phoneNumber}'),
-                // Add more details as needed
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class User {
-  final String name;
-  final String email;
-  final String phoneNumber;
-
-  User({
-    required this.name,
-    required this.email,
-    required this.phoneNumber,
-  });
 }

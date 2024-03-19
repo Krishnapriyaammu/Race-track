@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loginrace/Racetrack/approvereject.dart';
 import 'package:loginrace/Racetrack/navigationracetrack.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -65,6 +66,20 @@ class _InstructorHomePageState extends State<InstructorHomePage> with SingleTick
 }
 
 class CoachTab extends StatelessWidget {
+
+
+    Future<List<DocumentSnapshot>> getData() async {
+    try {
+      final QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('race_track_add_coach')
+          .get();
+      print('Fetched ${snapshot.docs.length} documents');
+      return snapshot.docs;
+    } catch (e) {
+      print('Error fetching data: $e');
+      throw e; // Rethrow the error to handle it in the FutureBuilder
+    }
+  }
   var profileImage;
   XFile? pickedFile;
   File? image;
@@ -77,23 +92,56 @@ class CoachTab extends StatelessWidget {
 
   CoachTab({Key? key, this.selectedImage}) : super(key: key);
 
+
+
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // List of Coaches (Replace with your existing coach list widget)
         Expanded(
-          child: ListView.builder(
-            itemCount: 0, // Replace with the actual count of coaches
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text('Coach Name'),
-                subtitle: Text('About the Coach'),
-                leading: CircleAvatar(
-                  backgroundImage: AssetImage('assets/default_coach_image.jpg'), 
-                ),
+          child: FutureBuilder(
+            future: getData(),
+            builder: (context,AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            return ListView.builder(
+                itemCount: snapshot.data?.length ?? 0, 
+                itemBuilder: (context, index) {
+                  final document = snapshot.data![index];
+                         final id = snapshot.data![index].id;
+                         print(id);
+                        final data =
+                            document.data() as Map<String, dynamic>;
+                             final imageUrl = data['image_url'];
+                  return ListTile(
+                    title: Text(data['name'] ?? 'Name not available'),
+                    subtitle: Text(data['about'] ?? 'Name not available'),
+                  leading: imageUrl != null
+
+                          ? CircleAvatar(
+                                  backgroundImage: NetworkImage(imageUrl),
+                            radius: 30,
+                          )
+                            : CircleAvatar(
+                                  child: Icon(Icons.person),
+                                  radius: 30,
+                                ), 
+                                trailing:  IconButton(
+                              icon: Icon(Icons.edit),
+                              onPressed: () {
+                                // Handle edit action
+                                // You can navigate to the edit page or show a dialog for editing
+                              },
+                            ),    
+                  );
+                },
               );
-            },
+            }
+            }
           ),
         ),
 
@@ -196,13 +244,16 @@ class CoachTab extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () async{
-                                                  await uploadImage();
+                        await uploadImage();
+                         SharedPreferences sp = await SharedPreferences.getInstance();
+                     var a = sp.getString('uid');
 
-                       await FirebaseFirestore.instance.collection("racetrackaddcoach").add({
+                       await FirebaseFirestore.instance.collection("race_track_add_coach").add({
                        'name':name.text,
                        'about':about.text,
                        'experience':exp.text,
-                                                     'image_url': imageUrl,
+                       'image_url': imageUrl,
+                       'pro_id':a,
 
                       
                                          });
