@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:loginrace/Community/addcommunitydetails.dart';
+import 'package:loginrace/Community/communityhome.dart';
 import 'package:loginrace/Community/communityviewrequest.dart';
-import 'package:loginrace/Community/uploadcommunity.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({super.key});
@@ -14,10 +14,13 @@ class Navigation extends StatefulWidget {
 class _NavigationState extends State<Navigation> {
   int selectedindex=1;
 
-  static const List<dynamic> _widgetoption= [
+  static  List<dynamic> _widgetoption= [
+    //  UploadCommunity(),
+    // CommHome(),
+    ProfileViewPage(selectedImages: []),
     CommunityAbout(),
     CommunityViewRequest(),
-    UploadCommunity(),
+   
     // CommunityRegister(),
     
     

@@ -105,15 +105,22 @@ class _LoginState extends State<Login> {
 
     if (widget.type == 'community') {
       final QuerySnapshot commSnapshot = await FirebaseFirestore.instance
-          .collection('community register')
+          .collection('community_register')
           .where('name', isEqualTo: user.text)
           .where('password', isEqualTo: pass.text)
           .get();
 
       if (commSnapshot.docs.isNotEmpty) {
         var userid = commSnapshot.docs[0].id;
+          var image_url = commSnapshot.docs[0]['image_url'];
+            var username = commSnapshot.docs[0]['name'];
+
         SharedPreferences sp = await SharedPreferences.getInstance();
         sp.setString('uid', userid);
+          sp.setString('name', username);
+            sp.setString('image_url',image_url);
+
+
 
         Fluttertoast.showToast(msg: 'Login Successful as Community');
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {

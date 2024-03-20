@@ -15,15 +15,16 @@ class RaceTrackUploadEventimage extends StatefulWidget {
 }
 
 class _RaceTrackUploadEventimageState extends State<RaceTrackUploadEventimage> {
-      var DescriptionEdit = TextEditingController();
-  final fkey = GlobalKey<FormState>();
-  var profileImage;
-    String? nm;
+    TextEditingController evname = TextEditingController();
+  TextEditingController date = TextEditingController();
+  TextEditingController time = TextEditingController();
+  TextEditingController place = TextEditingController();
+  TextEditingController eventowner = TextEditingController();
+
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   XFile? pickedFile;
-
   File? _selectedImage;
-  String imageUrl = '';
 
   final picker = ImagePicker();
 
@@ -39,6 +40,34 @@ class _RaceTrackUploadEventimageState extends State<RaceTrackUploadEventimage> {
     });
   }
 
+  Future<void> uploadImage() async {
+    try {
+      if (_selectedImage != null) {
+        final Reference storageReference = FirebaseStorage.instance.ref().child('image/${DateTime.now()}.jpg');
+
+        await storageReference.putFile(_selectedImage!);
+        final String imageUrl = await storageReference.getDownloadURL();
+
+        // After uploading image, save event details along with imageUrl to Firestore
+        await FirebaseFirestore.instance.collection("racetrack_upload_event").add({
+          'event name': evname.text,
+          'date': date.text,
+          'time': time.text,
+          'place': place.text,
+          'eventowner': eventowner.text,
+          'image_url': imageUrl,
+        });
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => RaceTrackNavigation()),
+        );
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,15 +76,9 @@ class _RaceTrackUploadEventimageState extends State<RaceTrackUploadEventimage> {
       ),
       body: SingleChildScrollView(
         child: Form(
-          key: fkey,
+          key: formKey,
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  // Text('ENTER THE DETAILS:'),
-                ],
-              ),
               InkWell(
                 onTap: _pickImage,
                 child: Container(
@@ -78,12 +101,11 @@ class _RaceTrackUploadEventimageState extends State<RaceTrackUploadEventimage> {
                       : null,
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 child: TextFormField(
-                  maxLines: 5,
-                  controller: DescriptionEdit,
+                  controller: evname,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Field is empty';
@@ -91,11 +113,99 @@ class _RaceTrackUploadEventimageState extends State<RaceTrackUploadEventimage> {
                     return null;
                   },
                   decoration: InputDecoration(
-                    hintText: 'Describe here',
+                    hintText: 'Event name',
                     fillColor: Color.fromARGB(255, 180, 206, 251),
                     filled: true,
                     border: UnderlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.elliptical(20, 20)),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: TextFormField(
+                  controller: date,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Field is empty';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Event date',
+                    fillColor: Color.fromARGB(255, 180, 206, 251),
+                    filled: true,
+                    border: UnderlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: TextFormField(
+                  controller: time,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Field is empty';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Event time',
+                    fillColor: Color.fromARGB(255, 180, 206, 251),
+                    filled: true,
+                    border: UnderlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: TextFormField(
+                  controller: place,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Field is empty';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Place',
+                    fillColor: Color.fromARGB(255, 180, 206, 251),
+                    filled: true,
+                    border: UnderlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: TextFormField(
+                  controller: eventowner,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Field is empty';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Owner',
+                    fillColor: Color.fromARGB(255, 180, 206, 251),
+                    filled: true,
+                    border: UnderlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
                       borderSide: BorderSide.none,
                     ),
                   ),
@@ -104,19 +214,8 @@ class _RaceTrackUploadEventimageState extends State<RaceTrackUploadEventimage> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
-                  await uploadImage();
-                  await FirebaseFirestore.instance
-                      .collection("racetrack_upload_event")
-                      .add({
-                    'description': DescriptionEdit.text,
-                    'image_url': imageUrl,
-                  });
-                  if (fkey.currentState!.validate()) {
-                    print(DescriptionEdit.text);
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return RaceTrackNavigation();
-                    }));
+                  if (formKey.currentState!.validate()) {
+                    await uploadImage();
                   }
                 },
                 child: Text('UPLOAD'),
@@ -126,25 +225,5 @@ class _RaceTrackUploadEventimageState extends State<RaceTrackUploadEventimage> {
         ),
       ),
     );
-  }
-
-  Future<void> uploadImage() async {
-    try {
-      if (_selectedImage != null) {
-        print('_______________');
-        Reference storageReference = FirebaseStorage.instance
-            .ref()
-            .child('image/${nm}');
-
-        await storageReference.putFile(_selectedImage!);
-        // Get the download URL
-        imageUrl = await storageReference.getDownloadURL();
-
-        // Now you can use imageUrl as needed (e.g., save it to Firestore)
-        print('Image URL: $imageUrl');
-      }
-    } catch (e) {
-      print('Error uploading image: $e');
-    }
   }
 }

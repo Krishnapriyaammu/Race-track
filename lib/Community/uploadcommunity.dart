@@ -59,7 +59,7 @@ class AddCommunityTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Community'),
+        // title: Text('Add Community'),
         actions: [
           IconButton(
             icon: Icon(Icons.add),

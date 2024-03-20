@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loginrace/Common/Login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CommunityRegister extends StatefulWidget {
   const CommunityRegister({super.key});
@@ -266,6 +267,9 @@ String imageUrl='';
                           
                           
                           onPressed: () async {
+                                SharedPreferences sp =
+                            await SharedPreferences.getInstance();
+                        var a = sp.getString('uid');
                             await uploadImage();
                             
                             await FirebaseFirestore.instance
@@ -280,6 +284,7 @@ String imageUrl='';
                               'conform password': confirmPass.text,
                              
                               'image_url': imageUrl,
+                              'community_id': a
                             });
                             print(Name.text);
                               print(Email.text);

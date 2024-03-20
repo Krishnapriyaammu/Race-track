@@ -13,9 +13,12 @@ class ViewEvents extends StatefulWidget {
 }
 class _ViewEventsState extends State<ViewEvents> {
  TextEditingController _searchController = TextEditingController();
+     String imageUrl='';
 
 
- Future<List<DocumentSnapshot>> getData() async {
+
+
+   Future<List<DocumentSnapshot>> getData() async {
     try {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('racetrack_upload_event')
@@ -24,184 +27,158 @@ class _ViewEventsState extends State<ViewEvents> {
       return snapshot.docs;
     } catch (e) {
       print('Error fetching data: $e');
-      throw e; // Rethrow the error to handle it in the FutureBuilder
+      throw e;
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         leading: InkWell(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return Viewprofile();
-            }));
+            // Navigator.push(context, MaterialPageRoute(builder: (context) {
+            //   return RaceTrackViewProfile();
+            // }));
           },
-          child: Row(
-            children: [
-              Icon(
-                Icons.person_pin,
-                size: 40,
-                color: Colors.black, 
-              ),
-              SizedBox(width: 8),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: _searchController,
-                    style: TextStyle(color: Colors.black), 
-                    decoration: InputDecoration(
-                      hintText: 'Search',
-                      hintStyle: TextStyle(color: Colors.white70), 
-                      prefixIcon: Icon(Icons.search, color: Colors.black), 
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Icon(
+              Icons.person_pin,
+              size: 32,
+              color: Colors.black,
+            ),
           ),
         ),
+        title: Text(
+          'Events',
+          style: GoogleFonts.poppins(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Icon(
+              Icons.search,
+              color: Colors.black,
+            ),
+          ),
+        ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: InkWell(onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                        return EventTicketBooking();
-                                      }));
-            },
-              child: FutureBuilder(
-                future: getData(),
-                builder: (context,AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+      body: FutureBuilder(
+        future: getData(),
+        builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            return ListView.builder(
-                    itemCount: snapshot.data?.length ?? 0,
-                    itemBuilder: (context, index) {
-                     final document = snapshot.data![index];
-                       final data = document.data() as Map<String, dynamic>;
-                       final imageUrl = data['image_url'];
-
-
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+            return InkWell(onTap: () {
+               Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return EventTicketBooking();
+            }));
+            },
+              child: ListView.builder(
+                itemCount: snapshot.data?.length ?? 0,
+                itemBuilder: (context, index) {
+                  final document = snapshot.data![index];
+                  final data = document.data() as Map<String, dynamic>;
+                  final imageUrl = data['image_url'];
+              
+                  return ListTile(
+                    contentPadding: EdgeInsets.all(16),
+                    leading: Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 200, 225, 255),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: imageUrl != null
+                          ? Image.network(imageUrl, fit: BoxFit.cover)
+                          : Icon(Icons.image),
+                    ),
+                    title: Text(
+                      data['event name'] ?? 'Name not available',
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 8),
+                        Text(
+                          data['eventowner'] ?? 'Owner not available',
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Row(
                           children: [
-                            SizedBox(
-                              width: 300,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 8),
-                                      child: CircleAvatar(
-                                        child: imageUrl != null
-                                      ? Image.network(imageUrl, fit: BoxFit.cover)
-                                      : Icon(Icons.image),
-                                      ),
-                                    ),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 100),
-                                      child: Text(
-                                        data['Renter Name'] ?? 'Name not available',
-                                        style: GoogleFonts.getFont(
-                                          'Josefin Sans',
-                                          textStyle: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.blue, 
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                            Icon(
+                              Icons.calendar_today,
+                              size: 16,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(width: 4),
+                            Text(
+                              data['date'] ?? 'Date not available',
+                              style: GoogleFonts.poppins(
+                                color: Colors.grey,
                               ),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: Color.fromARGB(255, 196, 195, 195),
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [Colors.blue, Colors.white], 
-                                    ),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      ClipRRect(borderRadius: BorderRadius.circular(50)),
-                                      Image.asset('images/racing.jpg', height: 200),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                     data['Renter Name'] ?? 'Name not available',
-                                          style: GoogleFonts.getFont(
-                                            'Josefin Sans',
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white, 
-                                          ),
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Icon(Icons.calendar_month, color: Colors.white), 
-                                          ),
-                                          Text(
-                                            data['Renter Name'] ?? 'Name not available',
-                                            style: TextStyle(color: Colors.white), 
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Icon(Icons.assistant_photo, color: Colors.white),
-                                          ),
-                                          Text(
-                                            data['Renter Name'] ?? 'Name not available',
-                                            style: TextStyle(color: Colors.white),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                            SizedBox(width: 16),
+                            Icon(
+                              Icons.access_time,
+                              size: 16,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(width: 4),
+                            Text(
+                              data['time'] ?? 'Time not available',
+                              style: GoogleFonts.poppins(
+                                color: Colors.grey,
+                              ),
                             ),
                           ],
                         ),
-                      );
-                    },
+                        SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.location_on,
+                              size: 16,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                data['place'] ?? 'Place not available',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.grey,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   );
-                }
-                }
+                },
               ),
-            ),
-          ),
-        ],
+            );
+          }
+        },
       ),
     );
   }
