@@ -452,41 +452,61 @@ Future<void> uploadImage() async {
   }
 }
 class ViewBookedUsers extends StatelessWidget {
+   Future<List<DocumentSnapshot>> getdetail() async {
+    try {
+      final QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('user_track_booking')
+          .get();
+      print('Fetched ${snapshot.docs.length} documents');
+      return snapshot.docs;
+    } catch (e) {
+      print('Error fetching data: $e');
+      throw e; // Rethrow the error to handle it in the FutureBuilder
+    }
+  }
+  
+ 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('booked_users').snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Center(child: Text('No booked users available.'));
-        }
-        return ListView.builder(
-          itemCount: snapshot.data!.docs.length,
+    return FutureBuilder(
+      future: getdetail(),
+      builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            return ListView.builder(
+          itemCount:  snapshot.data?.length ?? 0,
           itemBuilder: (context, index) {
-            var userData = snapshot.data!.docs[index].data() as Map<String, dynamic>;
+            final document = snapshot.data![index];
+                final data = document.data() as Map<String, dynamic>;
             return Card(
               margin: EdgeInsets.all(8.0),
               child: ListTile(
-                title: Text(userData['name']),
+                // title: Text(user.name),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Contact Number: ${userData['contact_number']}'),
-                    Text('Address: ${userData['address']}'),
-                    // Add more details as needed
+                    Text( data['name'] ?? 'Name not available'),
+                      Text( data['email'] ?? 'email not available'),
+                   Text( data['place'] ?? 'place not available'),
+                    Text( data['phone'] ?? 'number not available'),
+                    Text( data['date'] ?? 'date not available'),
+
+
+
+
+                  
                   ],
                 ),
               ),
             );
           },
         );
-      },
+      }
+      }
     );
   }
+ 
 }

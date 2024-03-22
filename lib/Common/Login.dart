@@ -44,9 +44,16 @@ class _LoginState extends State<Login> {
       if (userSnapshot.docs.isNotEmpty) {
         print('______________________');
         var userid = userSnapshot.docs[0].id;
+          var image_url = userSnapshot.docs[0]['image_url'];
+            var username = userSnapshot.docs[0]['name'];
+
+
       
         SharedPreferences sp = await SharedPreferences.getInstance();
         sp.setString('uid', userid);
+          sp.setString('name', username);
+            sp.setString('image_url',image_url);
+
         if(userSnapshot.docs.isNotEmpty){
 
         Fluttertoast.showToast(msg: 'Login Successful as User');

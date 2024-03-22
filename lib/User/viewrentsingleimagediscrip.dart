@@ -5,7 +5,7 @@ import 'package:loginrace/User/userrentviewstatus.dart';
 class UserViewSingleItem extends StatefulWidget {
   var img;
   var desc;
-   UserViewSingleItem({super.key, required this.img, required this.desc});
+  UserViewSingleItem({super.key, required this.img, required this.desc});
 
   @override
   State<UserViewSingleItem> createState() => _UserViewSingleItemState();

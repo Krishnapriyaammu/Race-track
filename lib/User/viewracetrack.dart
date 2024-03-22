@@ -137,7 +137,7 @@ class _ViewRacetrackState extends State<ViewRacetrack> {
                                       ),
                                       SizedBox(height: 10),
                                       Text(
-                                            data['state'] ?? 'Name not available',
+                                            data['tracktype'] ?? 'Name not available',
                                         style: TextStyle(
                                           fontSize: 16,
                                         ),

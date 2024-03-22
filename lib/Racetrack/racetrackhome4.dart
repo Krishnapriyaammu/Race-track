@@ -110,6 +110,18 @@ class _TrackDetailsGalleryState extends State<TrackDetailsGallery> with SingleTi
                     labelText: 'Lap Record',
                   ),
                 ),
+                ElevatedButton(onPressed: (){
+
+              //  Navigator.push(
+              //                   context,
+              //                   MaterialPageRoute(builder: (context) {
+              //                     return RaceTrackNavigation();
+              //                   }),
+              //                 );
+                      // Navigator.of(context).pop();
+                    },
+                    child: Text('Upload'),
+                  ),
               ],
             ),
           ),

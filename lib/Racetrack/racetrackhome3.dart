@@ -244,6 +244,15 @@ class CoachTab extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () async{
+
+                        
+                  Reference storageReference = FirebaseStorage.instance
+                      .ref()
+                      .child('images/${DateTime.now().millisecondsSinceEpoch}.jpg');
+
+                  await storageReference.putFile(profileImage!);
+
+                  String imageUrl = await storageReference.getDownloadURL();
                         await uploadImage();
                          SharedPreferences sp = await SharedPreferences.getInstance();
                      var a = sp.getString('uid');
@@ -296,64 +305,71 @@ Future<void> uploadImage() async {
 }
 
 class UserTab extends StatelessWidget {
-  final List<User> bookedUsers = [
-    User(name: 'John Doe', email: 'john@example.com', phoneNumber: '123-456-7890',age:'23',date:'2-09-2024'),
-    User(name: 'Jane Doe', email: 'jane@example.com', phoneNumber: '987-654-3210',age:'20',date:'2-09-2024'),
-  ];
+  Future<List<DocumentSnapshot>> getdetails() async {
+    try {
+      final QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('coachbooking')
+          .get();
+      print('Fetched ${snapshot.docs.length} documents');
+      return snapshot.docs;
+    } catch (e) {
+      print('Error fetching data: $e');
+      throw e; // Rethrow the error to handle it in the FutureBuilder
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: bookedUsers.length,
-      itemBuilder: (context, index) {
-        User user = bookedUsers[index];
-        return Card(
-          margin: EdgeInsets.all(8.0),
-          child: InkWell(onTap: () {
-             Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                        return ApproveReject();
-                                      }));
-          },
-            child: ListTile(
-              title: Text(user.name),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Email: ${user.email}'),
-                  Text('Phone: ${user.phoneNumber}'),
-                  Text('age: ${user.age}'),
-                  Text('date:${user.date}'),
-                  // Add more details as needed
-                ],
+    return FutureBuilder(
+      future: getdetails(),
+      builder: (context,AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            return ListView.builder(
+          itemCount:  snapshot.data?.length ?? 0,
+          itemBuilder: (context, index) {
+
+              final document = snapshot.data![index];
+                final data = document.data() as Map<String, dynamic>;
+            return Card(
+              margin: EdgeInsets.all(8.0),
+              child: InkWell(onTap: () {
+                 Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                            return ApproveReject();
+                                          }));
+              },
+                child: ListTile(
+                  title: Text( data['date'] ?? 'Name not available'),
+
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                    Text( data['level'] ?? 'Name not available'),
+                    Text( data['time'] ?? 'Name not available'),
+                    
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
-      },
+      }
+      }
     );
   }
 }
 
-class User {
-  final String name;
-  final String email;
-  final String phoneNumber;
-  final String age;
-  final String date;
 
-  User({
-    required this.name,
-    required this.email,
-    required this.phoneNumber,
-    required this.age,
-    required this.date,
-  });
-}
 
 class AcceptedUser extends StatelessWidget {
- final List<User> bookedUsers = [
-    User(name: 'John Doe', email: 'john@example.com', phoneNumber: '123-456-7890',age:'23',date:'2-09-2024'),
-    User(name: 'Jane Doe', email: 'jane@example.com', phoneNumber: '987-654-3210',age:'20',date:'2-09-2024'),
+ final List<User2> bookedUsers = [
+    User2(name: 'John Doe', email: 'john@example.com', phoneNumber: '123-456-7890',age:'23',date:'2-09-2024'),
+    User2(name: 'Jane Doe', email: 'jane@example.com', phoneNumber: '987-654-3210',age:'20',date:'2-09-2024'),
   ];
 
   @override
@@ -361,7 +377,7 @@ class AcceptedUser extends StatelessWidget {
     return ListView.builder(
       itemCount: bookedUsers.length,
       itemBuilder: (context, index) {
-        User user = bookedUsers[index];
+        User2 user = bookedUsers[index];
         return Card(
           margin: EdgeInsets.all(8.0),
           child: InkWell(onTap: () {

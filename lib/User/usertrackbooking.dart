@@ -14,7 +14,6 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
   var email = TextEditingController();
   var phone = TextEditingController();
   var place = TextEditingController();
-  var track = TextEditingController();
   var date=TextEditingController();
 
 
@@ -81,12 +80,7 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
                           }
                           return null;
                         }),
-                          buildTextFieldRow('Track', Icons.art_track, track, (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter your track';
-                          }
-                          return null;
-                        }),
+                         
                           buildTextFieldRow('date', Icons.date_range, date, (value) {
                           if (value!.isEmpty) {
                             return 'Please enter date';
@@ -96,12 +90,11 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
                         SizedBox(height: 40),
                         ElevatedButton(
                           onPressed: () async {
-                             await FirebaseFirestore.instance.collection("usetrackbooking").add({
+                             await FirebaseFirestore.instance.collection("user_track_booking").add({
                          'name':name.text,
                          'email':email.text,
                          'phone':phone.text,
                          'place':place.text,
-                         'track':track.text,
                          'date':date.text,
                          
                      });

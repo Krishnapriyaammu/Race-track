@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:loginrace/User/coachbookingstatus.dart';
 import 'package:loginrace/User/viewstatusinstructorbooking.dart';
 
 class ViewInstructor extends StatefulWidget {
@@ -21,8 +22,10 @@ class _ViewInstructorState extends State<ViewInstructor> {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('race_track_add_coach')
           .get();
+          
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;
+     
     } catch (e) {
       print('Error fetching data: $e');
       throw e; // Rethrow the error to handle it in the FutureBuilder
@@ -103,7 +106,7 @@ class _ViewInstructorState extends State<ViewInstructor> {
                   });
 
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                    return MyBookingsStatusPage();
+                    return CoachBookingStatus(date: dateController.text, time: timeController.text, level: selectedLevel,img: widget.img,);
                   }));
                 },
                 style: ElevatedButton.styleFrom(
@@ -160,8 +163,10 @@ class _ViewInstructorState extends State<ViewInstructor> {
            
             return Column(
               
+              
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  
                   Align(
                    
 
@@ -177,6 +182,7 @@ class _ViewInstructorState extends State<ViewInstructor> {
                   ),
                   SizedBox(height: 8),
                   Container(
+                    
                     height: 130,
                     width: 90,
                     child: widget.img != null
@@ -208,25 +214,13 @@ class _ViewInstructorState extends State<ViewInstructor> {
                   ),
                 
                 ],
+                
               );
+              
             }
             }
           ),
         ),
-      ),
-    );
-  }
-}
-
-class MyBookingsStatusPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Booking Status'),
-      ),
-      body: Center(
-        child: Text('Your booking request has been submitted!'),
       ),
     );
   }
