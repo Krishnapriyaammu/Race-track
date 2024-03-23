@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:loginrace/Racetrack/eventdetails.dart';
 import 'package:loginrace/Racetrack/uploadeventimage.dart';
 import 'package:loginrace/Racetrack/viewprofileracetrack.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RaceTrackViewEvents extends StatefulWidget {
   const RaceTrackViewEvents({super.key});
@@ -21,8 +22,12 @@ class _RaceTrackViewEventsState extends State<RaceTrackViewEvents> {
 
    Future<List<DocumentSnapshot>> getData() async {
     try {
+        SharedPreferences sp = await SharedPreferences.getInstance();
+                     var a = sp.getString('uid');
+
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('racetrack_upload_event')
+          .collection('racetrack_upload_event').where('uid',isEqualTo: a)
+          
           .get();
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;

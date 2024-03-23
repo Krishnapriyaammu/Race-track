@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:loginrace/Racetrack/navigationracetrack.dart';
 import 'package:loginrace/Racetrack/track.dart';
 import 'package:loginrace/Racetrack/trackdetails.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RaceTrackViewRace extends StatefulWidget {
   const RaceTrackViewRace({super.key});
@@ -30,8 +31,10 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
 
     Future<List<DocumentSnapshot>> getData() async {
     try {
+       SharedPreferences sp = await SharedPreferences.getInstance();
+                     var a = sp.getString('uid');
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('racetrack_upload_track')
+          .collection('racetrack_upload_track').where('uid',isEqualTo: a)
           .get();
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;
@@ -371,6 +374,8 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                   ),
                   ElevatedButton(
                     onPressed: ()  async{
+                      SharedPreferences sp = await SharedPreferences.getInstance();
+                     var a = sp.getString('uid');
                                       await uploadImage();
 
                        await FirebaseFirestore.instance.collection("racetrack_upload_track").add({
@@ -379,6 +384,7 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                          'tracktype':tracktype.text,
                          'place':Place.text,
                           'image_url': imageUrl,
+                          'uid':a,
 
                         
                                            });

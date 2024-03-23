@@ -70,8 +70,10 @@ class CoachTab extends StatelessWidget {
 
     Future<List<DocumentSnapshot>> getData() async {
     try {
+       SharedPreferences sp = await SharedPreferences.getInstance();
+                     var a = sp.getString('uid');
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('race_track_add_coach')
+          .collection('race_track_add_coach').where('uid',isEqualTo: a)
           .get();
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;
@@ -119,7 +121,14 @@ class CoachTab extends StatelessWidget {
                              final imageUrl = data['image_url'];
                   return ListTile(
                     title: Text(data['name'] ?? 'Name not available'),
-                    subtitle: Text(data['about'] ?? 'Name not available'),
+                    subtitle: Column(
+                      children: [
+                        Text(data['about'] ?? 'Name not available'),
+                        Text(data['experience']?? 'experience not available'),
+                      ],
+                    ),
+                    
+                    
                   leading: imageUrl != null
 
                           ? CircleAvatar(
@@ -260,9 +269,9 @@ class CoachTab extends StatelessWidget {
                        await FirebaseFirestore.instance.collection("race_track_add_coach").add({
                        'name':name.text,
                        'about':about.text,
-                       'experience':exp.text,
+                       'experience':selectedExperience,
                        'image_url': imageUrl,
-                       'pro_id':a,
+                       'uid':a,
 
                       
                                          });
@@ -343,13 +352,13 @@ class UserTab extends StatelessWidget {
                                           }));
               },
                 child: ListTile(
-                  title: Text( data['date'] ?? 'Name not available'),
+                  title: Text( data['date'] ?? 'date not available'),
 
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                    Text( data['level'] ?? 'Name not available'),
-                    Text( data['time'] ?? 'Name not available'),
+                    Text( data['level'] ?? 'level not available'),
+                    Text( data['time'] ?? 'time not available'),
                     
                     ],
                   ),

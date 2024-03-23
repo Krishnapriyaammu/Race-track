@@ -17,8 +17,11 @@ class _RentalServicePageState extends State<RentalServicePage> {
 
     Future<List<DocumentSnapshot>> getData() async {
     try {
+       SharedPreferences sp = await SharedPreferences.getInstance();
+                     var a = sp.getString('uid');
+
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('rental_add_service')
+          .collection('rental_add_service').where('uid',isEqualTo: a)
           .get();
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;
@@ -214,7 +217,7 @@ class _RentalServicePageState extends State<RentalServicePage> {
                 
                 await uploadImage();
                 SharedPreferences sp = await SharedPreferences.getInstance();
- var a = sp.getString('uid');
+                 var a = sp.getString('uid');
 
                 await FirebaseFirestore.instance
                     .collection('rental_add_service')

@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/Racetrack/navigationracetrack.dart';
 import 'package:loginrace/Racetrack/racetrackhome1.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RaceTrackUploadEventimage extends StatefulWidget {
   const RaceTrackUploadEventimage({super.key});
@@ -41,6 +42,9 @@ class _RaceTrackUploadEventimageState extends State<RaceTrackUploadEventimage> {
   }
 
   Future<void> uploadImage() async {
+
+     SharedPreferences sp = await SharedPreferences.getInstance();
+     var a = sp.getString('uid');
     try {
       if (_selectedImage != null) {
         final Reference storageReference = FirebaseStorage.instance.ref().child('image/${DateTime.now()}.jpg');
@@ -56,6 +60,7 @@ class _RaceTrackUploadEventimageState extends State<RaceTrackUploadEventimage> {
           'place': place.text,
           'eventowner': eventowner.text,
           'image_url': imageUrl,
+          'uid':a,
         });
 
         Navigator.pushReplacement(
