@@ -1,116 +1,99 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:loginrace/Racetrack/editprofile.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:loginrace/Common/Login.dart';
 
 class RaceTrackViewProfile extends StatefulWidget {
- var img;
- var name;
- var email;
- var mobile_no;
- var place;
- var proof;
- 
-   RaceTrackViewProfile({super.key});
+  final String userId;
+
+  const RaceTrackViewProfile({Key? key, required this.userId}) : super(key: key);
 
   @override
-  State<RaceTrackViewProfile> createState() => _RaceTrackViewProfileState();
+  _UserProfileViewState createState() => _UserProfileViewState();
 }
 
-class _RaceTrackViewProfileState extends State<RaceTrackViewProfile> {
-   Future<List<DocumentSnapshot>> getdata() async {
-    try {
-       SharedPreferences sp = await SharedPreferences.getInstance();
-        var a = sp.getString('uid');
-      final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('race_track_register').where('uid', isEqualTo: a)
-          .get();
-          
-      print('Fetched ${snapshot.docs.length} documents');
-      return snapshot.docs;
-     
-    } catch (e) {
-      print('Error fetching data: $e');
-      throw e; // Rethrow the error to handle it in the FutureBuilder
-    }
+class _UserProfileViewState extends State<RaceTrackViewProfile> {
+  late Future<DocumentSnapshot> userData;
+
+  @override
+  void initState() {
+    super.initState();
+    userData = getUserData();
   }
 
-
+  Future<DocumentSnapshot> getUserData() async {
+    return await FirebaseFirestore.instance
+        .collection('race_track_register')
+        .doc(widget.userId)
+        .get();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('User Profile'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return Login(type: 'race track');
+              }));
+            },
+          ),
+        ],
+      ),
+    body: FutureBuilder<DocumentSnapshot>(
+        future: userData,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          if (!snapshot.hasData || snapshot.data == null) {
+            return Center(child: Text('No data available'));
+          }
 
-appBar: AppBar(
-  
-  
-          title: Text('View Profile'),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.edit_note_outlined),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return YourPage();
-                  },));
-              },
-            ),
-          ],
-        ),
-        body: 
-              Center(
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 330),
-        child: FutureBuilder(
-          future: getdata(),
-          builder: (context,snapshot) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              // crossAxisAlignment: CrossAxisAlignment.center,
-               mainAxisSize: MainAxisSize.min,
+          var data = snapshot.data!.data() as Map<String, dynamic>;
+          var imageUrl = data['image_url'] as String?;
+
+           return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-               Container(
-                    
-                    height: 130,
-                    width: 90,
-                    child: widget.img != null
-                           ? Image.network(widget.img, fit: BoxFit.cover)
-                           : Icon(Icons.image),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 100),
+                  child: CircleAvatar(
+                    radius: 70,
+                    backgroundColor: Colors.blue,
+                    backgroundImage: imageUrl != null ? NetworkImage(imageUrl) : null,
+                    child: imageUrl == null ? Icon(Icons.person, size: 70, color: Colors.white) : null,
                   ),
-                SizedBox(height: 16),
-                Text(
-                   widget.name ?? 'name not available',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 8),
-                Text(
-                   widget.email ?? 'name not available',
-                  style: TextStyle(fontSize: 16),
-                ),
-                SizedBox(height: 8),
-                Text(
-                   widget.mobile_no ?? 'name not available',
-                  style: TextStyle(fontSize: 16),
-                ),
-                SizedBox(height: 8),
-                Text(
-                   widget.place ?? 'name not available',
-                  style: TextStyle(fontSize: 16),
-                ),
-                SizedBox(height: 8),
-                Text(
-                   widget.proof ?? 'name not available',
-                  style: TextStyle(fontSize: 16),
+                Padding(
+                  padding: const EdgeInsets.all(40),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(' ${data['name']}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      SizedBox(height: 10),
+                      Text(' ${data['email']}', style: TextStyle(fontSize: 16)),
+                      SizedBox(height: 10),
+                      Text(' ${data['mobile_no']}', style: TextStyle(fontSize: 16)),
+                      SizedBox(height: 10),
+                      Text(' ${data['place']}', style: TextStyle(fontSize: 16)),
+                      SizedBox(height: 10),
+                      Text('Proof: ${data['proof']}', style: TextStyle(fontSize: 16)),
+                    ],
+                  ),
                 ),
               ],
-            );
-          }
-        ),
+            ),
+          );
+        },
       ),
-
-
-     ),
-
-
     );
   }
 }

@@ -192,7 +192,7 @@ class _UserEditProfileState extends State<UserEditProfile> {
                           onPressed: () async {
                             await uploadImage();
                             await FirebaseFirestore.instance
-                                .collection('user edit profile')
+                                .collection('usereditprofile')
                                 .add({
                               'name': Name.text,
                               'email': Email.text,
@@ -210,7 +210,7 @@ class _UserEditProfileState extends State<UserEditProfile> {
                                if (fkey.currentState!.validate()) {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
-                              return Viewprofile();
+                              return Viewprofile(userId: 'userId',);
                                 
                             }));
                                }

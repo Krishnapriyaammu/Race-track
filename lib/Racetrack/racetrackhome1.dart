@@ -38,14 +38,16 @@ class _RaceTrackViewEventsState extends State<RaceTrackViewEvents> {
   }
 
   @override
-  Widget build(BuildContext context) {
+   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: InkWell(
-          onTap: () {
+          onTap: () async {
+            SharedPreferences sp = await SharedPreferences.getInstance();
+            String userId = sp.getString('uid') ?? '';
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return RaceTrackViewProfile();
+              return RaceTrackViewProfile(userId: userId);
             }));
           },
           child: Padding(
@@ -83,106 +85,86 @@ class _RaceTrackViewEventsState extends State<RaceTrackViewEvents> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            return InkWell(onTap: () {
-                Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => EventDetaild()),
-          );
-            },
-              child: ListView.builder(
-                itemCount: snapshot.data?.length ?? 0,
-                itemBuilder: (context, index) {
-                  final document = snapshot.data![index];
-                  final data = document.data() as Map<String, dynamic>;
-                  final imageUrl = data['image_url'];
-              
-                  return ListTile(
-                    contentPadding: EdgeInsets.all(16),
-                    leading: Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 200, 225, 255),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: imageUrl != null
-                          ? Image.network(imageUrl, fit: BoxFit.cover)
-                          : Icon(Icons.image),
+            return GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // Number of columns
+                crossAxisSpacing: 10.0,
+                mainAxisSpacing: 10.0,
+              ),
+              itemCount: snapshot.data?.length ?? 0,
+              itemBuilder: (context, index) {
+                final document = snapshot.data![index];
+                final data = document.data() as Map<String, dynamic>;
+                final imageUrl = data['image_url'];
+
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => EventDetaild()),
+                    );
+                  },
+                  child: Card(
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
                     ),
-                    title: Text(
-                      data['event name'] ?? 'Name not available',
-                      style: GoogleFonts.poppins(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        SizedBox(height: 8),
-                        Text(
-                          data['eventowner'] ?? 'Owner not available',
-                          style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            color: Colors.grey,
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10.0),
+                                topRight: Radius.circular(10.0),
+                              ),
+                              image: DecorationImage(
+                                image: NetworkImage(imageUrl),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
                         ),
-                        SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.calendar_today,
-                              size: 16,
-                              color: Colors.grey,
-                            ),
-                            SizedBox(width: 4),
-                            Text(
-                              data['date'] ?? 'Date not available',
-                              style: GoogleFonts.poppins(
-                                color: Colors.grey,
-                              ),
-                            ),
-                            SizedBox(width: 16),
-                            Icon(
-                              Icons.access_time,
-                              size: 16,
-                              color: Colors.grey,
-                            ),
-                            SizedBox(width: 4),
-                            Text(
-                              data['time'] ?? 'Time not available',
-                              style: GoogleFonts.poppins(
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.location_on,
-                              size: 16,
-                              color: Colors.grey,
-                            ),
-                            SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
-                                data['place'] ?? 'Place not available',
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                data['event name'] ?? 'Name not available',
                                 style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                data['eventowner'] ?? 'Owner not available',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
                                   color: Colors.grey,
                                 ),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
                               ),
-                            ),
-                          ],
+                              SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Icon(Icons.calendar_today, size: 16, color: Colors.grey),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    data['date'] ?? 'Date not available',
+                                    style: GoogleFonts.poppins(color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             );
           }
         },

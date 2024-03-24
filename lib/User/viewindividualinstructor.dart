@@ -5,6 +5,7 @@ import 'package:loginrace/User/coachbookingstatus.dart';
 import 'package:loginrace/User/viewstatusinstructorbooking.dart';
 
 class ViewInstructor extends StatefulWidget {
+
   String id;
   var img;
   var name;
@@ -20,7 +21,7 @@ class _ViewInstructorState extends State<ViewInstructor> {
    Future<List<DocumentSnapshot>> getData() async {
     try {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('race_track_add_coach')
+          .collection('race_track_add_coach').where('pro_id',isEqualTo: widget.id)
           .get();
           
       print('Fetched ${snapshot.docs.length} documents');

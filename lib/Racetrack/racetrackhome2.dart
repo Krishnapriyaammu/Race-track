@@ -213,7 +213,7 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
               ],
             ),
 
-                   ViewBookedUsers(), 
+                   ViewBookedUsers(raceTrackId: 'raceTrackId'), 
 
             
           ],
@@ -454,65 +454,62 @@ Future<void> uploadImage() async {
       }
     } catch (e) {
       print('Error uploading image: $e');
-    }
+    }                                
   }
 }
 class ViewBookedUsers extends StatelessWidget {
-   Future<List<DocumentSnapshot>> getdetail() async {
+  final String raceTrackId;
+
+  ViewBookedUsers({required this.raceTrackId});  
+
+  Future<List<DocumentSnapshot>> getdetail() async {
     try {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('user_track_booking')
+          .where('race_track_id', isEqualTo: raceTrackId)
           .get();
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;
     } catch (e) {
       print('Error fetching data: $e');
-      throw e; // Rethrow the error to handle it in the FutureBuilder
+      throw e;
     }
   }
-  
- 
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: getdetail(),
       builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            return ListView.builder(
-          itemCount:  snapshot.data?.length ?? 0,
-          itemBuilder: (context, index) {
-            final document = snapshot.data![index];
-                final data = document.data() as Map<String, dynamic>;
-            return Card(
-              margin: EdgeInsets.all(8.0),
-              child: ListTile(
-                // title: Text(user.name),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text( data['name'] ?? 'Name not available'),
-                      Text( data['email'] ?? 'email not available'),
-                   Text( data['place'] ?? 'place not available'),
-                    Text( data['phone'] ?? 'number not available'),
-                    Text( data['date'] ?? 'date not available'),
-
-
-
-
-                  
-                  ],
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          return ListView.builder(
+            itemCount: snapshot.data?.length ?? 0,
+            itemBuilder: (context, index) {
+              final document = snapshot.data![index];
+              final data = document.data() as Map<String, dynamic>;
+              return Card(
+                margin: EdgeInsets.all(8.0),
+                child: ListTile(
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(data['name'] ?? 'Name not available'),
+                      Text(data['email'] ?? 'Email not available'),
+                      Text(data['place'] ?? 'Place not available'),
+                      Text(data['phone'] ?? 'Phone not available'),
+                      Text(data['date'] ?? 'Date not available'),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
-        );
-      }
-      }
+              );
+            },
+          );
+        }
+      },
     );
   }
- 
 }

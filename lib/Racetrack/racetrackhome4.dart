@@ -34,6 +34,7 @@ Future<List<DocumentSnapshot>> getData() async {
 
   var track = TextEditingController();
   var surface = TextEditingController();
+  var length=TextEditingController();
   var turns = TextEditingController();
   var record = TextEditingController();
   File? _selectedImage;
@@ -110,6 +111,14 @@ Future<List<DocumentSnapshot>> getData() async {
                     border: OutlineInputBorder(),
                   ),
                 ),
+                 SizedBox(height: 16),
+                TextField(
+                  controller: length,
+                  decoration: InputDecoration(
+                    labelText: ' Length',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
                 SizedBox(height: 16),
                 TextField(
                   controller: turns,
@@ -143,6 +152,7 @@ Future<List<DocumentSnapshot>> getData() async {
                        await FirebaseFirestore.instance.collection("race_track_add_track").add({
                        'track':track.text,
                        'surface':surface.text,
+                       'length':length.text,
                        'turns':turns.text,
                        'record':record.text,
                        'image_url': imageUrl,

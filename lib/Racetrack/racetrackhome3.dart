@@ -70,10 +70,10 @@ class CoachTab extends StatelessWidget {
 
     Future<List<DocumentSnapshot>> getData() async {
     try {
-       SharedPreferences sp = await SharedPreferences.getInstance();
-                     var a = sp.getString('uid');
+     
+      
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('race_track_add_coach').where('uid',isEqualTo: a)
+          .collection('race_track_add_coach')
           .get();
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;
@@ -264,14 +264,16 @@ class CoachTab extends StatelessWidget {
                   String imageUrl = await storageReference.getDownloadURL();
                         await uploadImage();
                          SharedPreferences sp = await SharedPreferences.getInstance();
-                     var a = sp.getString('uid');
+                          var uid = sp.getString('uid');
+                
 
                        await FirebaseFirestore.instance.collection("race_track_add_coach").add({
                        'name':name.text,
                        'about':about.text,
                        'experience':selectedExperience,
                        'image_url': imageUrl,
-                       'uid':a,
+                         'pro_id':uid,
+                   
 
                       
                                          });

@@ -75,8 +75,14 @@ class _LoginState extends State<Login> {
 
       if (raceSnapshot.docs.isNotEmpty) {
         var userid = raceSnapshot.docs[0].id;
+         var image_url = raceSnapshot.docs[0]['image_url'];
+            var username = raceSnapshot.docs[0]['name'];
+
         SharedPreferences sp = await SharedPreferences.getInstance();
         sp.setString('uid', userid);
+         sp.setString('name', username);
+            sp.setString('image_url',image_url);
+
 
         Fluttertoast.showToast(msg: 'Login Successful as Race Track');
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
