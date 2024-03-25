@@ -57,8 +57,8 @@ class _UserViewRentHomeState extends State<UserViewRentHome>
    Future<List<DocumentSnapshot>> getData() async {
     try {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('rentaluploadimage')
-          .where('pro_id',isEqualTo: widget.id)
+          .collection('rental_upload_image')
+          .where('uid',isEqualTo: widget.id)
           .where('category',isEqualTo: 'Bikes')
           .get();
       print('Fetched ${snapshot.docs.length} documents');
@@ -124,8 +124,8 @@ class _UserViewRentHomeState extends State<UserViewRentHome>
 Future<List<DocumentSnapshot>> getdata() async {
     try {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('rentaluploadimage')
-          .where('pro_id',isEqualTo: widget.id)
+          .collection('rental_upload_image')
+          .where('uid',isEqualTo: widget.id)
           .where('category',isEqualTo: 'Cars')
           .get();
       print('Fetched ${snapshot.docs.length} documents');
@@ -197,9 +197,9 @@ Future<List<DocumentSnapshot>> getdata() async {
    Future<List<DocumentSnapshot>> getdatas() async {
     try {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('rentaluploadimage')
-          .where('pro_id',isEqualTo: widget.id)
-          .where('category',isEqualTo: 'Cars')
+          .collection('rental_upload_image')
+          .where('uid',isEqualTo: widget.id)
+          .where('category',isEqualTo: 'Grocery')
           .get();
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;

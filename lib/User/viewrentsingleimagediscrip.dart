@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/User/userrentviewstatus.dart';
@@ -5,7 +6,8 @@ import 'package:loginrace/User/userrentviewstatus.dart';
 class UserViewSingleItem extends StatefulWidget {
   var img;
   var desc;
-  UserViewSingleItem({super.key, required this.img, required this.desc});
+  
+  UserViewSingleItem({super.key, required this.img, required this.desc,});
 
   @override
   State<UserViewSingleItem> createState() => _UserViewSingleItemState();
@@ -22,7 +24,7 @@ class _UserViewSingleItemState extends State<UserViewSingleItem> {
       Future<List<DocumentSnapshot>> getData() async {
       try {
         final QuerySnapshot snapshot = await FirebaseFirestore.instance
-            .collection('rentaluploadimage')
+            .collection('rental_upload_image')
             .get();
         print('Fetched ${snapshot.docs.length} documents');
         return snapshot.docs;
@@ -103,6 +105,8 @@ appBar: AppBar(
                                     SizedBox(height: 10.0),
                                     ElevatedButton(
                                       onPressed: ()async {
+
+
                                          await FirebaseFirestore.instance
                                 .collection('user_rent_booking')
                                 .add({
@@ -110,7 +114,7 @@ appBar: AppBar(
                               'address':address.text,
                               
                               'mobile no': Mobile.text,
-                              'due date':duedate.text,
+                              'due_date':duedate.text,
                               'hours':hours.text,
                              
                             });
@@ -120,7 +124,7 @@ appBar: AppBar(
                               print(Mobile.text);
                              
                                        Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return UserRentViewStatus();
+                            return UserRentViewStatus(img:widget.img,desc: widget.desc,due_date: duedate.text,);
                   },));
                                         // Navigator.of(context).pop();
                                       },

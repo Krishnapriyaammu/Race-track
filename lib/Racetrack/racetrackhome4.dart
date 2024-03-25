@@ -138,6 +138,9 @@ Future<List<DocumentSnapshot>> getData() async {
                 SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: ()async{
+                     SharedPreferences sp = await SharedPreferences.getInstance();
+                          var uid = sp.getString('uid');
+                
 
                         
                   Reference storageReference = FirebaseStorage.instance
@@ -156,6 +159,7 @@ Future<List<DocumentSnapshot>> getData() async {
                        'turns':turns.text,
                        'record':record.text,
                        'image_url': imageUrl,
+                       'uid':uid,
 
                       
                                          });
@@ -295,7 +299,7 @@ Future<List<DocumentSnapshot>> getData() async {
                   ElevatedButton(
                     onPressed: () async {
                        SharedPreferences sp = await SharedPreferences.getInstance();
-                     var a = sp.getString('uid');
+                     var uid = sp.getString('uid');
                       Reference storageReference = FirebaseStorage.instance
                       .ref()
                       .child('images/${DateTime.now().millisecondsSinceEpoch}.jpg');
@@ -309,7 +313,7 @@ Future<List<DocumentSnapshot>> getData() async {
                        await FirebaseFirestore.instance.collection("race_track_add_gallery").add({
                       
                        'image_url': imageUrl,
-                       'uid':a,
+                       'uid':uid,
                        
 
                       

@@ -70,16 +70,17 @@ class CoachTab extends StatelessWidget {
 
     Future<List<DocumentSnapshot>> getData() async {
     try {
-     
+      SharedPreferences sp = await SharedPreferences.getInstance();
+                     var a = sp.getString('uid');
       
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('race_track_add_coach')
+          .collection('race_track_add_coach').where('uid',isEqualTo: a)
           .get();
-      print('Fetched ${snapshot.docs.length} documents');
+      print('Fetched ${snapshot.docs.length} documents......');
       return snapshot.docs;
     } catch (e) {
       print('Error fetching data: $e');
-      throw e; // Rethrow the error to handle it in the FutureBuilder
+      throw e; 
     }
   }
   var profileImage;
@@ -114,8 +115,8 @@ class CoachTab extends StatelessWidget {
                 itemCount: snapshot.data?.length ?? 0, 
                 itemBuilder: (context, index) {
                   final document = snapshot.data![index];
-                         final id = snapshot.data![index].id;
-                         print(id);
+                        //  final id = snapshot.data![index].id;
+                        //  print(id);
                         final data =
                             document.data() as Map<String, dynamic>;
                              final imageUrl = data['image_url'];
@@ -263,24 +264,30 @@ class CoachTab extends StatelessWidget {
 
                   String imageUrl = await storageReference.getDownloadURL();
                         await uploadImage();
-                         SharedPreferences sp = await SharedPreferences.getInstance();
-                          var uid = sp.getString('uid');
-                
+                        SharedPreferences sp = await SharedPreferences.getInstance();
+                     var a = sp.getString('uid');
 
                        await FirebaseFirestore.instance.collection("race_track_add_coach").add({
                        'name':name.text,
                        'about':about.text,
                        'experience':selectedExperience,
                        'image_url': imageUrl,
-                         'pro_id':uid,
+                       'uid':a,
+
                    
 
                       
                                          });
                       
                       print('Add Coach');
+                       Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) {
+                                  return InstructorHomePage();
+                                }),
+                              );
 
-                      Navigator.of(context).pop();
+                      // Navigator.of(context).pop();
                     },
                     child: Text('Add'),
                   ),

@@ -1,9 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:loginrace/User/addpaymentdetails.dart';
 import 'package:loginrace/User/payemettype.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserTrackBooking extends StatefulWidget {
-  const UserTrackBooking({Key? key}) : super(key: key);
+  String rt_id;
+  
+   UserTrackBooking({Key? key, required this. rt_id, }) : super(key: key);
 
   @override
   State<UserTrackBooking> createState() => _UserTrackBookingState();
@@ -64,14 +68,12 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
                           if (value!.isEmpty) {
                             return 'Please enter your email';
                           }
-                          // You can add more advanced email validation logic if needed
                           return null;
                         }),
                         buildTextFieldRow('Phone Number', Icons.phone, phone, (value) {
                           if (value!.isEmpty) {
                             return 'Please enter your phone number';
                           }
-                          // You can add more advanced phone number validation logic if needed
                           return null;
                         }),
                         buildTextFieldRow('Place', Icons.location_on, place, (value) {
@@ -81,22 +83,24 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
                           return null;
                         }),
                          
-                          buildTextFieldRow('date', Icons.date_range, date, (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter date';
-                          }
-                          return null;
-                        }),
+                      
                         SizedBox(height: 40),
                         ElevatedButton(
                           onPressed: () async {
+                             
+                  SharedPreferences sp = await SharedPreferences.getInstance();
+                          var uid = sp.getString('uid');
+                
                             
                              await FirebaseFirestore.instance.collection("user_track_booking").add({
                          'name':name.text,
                          'email':email.text,
                          'phone':phone.text,
                          'place':place.text,
-                         'date':date.text,
+                         'uid':uid,
+                           
+                         'rt_id': widget.rt_id,
+
                          
                      });
                             if (_formKey.currentState!.validate()) {

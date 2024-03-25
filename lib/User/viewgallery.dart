@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ViewGallery extends StatefulWidget {
-  const ViewGallery({super.key});
+  String rt_id;
+   ViewGallery({super.key,required this.rt_id});
 
   @override
   State<ViewGallery> createState() => _ViewGalleryState();
@@ -14,10 +15,11 @@ class _ViewGalleryState extends State<ViewGallery> {
      Future<List<DocumentSnapshot>> getdata() async {
     try {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('race_track_add_gallery')
+          .collection('race_track_add_gallery').where('uid',isEqualTo: widget.rt_id)
           .get();
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;
+
     } catch (e) {
       print('Error fetching data: $e');
       throw e;

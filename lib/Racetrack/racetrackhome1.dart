@@ -101,7 +101,7 @@ class _RaceTrackViewEventsState extends State<RaceTrackViewEvents> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => EventDetaild()),
+                      MaterialPageRoute(builder: (context) => EventTicketAddPage()),
                     );
                   },
                   child: Card(

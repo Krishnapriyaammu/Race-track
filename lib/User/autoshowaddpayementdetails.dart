@@ -198,9 +198,9 @@ body:
                             });
                             if (fkey.currentState!.validate()) {
                
-                           Navigator.push(context, MaterialPageRoute(builder: (context) {
-                              return PayementType();
-                    },));
+                    //        Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    //           return PayementType();
+                    // },));
                         }
                         },
                         style:ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.blue)),

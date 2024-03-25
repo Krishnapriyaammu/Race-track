@@ -78,7 +78,8 @@ class _UserFeedbackState extends State<UserFeedback> {
                     SharedPreferences sp = await SharedPreferences.getInstance();
                       var name = sp.getString('name');
                       var img = sp.getString('image_url');
-                      
+                       var uid = sp.getString('uid');
+
                     await FirebaseFirestore.instance
                         .collection('user_send_feedback')
                         .add({
@@ -86,6 +87,7 @@ class _UserFeedbackState extends State<UserFeedback> {
                       'rating': _userRating,
                       'username':name,
                       'image_url':img,
+                      'uid':uid,
                     });
 
                     if (_formKey.currentState!.validate()) {

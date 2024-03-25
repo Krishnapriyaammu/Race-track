@@ -214,11 +214,11 @@ class _RentalServicePageState extends State<RentalServicePage> {
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: () async {
-                
-                await uploadImage();
-                SharedPreferences sp = await SharedPreferences.getInstance();
-                 var a = sp.getString('uid');
+                 SharedPreferences sp = await SharedPreferences.getInstance();
+                     var a = sp.getString('uid');
 
+                await uploadImage();
+               
                 await FirebaseFirestore.instance
                     .collection('rental_add_service')
                     .add({
@@ -226,7 +226,7 @@ class _RentalServicePageState extends State<RentalServicePage> {
                   'Rental Service': _serviceController.text,
 
                   'image_url': imageUrl,
-                  'pro_id':a,
+                  'uid':a
                 });
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) {

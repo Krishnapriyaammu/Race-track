@@ -21,7 +21,7 @@ class _ViewInstructorState extends State<ViewInstructor> {
    Future<List<DocumentSnapshot>> getData() async {
     try {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('race_track_add_coach').where('pro_id',isEqualTo: widget.id)
+          .collection('race_track_add_coach').where('uid',isEqualTo: widget.id)
           .get();
           
       print('Fetched ${snapshot.docs.length} documents');
@@ -156,11 +156,7 @@ class _ViewInstructorState extends State<ViewInstructor> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            //  final document = snapshot.data![];
-            //     final data = document.data() as Map<String, dynamic>;
-            //     final imageUrl = data['image_url'];
-            //     final desc = data['description'];
-            //     final name =data['name'];
+           
            
             return Column(
               

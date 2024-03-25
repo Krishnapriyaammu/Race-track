@@ -46,7 +46,7 @@ class _BooksuccesfullyState extends State<Booksuccesfully> {
                 onPressed: () {
                  
                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return ViewTrackDetails();
+                            return ViewTrackDetails(rt_id: '',);
                   },));
                 },
                 style: ElevatedButton.styleFrom(

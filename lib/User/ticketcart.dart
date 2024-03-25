@@ -103,12 +103,12 @@ class _ShoppingCartState extends State<ShoppingCart> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return AddPaymentdetails();
-                    }),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) {
+                  //     return AddPaymentdetails();
+                  //   }),
+                  // );
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.blue),

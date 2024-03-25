@@ -115,12 +115,7 @@ class _UploadRaceTrackImageState extends State<UploadRaceTrackImage> {
                   },));
              }
               },
-              //   if (_selectedImage != null) {
-              //     print('Image uploaded successfully!');
-              //   } else {
-              //     print('No image selected.');
-              //   }
-              // },
+             
               child: Text('Upload Image'),
             ),
           ],

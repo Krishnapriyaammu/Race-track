@@ -137,12 +137,13 @@ class _RentUploadImageState extends State<RentUploadImage> {
 
                   String imageUrl = await storageReference.getDownloadURL();
                     SharedPreferences sp = await SharedPreferences.getInstance();
-                  var uid = sp.getString('uid');
-                  await FirebaseFirestore.instance.collection("rentaluploadimage").add({
+                  var a = sp.getString('uid');
+
+                  await FirebaseFirestore.instance.collection("rental_upload_image").add({
                     'category': selectedCategory,
                     'description': DescriptionEdit.text,
                     'image_url': imageUrl,
-                    'pro_id':uid
+                    'uid':a
                   });
 
                   Navigator.pushReplacement(context,

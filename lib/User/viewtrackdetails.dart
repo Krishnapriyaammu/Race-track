@@ -9,7 +9,8 @@ import 'package:loginrace/User/viewindividualinstructor.dart';
 import 'package:loginrace/User/viewtrack.dart';
 
 class ViewTrackDetails extends StatefulWidget {
-  const ViewTrackDetails({Key? key}) : super(key: key);
+  String rt_id;
+   ViewTrackDetails({Key? key, required this.rt_id}) : super(key: key);
 
   @override
   State<ViewTrackDetails> createState() => _ViewTrackDetailsState();
@@ -48,7 +49,7 @@ class _ViewTrackDetailsState extends State<ViewTrackDetails> {
                     child: InkWell(
                       onTap: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return UserTrackBooking();
+                            return UserTrackBooking(rt_id:widget.rt_id);
                   },));
                       },
                       child: buildSessionContainer('LEVEL 1','299/-', Colors.blue,50,45))),
@@ -61,17 +62,17 @@ class _ViewTrackDetailsState extends State<ViewTrackDetails> {
                 children: [
                   buildArrowItem('OUR INSTRUCTORS',Icons.arrow_forward, () {
                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return UserViewAllCoach();
+                            return UserViewAllCoach(rt_id:widget.rt_id);
                   },));
                   }),
                   buildArrowItem('VIEW TRACK', Icons.arrow_forward, () {
                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return ViewTrack();
+                            return ViewTrack(rt_id:widget.rt_id);
                   },));
                   }),
                   buildArrowItem('VIEW GALLERY', Icons.arrow_forward, () {
                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return ViewGallery();
+                            return ViewGallery(rt_id: widget.rt_id);
                   },));
                   }),
                 ],

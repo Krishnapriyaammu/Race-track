@@ -4,7 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ViewTrack extends StatefulWidget {
-  const ViewTrack({super.key});
+  String rt_id;
+   ViewTrack({super.key, required this. rt_id});
 
   @override
   State<ViewTrack> createState() => _ViewTrackState();
@@ -15,7 +16,7 @@ class _ViewTrackState extends State<ViewTrack> {
     Future<List<DocumentSnapshot>> getdata() async {
     try {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('race_track_add_track')
+          .collection('race_track_add_track').where('uid',isEqualTo: widget.rt_id)
           .get();
           
       print('Fetched ${snapshot.docs.length} documents');

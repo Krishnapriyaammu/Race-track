@@ -78,6 +78,7 @@ class _ViewRacetrackState extends State<ViewRacetrack> {
                     final document = snapshot.data![index];
                            final data = document.data() as Map<String, dynamic>;
                            final imageUrl = data['image_url'];
+                           var id = document['uid'];
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Card(
@@ -88,7 +89,7 @@ class _ViewRacetrackState extends State<ViewRacetrack> {
                             Expanded(
                               child: InkWell(onTap: () {
                                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                  return ViewTrackDetails();
+                                  return ViewTrackDetails(rt_id:id);
                                                   },));
                               },
                                 child: Container(

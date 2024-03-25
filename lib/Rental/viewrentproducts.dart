@@ -1,13 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/Rental/uploadrentimage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class ProductViewPage extends StatelessWidget {
   Future<List<DocumentSnapshot>> getData() async {
     try {
+
+SharedPreferences sp = await SharedPreferences.getInstance();
+                     var a = sp.getString('uid');
+
+
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('rentaluploadimage')
+          .collection('rental_upload_image').where('uid',isEqualTo: a)
           .get();
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;

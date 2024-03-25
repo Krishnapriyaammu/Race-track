@@ -97,7 +97,7 @@ class _ViewEventsState extends State<ViewEvents> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => EventDetaild()),
+                      MaterialPageRoute(builder: (context) => EventTicketBooking()),
                     );
                   },
                   child: Card(

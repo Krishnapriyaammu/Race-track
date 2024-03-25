@@ -1,77 +1,133 @@
 import 'package:flutter/material.dart';
-
-class EventDetaild extends StatefulWidget {
-  const EventDetaild({super.key});
+class EventTicketAddPage extends StatefulWidget {
+  const EventTicketAddPage({Key? key});
 
   @override
-  State<EventDetaild> createState() => _EventDetaildState();
+  State<EventTicketAddPage> createState() => _EventTicketAddPageState();
 }
 
-class _EventDetaildState extends State<EventDetaild> {
-   TextEditingController dateController = TextEditingController();
-  TextEditingController eventNameController = TextEditingController();
-  TextEditingController ticketDetailsController = TextEditingController();
+class _EventTicketAddPageState extends State<EventTicketAddPage> {
+  String _generalPrice = ''; // State for general ticket price
+  String _childPrice = ''; // 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Event Ticket'),
+        title: Text('Add Ticket'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Event Date',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                'Add New Ticket',
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.blue),
               ),
-              SizedBox(height: 10),
-              TextField(
-                controller: dateController,
+              SizedBox(height: 30),
+              TextFormField(
                 decoration: InputDecoration(
-                  hintText: 'Enter event date',
-                  border: OutlineInputBorder(),
+                  labelText: 'Event Name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
               ),
               SizedBox(height: 20),
-              Text(
-                'Event Name',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              TextField(
-                controller: eventNameController,
+              TextFormField(
                 decoration: InputDecoration(
-                  hintText: 'Enter event name',
-                  border: OutlineInputBorder(),
+                  labelText: 'Event Date',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
               ),
               SizedBox(height: 20),
-              Text(
-                'Ticket Details',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              TextField(
-                controller: ticketDetailsController,
+              TextFormField(
                 decoration: InputDecoration(
-                  hintText: 'Enter ticket details',
-                  border: OutlineInputBorder(),
+                  labelText: 'Total tickets',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
-                maxLines: 3,
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 30),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          'General category',
+                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
+                        ),
+                        SizedBox(height: 10),
+                        TextFormField(
+                          onChanged: (value) {
+                            setState(() {
+                              _generalPrice = value;
+                            });
+                          },
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: 'Price (\$)',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 20),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          'Child category',
+                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
+                        ),
+                        SizedBox(height: 10),
+                        TextFormField(
+                          onChanged: (value) {
+                            setState(() {
+                              _childPrice = value;
+                            });
+                          },
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: 'Price (\$)',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
-                  // Add logic here to save the entered details to Firestore or any other storage
-                  // For example:
-                  // saveEventTicket(dateController.text, eventNameController.text, ticketDetailsController.text);
-                  Navigator.pop(context); // Navigate back to the previous page after saving
+                  // Add logic to save ticket details
                 },
-                child: Text('Save'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                ),
+                child: Text(
+                  'Save Ticket',
+                  style: TextStyle(fontSize: 20),
+                ),
               ),
             ],
           ),

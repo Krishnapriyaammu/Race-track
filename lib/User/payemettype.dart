@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loginrace/User/successfullpayement.dart';
 
 class PayementType extends StatefulWidget {
-  const PayementType({super.key});
+  const PayementType({super.key, });
 
   @override
   State<PayementType> createState() => _PayementTypeState();

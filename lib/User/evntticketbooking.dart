@@ -9,6 +9,8 @@ class EventTicketBooking extends StatefulWidget {
   State<EventTicketBooking> createState() => _EventTicketBookingState();
 }
 class _EventTicketBookingState extends State<EventTicketBooking> {
+    String _ticketCategory = 'General category'; // Added state for dropdown value
+
   @override
    Widget build(BuildContext context) {
     return Scaffold(
@@ -31,13 +33,13 @@ class _EventTicketBookingState extends State<EventTicketBooking> {
                   SizedBox(height: 20),
                   Text(
                     'BUY YOUR TICKETS!!',
-                    style: TextStyle(fontSize: 22, color: Colors.red, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 22, color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 20),
                   Container(
                     padding: EdgeInsets.all(15),
                     decoration: BoxDecoration(
-                      color: Colors.red,
+                      color: const Color.fromARGB(255, 111, 188, 251),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
@@ -47,8 +49,11 @@ class _EventTicketBookingState extends State<EventTicketBooking> {
                   ),
                   SizedBox(height: 20),
                   DropdownButton<String>(
-                    value: 'General category',
+                    value: _ticketCategory, // Updated dropdown value
                     onChanged: (newValue) {
+                      setState(() {
+                        _ticketCategory = newValue!; // Update state when dropdown value changes
+                      });
                     },
                     items: <String>[
                       'General category',
@@ -68,31 +73,18 @@ class _EventTicketBookingState extends State<EventTicketBooking> {
                     height: 60,
                     width: 300,
                     decoration: BoxDecoration(
-                      color: Colors.amber,
+                      color: Color.fromARGB(255, 161, 200, 232),
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Center(
                       child: Text(
-                        'General category \$65',
+                        '$_ticketCategory \$65', // Updated to display selected ticket category
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
                     ),
                   ),
                   SizedBox(height: 20),
-                  Container(
-                    height: 40,
-                    width: 300,
-                    decoration: BoxDecoration(
-                      color: Colors.deepOrange,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Child (3-12) + General admission FREE',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-                    ),
-                  ),
+                
                   SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.all(20.0),
@@ -103,7 +95,7 @@ class _EventTicketBookingState extends State<EventTicketBooking> {
                         }));
                       },
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 240, 124, 130)),
+                        backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 141, 164, 248)),
                       ),
                       child: Text(
                         'SUBMIT',

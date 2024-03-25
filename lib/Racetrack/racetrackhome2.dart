@@ -11,7 +11,9 @@ import 'package:loginrace/Racetrack/trackdetails.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RaceTrackViewRace extends StatefulWidget {
-  const RaceTrackViewRace({super.key});
+    
+
+   RaceTrackViewRace({ super.key});
 
   @override
   State<RaceTrackViewRace> createState() => _RaceTrackViewRaceState();
@@ -168,7 +170,7 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                                           ),
                                           SizedBox(height: 10),
                                           Text(
-                                            data['state'] ?? 'Name not available',
+                                            data['tracktype'] ?? 'Name not available',
                                             style: TextStyle(
                                               fontSize: 16,
                                             ),
@@ -213,7 +215,7 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
               ],
             ),
 
-                   ViewBookedUsers(raceTrackId: 'raceTrackId'), 
+ViewBookedUsers(),
 
             
           ],
@@ -408,34 +410,6 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
 
    }
 
-// class ViewBookedUsers extends StatelessWidget {
- 
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ListView.builder(
-//       itemCount: 0,
-//       itemBuilder: (context, index) {
-//         // User user = bookedUsers[index];
-//         return Card(
-//           margin: EdgeInsets.all(8.0),
-//           child: ListTile(
-//             // title: Text(user.name),
-//             subtitle: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 // Text('Email: ${user.email}'),
-//                 // Text('Phone: ${user.phoneNumber}'),
-//                 // Add more details as needed
-//               ],
-//             ),
-//           ),
-//         );
-//       },
-//     );
-//   }
- 
-// }
 Future<void> uploadImage() async {
     try {
       if (profileImage != null) {
@@ -457,16 +431,19 @@ Future<void> uploadImage() async {
     }                                
   }
 }
-class ViewBookedUsers extends StatelessWidget {
-  final String raceTrackId;
 
-  ViewBookedUsers({required this.raceTrackId});  
+
+class ViewBookedUsers extends StatelessWidget {
+   
+
+  ViewBookedUsers({super.key,   });  
 
   Future<List<DocumentSnapshot>> getdetail() async {
     try {
+       
+      
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('user_track_booking')
-          .where('race_track_id', isEqualTo: raceTrackId)
+          .collection('user_track_booking') 
           .get();
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;
