@@ -1,8 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/User/successfullpayement.dart';
 
 class PayementType extends StatefulWidget {
-  const PayementType({super.key, });
+  dynamic name;
+  dynamic email;
+  dynamic phone;
+  dynamic place;
+  dynamic level1;
+  String uid;
+   PayementType({super.key, required this. name, required this. email,required this.place, required this. phone, required this. uid, required this. level1, });
 
   @override
   State<PayementType> createState() => _PayementTypeState();
@@ -22,9 +29,15 @@ class _PayementTypeState extends State<PayementType> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Choose your payment method',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: Center(
+                
+                child: Text(
+                   widget.level1 ?? 'amount not available',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),
+                ),
+              ),
             ),
             SizedBox(height: 16),
             Expanded(
@@ -45,9 +58,25 @@ class _PayementTypeState extends State<PayementType> {
               width: double.infinity,
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async{
+                    await FirebaseFirestore.instance.collection("user_track_booking").add({
+                         'name':widget.name,
+                         'email':widget.email,
+                         'phone':widget.phone,
+                         'place':widget.place,
+                         'uid': widget.uid, 
+                         'level1':widget.level1,
+
+                           
+                       
+
+                         
+                     });
+                  
+
+
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return SuccessfullPayment();
+                    return SuccessfullPayment(name:widget.name,email:widget.email,phone:widget.phone,uid:widget.uid,level1:widget.level1);
                   }));
                 },
                 style: ButtonStyle(
@@ -65,7 +94,6 @@ class _PayementTypeState extends State<PayementType> {
       ),
     );
   }
-
   ListTile _optionTile(String title, IconData icon, int index) {
     return ListTile(
       title: Text(title),

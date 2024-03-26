@@ -7,6 +7,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loginrace/Racetrack/navigationracetrack.dart';
 import 'package:loginrace/Racetrack/track.dart';
+import 'package:loginrace/Racetrack/trackamount.dart';
 import 'package:loginrace/Racetrack/trackdetails.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,6 +25,9 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
   var Rating=TextEditingController();
   var tracktype=TextEditingController();
   var Place=TextEditingController();
+  var upcoming_events=TextEditingController();
+  var level1=TextEditingController();
+  var level2=TextEditingController();
   String imageUrl='';
   var profileImage;
   XFile? pickedFile;
@@ -126,14 +130,11 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          InkWell(
-                                            onTap: () {},
-                                            child: Text(
-                                              data['track name'] ?? 'Name not available',
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                          Text(
+                                            data['track name'] ?? 'Name not available',
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                           SizedBox(
@@ -186,7 +187,7 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                                       ),
                                     ),
                                   ),
-                      
+                                                  
                                   // Right Container
                                   Container(
                                     width: 120,
@@ -199,8 +200,8 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                                       ),
                                     ),
                                      child: imageUrl != null
-                          ? Image.network(imageUrl, fit: BoxFit.cover)
-                          : Icon(Icons.image),
+                                                      ? Image.network(imageUrl, fit: BoxFit.cover)
+                                                      : Icon(Icons.image),
                                   ),
                                 ],
                               ),
@@ -361,6 +362,84 @@ ViewBookedUsers(),
                               ),
                             ),
                           ),
+                            Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text('events'),
+                              ),
+                            ],
+                          ),
+                          TextFormField(
+                            controller: upcoming_events,
+                           validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'enter Name';
+                              }
+                            },
+                            decoration: InputDecoration(
+                              fillColor: Color.fromARGB(255, 192, 221, 224),
+                              filled: true,
+                              border: UnderlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(40)),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                            Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text('amount level1'),
+                              ),
+                            ],
+                          ),
+                          TextFormField(
+                            controller: level1,
+                           validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'enter Name';
+                              }
+                            },
+                            decoration: InputDecoration(
+                              fillColor: Color.fromARGB(255, 192, 221, 224),
+                              filled: true,
+                              border: UnderlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(40)),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                            Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text('amount level 2'),
+                              ),
+                            ],
+                          ),
+                          TextFormField(
+                            controller: level2,
+                           validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'enter Name';
+                              }
+                            },
+                            decoration: InputDecoration(
+                              fillColor: Color.fromARGB(255, 192, 221, 224),
+                              filled: true,
+                              border: UnderlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(40)),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                         
+                         
+                         
                          
                           SizedBox(
                             height: 20,
@@ -385,6 +464,9 @@ ViewBookedUsers(),
                          'rating':Rating.text,
                          'tracktype':tracktype.text,
                          'place':Place.text,
+                         'upcomingevents':upcoming_events.text,
+                         'level1':level1.text,
+                         'level2':level2.text,
                           'image_url': imageUrl,
                           'uid':a,
 
@@ -433,17 +515,23 @@ Future<void> uploadImage() async {
 }
 
 
-class ViewBookedUsers extends StatelessWidget {
-   
+class ViewBookedUsers extends StatefulWidget {
+  ViewBookedUsers({Key? key, }) : super(key: key);
 
-  ViewBookedUsers({super.key,   });  
+  @override
+  _ViewBookedUsersState createState() => _ViewBookedUsersState();
+}
 
-  Future<List<DocumentSnapshot>> getdetail() async {
+class _ViewBookedUsersState extends State<ViewBookedUsers> {
+  List<DocumentSnapshot> selectedItems = [];
+  String selectedLevel = 'Level 1';
+
+  Future<List<DocumentSnapshot>> getDetail() async {
     try {
-       
-      
+        SharedPreferences sp = await SharedPreferences.getInstance();
+                     var a = sp.getString('uid');
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('user_track_booking') 
+          .collection('user_track_booking') .where('uid',isEqualTo: a) 
           .get();
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;
@@ -453,10 +541,17 @@ class ViewBookedUsers extends StatelessWidget {
     }
   }
 
+  void updateStatus() {
+    setState(() {
+      selectedItems.clear();
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: getdetail(),
+      future: getDetail(),
       builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -468,18 +563,93 @@ class ViewBookedUsers extends StatelessWidget {
             itemBuilder: (context, index) {
               final document = snapshot.data![index];
               final data = document.data() as Map<String, dynamic>;
-              return Card(
-                margin: EdgeInsets.all(8.0),
-                child: ListTile(
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(data['name'] ?? 'Name not available'),
-                      Text(data['email'] ?? 'Email not available'),
-                      Text(data['place'] ?? 'Place not available'),
-                      Text(data['phone'] ?? 'Phone not available'),
-                      Text(data['date'] ?? 'Date not available'),
-                    ],
+              final isSelected = selectedItems.contains(document);
+
+             return InkWell(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return StatefulBuilder(
+                        builder: (BuildContext context, setState) {
+                          return AlertDialog(
+                            title: Text('Selected User Level'),
+                            content: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('Name: ${data['name'] ?? 'Name not available'}'),
+                                Text('Email: ${data['email'] ?? 'Email not available'}'),
+                                Text('Place: ${data['place'] ?? 'Place not available'}'),
+                                Text('Phone: ${data['phone'] ?? 'Phone not available'}'),
+                                SizedBox(height: 20),
+                                Text('Select Level:'),
+                                DropdownButton<String>(
+                                  value: selectedLevel,
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      selectedLevel = newValue!;
+                                    });
+                                  },
+                                  items: <String>['Level 1', 'Level 2']
+                                      .map<DropdownMenuItem<String>>((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
+                              ],
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('Close'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  print('Selected Level: $selectedLevel');
+                                    updateStatus(); 
+
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('Completed'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+                child: Card(
+                  margin: EdgeInsets.all(8.0),
+                  child: ListTile(
+                    title: Text(data['name'] ?? 'Name not available'),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(data['email'] ?? 'Email not available'),
+                        Text(data['place'] ?? 'Place not available'),
+                        Text(data['phone'] ?? 'Phone not available'),
+                      ],
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (!isSelected)
+                          ElevatedButton(
+                            onPressed: () {
+
+
+                            },
+                            child: Text('Pending'),
+                          ),
+                        if (isSelected) Icon(Icons.check),
+                      ],
+                    ),
                   ),
                 ),
               );

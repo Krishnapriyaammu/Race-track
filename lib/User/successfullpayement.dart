@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:loginrace/User/navigationuser.dart';
+import 'package:loginrace/User/statustrackbooking.dart';
 import 'package:loginrace/User/viewevents.dart';
 
 
 class SuccessfullPayment extends StatefulWidget {
-  const SuccessfullPayment({super.key});
+  var name;
+  var email;
+  var phone;
+  String uid;
+  var level1;
+
+   SuccessfullPayment({super.key, required this.name, required this. email, required this. phone, required this. uid, required this. level1});
 
   @override
   State<SuccessfullPayment> createState() => _SuccessfullPaymentState();
@@ -39,7 +46,7 @@ class _SuccessfullPaymentState extends State<SuccessfullPayment> {
             ElevatedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return NavigationUser();
+                  return StatusTrack(name: widget.name,email:widget.email,phone: widget.phone, uid: 'uid', level1: widget.level1,);
                 }));
               },
               style: ElevatedButton.styleFrom(

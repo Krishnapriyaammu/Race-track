@@ -78,7 +78,11 @@ class _ViewRacetrackState extends State<ViewRacetrack> {
                     final document = snapshot.data![index];
                            final data = document.data() as Map<String, dynamic>;
                            final imageUrl = data['image_url'];
+                           
                            var id = document['uid'];
+                           var level1 = data['level1'];
+                           var level2=data['level2'];
+                           var upcomingevents=data['upcomingevents'];
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Card(
@@ -89,7 +93,7 @@ class _ViewRacetrackState extends State<ViewRacetrack> {
                             Expanded(
                               child: InkWell(onTap: () {
                                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                  return ViewTrackDetails(rt_id:id);
+                                  return ViewTrackDetails(rt_id:id,level1:level1,level2:level2,upcomingevents:upcomingevents);
                                                   },));
                               },
                                 child: Container(
