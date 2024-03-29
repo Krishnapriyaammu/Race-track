@@ -29,7 +29,7 @@ class _ViewInstructorState extends State<ViewInstructor> {
      
     } catch (e) {
       print('Error fetching data: $e');
-      throw e; // Rethrow the error to handle it in the FutureBuilder
+      throw e; 
     }
   }
   final TextEditingController bookingDetailsController = TextEditingController();

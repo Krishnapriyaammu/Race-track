@@ -21,21 +21,24 @@ class _RaceTrackViewEventsState extends State<RaceTrackViewEvents> {
 
 
    Future<List<DocumentSnapshot>> getData() async {
-    try {
-        SharedPreferences sp = await SharedPreferences.getInstance();
-                     var a = sp.getString('uid');
+  try {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    var a = sp.getString('uid');
 
-      final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('racetrack_upload_event').where('uid',isEqualTo: a)
-          
-          .get();
-      print('Fetched ${snapshot.docs.length} documents');
-      return snapshot.docs;
-    } catch (e) {
-      print('Error fetching data: $e');
-      throw e;
-    }
+    final QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('racetrack_upload_event')
+        .where('uid', isEqualTo: a)
+        .get();
+
+    print('Fetched ${snapshot.docs.length} documents');
+
+
+    return snapshot.docs;
+  } catch (e) {
+    print('Error fetching data: $e');
+    throw e;
   }
+}
 
   @override
    Widget build(BuildContext context) {
@@ -86,75 +89,77 @@ class _RaceTrackViewEventsState extends State<RaceTrackViewEvents> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             return GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // Number of columns
-                crossAxisSpacing: 10.0,
-                mainAxisSpacing: 10.0,
-              ),
-              itemCount: snapshot.data?.length ?? 0,
-              itemBuilder: (context, index) {
-                final document = snapshot.data![index];
-                final data = document.data() as Map<String, dynamic>;
-                final imageUrl = data['image_url'];
+  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 2, // Number of columns
+    crossAxisSpacing: 10.0,
+    mainAxisSpacing: 10.0,
+  ),
+  itemCount: snapshot.data?.length ?? 0,
+  itemBuilder: (context, index) {
+    final document = snapshot.data![index];
+    final data = document.data() as Map<String, dynamic>;
+    final imageUrl = data['image_url'];
 
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => EventTicketAddPage()),
-                    );
-                  },
-                  child: Card(
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+    print('ImageUrl: $imageUrl'); // Debug print
+
+    return GestureDetector(
+      onTap: () {
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => EventTicketAddPage()),
+        // );
+      },
+      child: Card(
+        elevation: 5,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10.0),
+                    topRight: Radius.circular(10.0),
+                  ),
+                  image: DecorationImage(
+                    image: NetworkImage(imageUrl ?? ''), // Ensure imageUrl is not null
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    data['event_name'] ?? 'Name not available',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10.0),
-                                topRight: Radius.circular(10.0),
-                              ),
-                              image: DecorationImage(
-                                image: NetworkImage(imageUrl),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                data['event name'] ?? 'Name not available',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                data['eventowner'] ?? 'Owner not available',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  Icon(Icons.calendar_today, size: 16, color: Colors.grey),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    data['date'] ?? 'Date not available',
-                                    style: GoogleFonts.poppins(color: Colors.grey),
-                                  ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    data['total_tickets'] ?? 'Tickets not available',
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(Icons.calendar_today, size: 16, color: Colors.grey),
+                      SizedBox(width: 4),
+                      Text(
+                        data['event_date'] ?? 'Date not available',
+                        style: GoogleFonts.poppins(color: Colors.grey),
+                      ),
                                 ],
                               ),
                             ],
@@ -173,7 +178,7 @@ class _RaceTrackViewEventsState extends State<RaceTrackViewEvents> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => RaceTrackUploadEventimage()),
+            MaterialPageRoute(builder: (context) => EventTicketAddPage()),
           );
         },
         child: Icon(Icons.add),

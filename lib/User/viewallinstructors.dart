@@ -14,7 +14,6 @@ class UserViewAllCoach extends StatefulWidget {
 }
 
 class _UserViewAllCoachState extends State<UserViewAllCoach> {
-  // List<double> coachRatings = [4.5, 3.8, 5.0, 4.2, 3.5, 4.8, 4.0];
   Future<List<DocumentSnapshot>> getData() async {
     try {
       print('----------------------------${widget.rt_id}');
@@ -26,7 +25,7 @@ class _UserViewAllCoachState extends State<UserViewAllCoach> {
       return snapshot.docs;
     } catch (e) {
       print('Error fetching data: $e');
-      throw e; // Rethrow the error to handle it in the FutureBuilder
+      throw e; 
     }
   }
 

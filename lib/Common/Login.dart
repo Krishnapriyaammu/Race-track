@@ -46,13 +46,16 @@ class _LoginState extends State<Login> {
         var userid = userSnapshot.docs[0].id;
           var image_url = userSnapshot.docs[0]['image_url'];
             var username = userSnapshot.docs[0]['name'];
-
+             var email = userSnapshot.docs[0]['email'];
+             var mobileno = userSnapshot.docs[0]['mobile no'];
 
       
         SharedPreferences sp = await SharedPreferences.getInstance();
         sp.setString('uid', userid);
           sp.setString('name', username);
             sp.setString('image_url',image_url);
+            sp.setString('email', email);
+            sp.setString('mobile no', mobileno);
 
         if(userSnapshot.docs.isNotEmpty){
 

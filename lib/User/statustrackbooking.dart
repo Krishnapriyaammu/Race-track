@@ -1,111 +1,121 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:loginrace/Rental/rentelhome.dart';
+import 'package:loginrace/User/usertrackbooking.dart';
 class StatusTrack extends StatefulWidget {
-    final VoidCallback? onComplete;
 
-  dynamic name;
-  dynamic email;
-  dynamic phone;
-  dynamic level1;
-  String uid;
-   StatusTrack({super.key,this.onComplete, required this. name, required this.email, required this. phone, required this. uid, required this.level1, });
+  StatusTrack({Key? key, }) : super(key: key);
 
   @override
-  State<StatusTrack> createState() => _StatusTrackState();
+  _StatusTrackState createState() => _StatusTrackState();
 }
-
 class _StatusTrackState extends State<StatusTrack> {
-    String selectedStatus = 'Level 1'; 
+  String? selectedLevel = 'Level 1';
+
+  Future<List<DocumentSnapshot>> getData() async {
+    try {
+      final QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('user_track_booking')
+          .get();
+      print('Fetched ${snapshot.docs.length} documents');
+      return snapshot.docs;
+    } catch (e) {
+      print('Error fetching data: $e');
+      throw e;
+    }
+  }
+ void updateStatus(String documentId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('user_track_booking')
+          .doc(documentId)
+          .update({'status': '1'});
+      print('Status updated successfully');
+    } catch (e) {
+      print('Error updating status: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(20.0),
+          child: FutureBuilder(
+            future: getData(),
+            builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else {
+                final List<DocumentSnapshot> documents = snapshot.data!;
+                return SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: documents.map((DocumentSnapshot document) {
+                      final String name = document['name'] ?? 'Name not available';
+                      final String email = document['email'] ?? 'Email not available';
+                      final String phone = document['phone'] ?? 'Phone not available';
+                      final String place = document['place'] ?? 'Place not available';
+                      final String status = document['status'] ?? 'not available';
+                      final String documentId = document.id;
 
- appBar: AppBar(
-        title: Text('User Details'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child:   Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: 20),
-                Text(
-                  'MY STATUS',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 20),
-                buildDetailRow('Name', widget.name ??'John Doe'),
-                buildDetailRow('Email', widget.email ??'john.doe@example.com'),
-                buildDetailRow('Phone Number',widget.phone ?? '+1234567890'),
-               buildDetailRow('Payement', widget.level1 ??'399'),
-
-                SizedBox(height: 20),
-                // 
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                   Text('Status: '),
-                    DropdownButton<String>(
-                      value: selectedStatus,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedStatus = newValue!;
-                        });
-                      },
-                      items: <String>['Level 1', 'Level 2']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                  ],
-                ),
-                Spacer(),
-                Center(
-                  child:  ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  selectedStatus = 'Level 1';  
-                });
-                if (widget.onComplete != null) {
-                  widget.onComplete!(); 
-                }
-              },
-              child: Text('Complete'),
+                      return Column(
+                        children: [
+                          Text(
+                            'Your Booking Details',
+                            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 20),
+                          Text('Name: $name'),
+                          Text('Email: $email'),
+                          Text('Phone: $phone'),
+                          Text('Place: $place'),
+                          SizedBox(height: 20),
+                          DropdownButtonFormField<String>(
+                            value: selectedLevel,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectedLevel = newValue;
+                              });
+                            },
+                            items: <String>['Level 1', 'Level 2']
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  
+                                    updateStatus(documentId);
+                                  
+                                },
+                                child: status=='0'?Text('complete'):Text('completed'),
+                              ),
+                              Text('Status: pending'),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                        ],
+                      );
+                    }).toList(),
                   ),
-                ),
-              ],
-            )
-            ),
-    );
-            
-          }
-        
-      
-    
-  }
-
-  Widget buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            '$label: ',
-            style: TextStyle(fontWeight: FontWeight.bold),
+                );
+              }
+            },
           ),
-          SizedBox(width: 10),
-          Text(
-            value,
-            style: TextStyle(fontSize: 16),
-          ),
-        ],
+        ),
       ),
     );
   }
+}

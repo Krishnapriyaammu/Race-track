@@ -53,7 +53,6 @@ appBar: AppBar(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Add Container with Image
                   Container(
                      height: 130,
                     width: 130,

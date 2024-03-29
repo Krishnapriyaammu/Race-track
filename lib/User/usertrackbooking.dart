@@ -19,14 +19,14 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
   var email = TextEditingController();
   var phone = TextEditingController();
   var place = TextEditingController();
-
+  var paymentOption = 'Google Pay'; // Default payment option
 
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: AppBar(
+      appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text('Track Booking'),
       ),
@@ -80,19 +80,59 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
                       }
                       return null;
                     }),
-                    SizedBox(height: 40),
+                    SizedBox(height: 20),
+                    buildPaymentDropdown(),
+                    SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         ElevatedButton(
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                           Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) {
-                                  return PayementType(name:name.text,email:email.text,phone:phone.text,place:place.text,uid:widget.rt_id,level1:widget.level1);
-                                }),
-                              );                            }
+
+                              // Form is validated, proceed to save data to Firestore
+                              try {
+                SharedPreferences sp = await SharedPreferences.getInstance();
+                     
+                       var userid = sp.getString('uid');
+
+                                await FirebaseFirestore.instance.collection('user_track_booking').add({
+                                  'name': name.text,
+                                  'email': email.text,
+                                  'phone': phone.text,
+                                  'place': place.text,
+                                  'payment_option': paymentOption,
+                                  'status':'0',
+                                  'rt_id':widget.rt_id,
+                                  'userid':userid,
+
+                                });
+                                // Data saved successfully, navigate to StatusTrack page
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => StatusTrack()),
+                                );
+                              } catch (e) {
+                                // Error occurred while saving data
+                                print('Error saving data: $e');
+                                // Handle error appropriately, e.g., show an error dialog
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: Text('Error'),
+                                    content: Text('Failed to save data. Please try again later.'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context); // Close dialog
+                                        },
+                                        child: Text('OK'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            }
                           },
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(Colors.blue),
@@ -104,18 +144,17 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
                           ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                            child: Text('Next', style: TextStyle(color: Colors.white)),
+                            child: Text('Submit', style: TextStyle(color: Colors.white)),
                           ),
                         ),
                         TextButton(
                           onPressed: () {
-                   Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) {
-                                  return StatusTrack(name:name.text,email:email.text,phone:phone.text,uid:widget.rt_id,level1:widget.level1,);
-                                }),
-                              );    
-
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) {
+                                return StatusTrack();
+                              }),
+                            );
                           },
                           child: Text(
                             'Already Booked !!!',
@@ -169,6 +208,44 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget buildPaymentDropdown() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.payment, color: Colors.blue),
+            SizedBox(width: 10),
+            Text(
+              'Payment Option',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 8),
+        DropdownButtonFormField<String>(
+          value: paymentOption,
+          onChanged: (String? newValue) {
+            setState(() {
+              paymentOption = newValue!;
+            });
+          },
+          items: <String>['Google Pay', 'Credit Card', 'PayPal']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 }
