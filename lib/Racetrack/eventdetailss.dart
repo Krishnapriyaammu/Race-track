@@ -1,21 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:loginrace/User/ticketcart.dart';
-import 'package:loginrace/User/ticketdetails.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-class EventTicketBooking extends StatefulWidget {
+class EventDetails extends StatefulWidget {
    final String rt_id;
    
 
 
-  EventTicketBooking({required this.rt_id});
+  EventDetails({required this.rt_id});
 
   @override
-  _EventTicketBookingState createState() => _EventTicketBookingState();
+  _EventDetailsState createState() => _EventDetailsState();
 }
 
-class _EventTicketBookingState extends State<EventTicketBooking> {
+class _EventDetailsState extends State<EventDetails> {
    late Future<DocumentSnapshot<Map<String, dynamic>>> _eventDetailsFuture;
      String _selectedCategory = 'General'; // Default category
 
@@ -196,16 +194,11 @@ class _EventTicketBookingState extends State<EventTicketBooking> {
                         SizedBox(height: 40),
                         ElevatedButton(
                           onPressed: () {
-  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return EventTicketDetails();
-                    }),
-                  );
+
 
                           },
                           child: Text(
-                            'Next',
+                            'View Booking',
                             style: GoogleFonts.poppins(
                               fontSize: 20,
                             ),

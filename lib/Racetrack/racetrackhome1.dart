@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:loginrace/Racetrack/eventdetails.dart';
-import 'package:loginrace/Racetrack/uploadeventimage.dart';
+import 'package:loginrace/Racetrack/addeventss.dart';
+import 'package:loginrace/Racetrack/eventdetailss.dart';
 import 'package:loginrace/Racetrack/viewprofileracetrack.dart';
+import 'package:loginrace/User/evntticketbooking.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RaceTrackViewEvents extends StatefulWidget {
@@ -27,7 +28,7 @@ class _RaceTrackViewEventsState extends State<RaceTrackViewEvents> {
 
     final QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection('racetrack_upload_event')
-        .where('uid', isEqualTo: a)
+        .where('rt_id', isEqualTo: a)
         .get();
 
     print('Fetched ${snapshot.docs.length} documents');
@@ -97,17 +98,21 @@ class _RaceTrackViewEventsState extends State<RaceTrackViewEvents> {
   itemCount: snapshot.data?.length ?? 0,
   itemBuilder: (context, index) {
     final document = snapshot.data![index];
+
+      // var id = document['rt_id'];
+      // print(id);
     final data = document.data() as Map<String, dynamic>;
     final imageUrl = data['image_url'];
+
 
     print('ImageUrl: $imageUrl'); // Debug print
 
     return GestureDetector(
       onTap: () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => EventTicketAddPage()),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => EventDetails(rt_id:snapshot.data![index].id,),),
+        );
       },
       child: Card(
         elevation: 5,
@@ -178,7 +183,7 @@ class _RaceTrackViewEventsState extends State<RaceTrackViewEvents> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => EventTicketAddPage()),
+            MaterialPageRoute(builder: (context) => EventAdd()),
           );
         },
         child: Icon(Icons.add),

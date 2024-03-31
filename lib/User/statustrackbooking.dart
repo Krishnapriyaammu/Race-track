@@ -4,6 +4,7 @@ import 'package:loginrace/Rental/rentelhome.dart';
 import 'package:loginrace/User/usertrackbooking.dart';
 class StatusTrack extends StatefulWidget {
 
+
   StatusTrack({Key? key, }) : super(key: key);
 
   @override
@@ -35,6 +36,20 @@ class _StatusTrackState extends State<StatusTrack> {
       print('Error updating status: $e');
     }
   }
+
+ void onComplete(String documentId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('user_track_booking')
+          .doc(documentId)
+          .update({'status': '2'});
+      print('Status updated successfully');
+    } catch (e) {
+      print('Error updating status: $e');
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +117,14 @@ class _StatusTrackState extends State<StatusTrack> {
                                 },
                                 child: status=='0'?Text('complete'):Text('completed'),
                               ),
-                              Text('Status: pending'),
+                              ElevatedButton(onPressed: (){
+                                      onComplete(documentId);
+
+
+                                }, child: status=='1'? Text( 'Pending' ):Text('Level 1 completed'),
+
+                                )
+
                             ],
                           ),
                           SizedBox(height: 10),

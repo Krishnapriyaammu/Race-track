@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:loginrace/Racetrack/eventdetails.dart';
 import 'package:loginrace/User/evntticketbooking.dart';
 import 'package:loginrace/User/viewprofile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -97,7 +96,7 @@ class _ViewEventsState extends State<ViewEvents> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => EventTicketBooking()),
+                      MaterialPageRoute(builder: (context) => EventTicketBooking(rt_id:snapshot.data![index].id,)),
                     );
                   },
                   child: Card(
@@ -128,7 +127,7 @@ class _ViewEventsState extends State<ViewEvents> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                data['event name'] ?? 'Name not available',
+                                data['event_name'] ?? 'Name not available',
                                 style: GoogleFonts.poppins(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -136,7 +135,7 @@ class _ViewEventsState extends State<ViewEvents> {
                               ),
                               SizedBox(height: 4),
                               Text(
-                                data['eventowner'] ?? 'Owner not available',
+                                data['event_date'] ?? 'Owner not available',
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   color: Colors.grey,
@@ -148,7 +147,7 @@ class _ViewEventsState extends State<ViewEvents> {
                                   Icon(Icons.calendar_today, size: 16, color: Colors.grey),
                                   SizedBox(width: 4),
                                   Text(
-                                    data['date'] ?? 'Date not available',
+                                    data['total_tickets'] ?? 'Date not available',
                                     style: GoogleFonts.poppins(color: Colors.grey),
                                   ),
                                 ],

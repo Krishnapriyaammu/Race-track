@@ -6,15 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loginrace/Racetrack/racetrackhome1.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-class EventTicketAddPage extends StatefulWidget {
-  const EventTicketAddPage({Key? key});
+
+class EventAdd extends StatefulWidget {
+  const EventAdd({super.key});
 
   @override
-  State<EventTicketAddPage> createState() => _EventTicketAddPageState();
+  State<EventAdd> createState() => _EventAddState();
 }
 
-class _EventTicketAddPageState extends State<EventTicketAddPage> {
-  String _generalPrice = ''; // State for general ticket price
+class _EventAddState extends State<EventAdd> {
+
+ String _generalPrice = ''; // State for general ticket price
   String _childPrice = ''; // 
  File? _image; 
    String imageUrl='';
@@ -37,7 +39,7 @@ class _EventTicketAddPageState extends State<EventTicketAddPage> {
   Future<void> _saveTicketDetails() async {
 
  SharedPreferences sp = await SharedPreferences.getInstance();
-                     var a = sp.getString('uid');
+    var a = sp.getString('uid');
 
                 await uploadImage();
     try {
@@ -229,7 +231,7 @@ class _EventTicketAddPageState extends State<EventTicketAddPage> {
                 ),
 
                 child: Text(
-                  'Save Ticket',
+                  'Submit',
                   style: TextStyle(fontSize: 20),
                 ),
               ),

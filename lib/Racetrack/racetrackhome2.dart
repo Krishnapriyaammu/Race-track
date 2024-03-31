@@ -33,6 +33,18 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
   XFile? pickedFile;
   File? image;
 
+void updateStatus(String documentId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('user_track_booking')
+          .doc(documentId)
+          .update({'status': '2'});
+      print('Status updated successfully');
+    } catch (e) {
+      print('Error updating status: $e');
+    }
+  }
+
   Future<List<DocumentSnapshot>> getData() async {
     try {
       SharedPreferences sp = await SharedPreferences.getInstance();
@@ -224,6 +236,9 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
             ),
 
             // View Booked Users Tab
+
+
+
         FutureBuilder(
   future: getBookedUsers(),
   builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
@@ -239,6 +254,7 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
           final userData = bookedUsers[index].data() as Map<String, dynamic>;
           String status = userData['status'] ?? 0; // Default to 0 if status is null
           bool isLevel1Completed = status == 1;
+                      final String documentId = bookedUsers[index].id;
 
           return Card(
             elevation: 3,
@@ -259,8 +275,69 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                     : () {
                         // Add functionality for the button
                         // For example, show a dialog with options to approve or reject the booking
-                      },
+                      showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              int selectedLevel = 1; // Default selected level
 
+              return StatefulBuilder(
+                builder: (BuildContext context, setState) {
+                  return AlertDialog(
+                    title: Text('Level Confirmation'),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Please choose the level:'),
+                        Row(
+                          children: [
+                            Radio(
+                              value: 1,
+                              groupValue: selectedLevel,
+                              onChanged: (int? value) {
+                                setState(() {
+                                  selectedLevel = value!;
+                                });
+                              },
+                            ),
+                            Text('Level 1'),
+                            Radio(
+                              value: 2,
+                              groupValue: selectedLevel,
+                              onChanged: (int? value) {
+                                setState(() {
+                                  selectedLevel = value!;
+                                });
+                              },
+                            ),
+                            Text('Level 2'),
+                          ],
+                        ),
+                      ],
+                    ),
+                    actions: <Widget>[
+                      ElevatedButton(
+                        onPressed: () {
+                       
+                                    updateStatus(documentId);
+
+                          Navigator.of(context).pop(); // Close the dialog
+                        },
+                        child: Text('Complete'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Close the dialog
+                        },
+                        child: Text('Cancel'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          );
+        },
                       
                 child:   status=='0'?Text('Pending'):Text('Level 1 completed'),
 
