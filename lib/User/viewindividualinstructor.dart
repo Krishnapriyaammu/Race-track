@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loginrace/User/coachbookingstatus.dart';
 import 'package:loginrace/User/viewstatusinstructorbooking.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ViewInstructor extends StatefulWidget {
 
@@ -10,7 +11,9 @@ class ViewInstructor extends StatefulWidget {
   var img;
   var name;
   var desc;
-   ViewInstructor({super.key, required this.id,required this.name,required this.desc,required this.img});
+  String rt_id;
+  String coach_id;
+   ViewInstructor({super.key, required this.id,required this.name,required this.desc,required this.img, required this. rt_id, required this.coach_id});
   
 
   @override
@@ -18,11 +21,38 @@ class ViewInstructor extends StatefulWidget {
 }
 class _ViewInstructorState extends State<ViewInstructor> {
 
+
+
+     late bool hasBooked;
+
+  @override
+  void initState() {
+    super.initState();
+    checkBookingStatus();
+  }
+
+  Future<void> checkBookingStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? bookedCoachId = prefs.getString('bookedCoachId');
+    hasBooked = bookedCoachId != null && bookedCoachId == widget.coach_id;
+    setState(() {});
+  }
+
+  void setBookingStatus(String coachId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('bookedCoachId', coachId);
+    setState(() {
+      hasBooked = true;
+    });
+  }
+
+
    Future<List<DocumentSnapshot>> getData() async {
     try {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('race_track_add_coach').where('uid',isEqualTo: widget.id)
           .get();
+          
           
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;
@@ -93,6 +123,11 @@ class _ViewInstructorState extends State<ViewInstructor> {
             actions: [
               ElevatedButton(
                 onPressed: () async {
+
+                   SharedPreferences sp = await SharedPreferences.getInstance();
+                              var userid = sp.getString('uid');
+                              
+
                   String selectedLevel = bookingDetailsController.text;
 
                   if (selectedLevel.isEmpty) {
@@ -104,10 +139,16 @@ class _ViewInstructorState extends State<ViewInstructor> {
                     'date': dateController.text,
                     'time': timeController.text,
                     'level': selectedLevel,
+                    'rt_id':widget.rt_id,
+                    'userid':userid,
+                    'status':0,
+                    'coach_id':widget.coach_id,
+                    
                   });
+                                            setBookingStatus(widget.coach_id);
 
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                    return CoachBookingStatus(date: dateController.text, time: timeController.text, level: selectedLevel,img: widget.img,);
+                    return CoachBookingStatus(img: widget.img,coach_id:widget.coach_id,);
                   }));
                 },
                 style: ElevatedButton.styleFrom(
@@ -133,6 +174,36 @@ class _ViewInstructorState extends State<ViewInstructor> {
       },
     );
   }
+  ElevatedButton buildBookingButton(BuildContext context) {
+    if (hasBooked) {
+      return ElevatedButton(
+        onPressed: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CoachBookingStatus(img: widget.img, coach_id: widget.coach_id,),
+            ),
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          foregroundColor: Colors.black,
+          backgroundColor: Colors.blue,
+        ),
+        child: Text('VIEW STATUS'),
+      );
+    } else {
+      return ElevatedButton(
+        onPressed: () {
+          showBookingRequestPopup(context);
+        },
+        style: ElevatedButton.styleFrom(
+          foregroundColor: Colors.black,
+          backgroundColor: Colors.blue,
+        ),
+        child: Text('BE MY COACH'),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,6 +222,7 @@ class _ViewInstructorState extends State<ViewInstructor> {
           child: FutureBuilder(
             future: getData(),
             builder: (context,AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
@@ -191,31 +263,19 @@ class _ViewInstructorState extends State<ViewInstructor> {
                   Text(
                       
                    widget.name ?? 'name not available',
-                    // style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 8),
-                  ElevatedButton(
-                    onPressed: () {
-                      showBookingRequestPopup(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      backgroundColor: Colors.blue,
-                    ),
-                    child: Text('BE MY COACH'),
-                  ),
-                  SizedBox(height: 16),
-                  Text(
+                                      buildBookingButton(context),
 
-                  widget.desc ?? 'description not available',
-                  ),
-                
-                ],
-                
-              );
-              
-            }
-            }
+                  SizedBox(height: 8),
+                 
+                    SizedBox(height: 16),
+                    Text(
+                      widget.desc ?? 'description not available',
+                    ),
+                  ],
+                );
+              }
+            },
           ),
         ),
       ),

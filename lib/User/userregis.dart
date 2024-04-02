@@ -255,7 +255,7 @@ String imageUrl='';
                               'email': Email.text,
                               'place':Place.text,
                               
-                              'mobile_no': Mobile.text,
+                              'phone': Mobile.text,
                               'password': password.text,
                               'conform password': confirmPass.text,
                              

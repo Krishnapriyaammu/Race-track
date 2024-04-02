@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:loginrace/Racetrack/racetrackhome1.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class EventDetails extends StatefulWidget {
    final String rt_id;
@@ -194,7 +195,11 @@ class _EventDetailsState extends State<EventDetails> {
                         SizedBox(height: 40),
                         ElevatedButton(
                           onPressed: () {
-
+                             Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return RaceTrackViewEvents();
+                                
+                            }));
 
                           },
                           child: Text(

@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:loginrace/Community/uploadimages.dart';
+import 'package:loginrace/Community/addimages.dart';
+import 'package:loginrace/Community/booking.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileViewPage extends StatefulWidget {
-    final List<File> selectedImages;
-        ProfileViewPage({required this.selectedImages});
+        const ProfileViewPage({super.key, });
 
 
   @override
@@ -16,104 +16,149 @@ class ProfileViewPage extends StatefulWidget {
 }
 
 class _ProfileViewPageState extends State<ProfileViewPage> {
+ final ImagePicker _picker = ImagePicker();
+  late File _image;
+  late List<String> _imageUrls;
+  bool _isLoading = false;
 
-
-     late String communityName;
-
-  
   @override
- 
   void initState() {
     super.initState();
-    _fetchCommunityName();
+    _loadImages();
   }
- Future<void> _fetchCommunityName() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  var sp;
+  var img;
+  var id;
+
+  Future<void> _loadImages() async {
+    SharedPreferences spr = await SharedPreferences.getInstance();
     setState(() {
-      communityName = prefs.getString('name') ?? 'Community Name Not Available';
-      
-
+      sp = spr.get('name');
+      img = spr.get('image_url');
+      id = spr.getString('uid');
     });
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('community_upload_image')
+          .where('community_id', isEqualTo: id)
+          .get();
+
+      setState(() {
+        _imageUrls =
+            snapshot.docs.map((doc) => doc['imageUrl'] as String).toList();
+      });
+    } catch (error) {
+      print('Error loading images: $error');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
+  Future<void> _getImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Upload_pic_describe(imageFile: _image),
+        ),
+      );
+    }
+  }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
         actions: [
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CommUploadImages()),
-              );
-            },
+            onPressed: _getImage,
           ),
         ],
+        title: Text(
+          'HOME',
+          style: TextStyle(color: Colors.deepPurple),
+        ),
       ),
-     body: Padding(
-        padding: const EdgeInsets.all(20.0),
+      body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CircleAvatar(
-              radius: 50,
-              backgroundImage: NetworkImage('https://via.placeholder.com/150'),
-            ),
             SizedBox(height: 20),
-            Text(
-              communityName,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+            CircleAvatar(
+              backgroundImage: img != null ? NetworkImage(img) : null,
+              radius: 70,
+              backgroundColor: Colors.grey,
             ),
             SizedBox(height: 10),
             Text(
-              'Software Engineer',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey,
-              ),
+              sp,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Handle Booking button press
-                  },
-                  child: Text('Booking'),
+ Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => BookingViewPage()), // Navigate to BookingViewPage
+                    );                  },
+                  child: Text('BOOKING'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 229, 225, 235),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6.6),
+                    ),
+                  ),
                 ),
+                SizedBox(width: 20),
                 ElevatedButton(
                   onPressed: () {
-                    // Handle Edit Profile button press
+                    // Implement action
                   },
-                  child: Text('Edit Profile'),
+                  child: Text('MESSAGE'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(221, 226, 219, 225),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6.6),
+                    ),
+                  ),
                 ),
               ],
             ),
             SizedBox(height: 20),
             Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                ),
-                itemCount: widget.selectedImages.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: Image.file(
-                      widget.selectedImages[index],
-                      fit: BoxFit.cover,
+              child: _isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3, // Adjust as needed
+                        crossAxisSpacing: 8.0,
+                        mainAxisSpacing: 8.0,
+                      ),
+                      itemCount: _imageUrls.length,
+                      itemBuilder: (context, index) {
+                        return Image.network(
+                          _imageUrls[index],
+                          fit: BoxFit.cover,
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
             ),
           ],
         ),

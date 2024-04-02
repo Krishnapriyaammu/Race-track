@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loginrace/User/viewautoshow.dart';
+import 'package:loginrace/User/viewcommunity.dart';
 import 'package:loginrace/User/viewevents.dart';
 import 'package:loginrace/User/viewracetrack.dart';
 import 'package:loginrace/User/viewrentitems.dart';
@@ -17,7 +17,7 @@ static  List<dynamic>option=[
   ViewEvents(),
   ViewRacetrack(),
   UserViewFullRenters(),
-  ViewAutoshow(),
+  ViewCommunity(),
 
 ];
   void ontop(int index){
@@ -34,7 +34,8 @@ bottomNavigationBar: BottomNavigationBar(items: [
   BottomNavigationBarItem(icon: Icon(Icons.home_sharp,),label: 'home'),
   BottomNavigationBarItem(icon: Icon(Icons.add_road_rounded,),label: 'race track'),
   BottomNavigationBarItem(icon: Icon(Icons.remove_shopping_cart_outlined,),label: 'Rental'),
-    BottomNavigationBarItem(icon: Icon(Icons.reduce_capacity_outlined,),label: 'Coomunity'),
+    BottomNavigationBarItem(icon: Icon(Icons.commute,),label: 'Community'),
+
 
 ],
 type: BottomNavigationBarType.shifting,

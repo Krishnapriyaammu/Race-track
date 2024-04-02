@@ -267,17 +267,19 @@ class CoachTab extends StatelessWidget {
                         SharedPreferences sp = await SharedPreferences.getInstance();
                      var a = sp.getString('uid');
 
-                       await FirebaseFirestore.instance.collection("race_track_add_coach").add({
+                       DocumentReference coachRef =  await FirebaseFirestore.instance.collection("race_track_add_coach").add({
                        'name':name.text,
                        'about':about.text,
                        'experience':selectedExperience,
                        'image_url': imageUrl,
                        'uid':a,
-
+                       'coach_id':'',
                    
 
                       
                                          });
+                                          String coachId = coachRef.id;
+    await coachRef.update({'coach_id': coachId});
                       
                       print('Add Coach');
                        Navigator.push(
@@ -336,54 +338,116 @@ class UserTab extends StatelessWidget {
     }
   }
 
+   Future<String> getUserName(String userId) async {
+    try {
+      final DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('user_register')
+          .doc(userId)
+          .get();
+      final userData = userSnapshot.data() as Map<String, dynamic>;
+      return userData['name'];
+    } catch (e) {
+      print('Error fetching user data: $e');
+      return ''; // Return empty string if user data retrieval fails
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: getdetails(),
-      builder: (context,AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            return ListView.builder(
-          itemCount:  snapshot.data?.length ?? 0,
-          itemBuilder: (context, index) {
-
+      builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          return ListView.builder(
+            itemCount: snapshot.data?.length ?? 0,
+            itemBuilder: (context, index) {
               final document = snapshot.data![index];
-                final data = document.data() as Map<String, dynamic>;
-            return Card(
-              margin: EdgeInsets.all(8.0),
-              child: InkWell(onTap: () {
-                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                            return ApproveReject();
-                                          }));
-              },
-                child: ListTile(
-                  title: Text( data['date'] ?? 'date not available'),
+              final data = document.data() as Map<String, dynamic>;
 
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                    Text( data['level'] ?? 'level not available'),
-                    Text( data['time'] ?? 'time not available'),
-                    
-                    ],
+              return Card(
+                margin: EdgeInsets.all(8.0),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                      return ApproveReject();
+                    }));
+                  },
+                  child: ListTile(
+                    title: FutureBuilder(
+                      future: getUserName(data['userid']),
+                      builder: (context, AsyncSnapshot<String> userSnapshot) {
+                        if (userSnapshot.connectionState == ConnectionState.waiting) {
+                          return CircularProgressIndicator();
+                        } else if (userSnapshot.hasError) {
+                          return Text('Error fetching user name');
+                        } else {
+                          return Text(userSnapshot.data ?? 'User name not available');
+                        }
+                      },
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                          Text(data['level'] ?? 'level not available'),
+                        Text(data['time'] ?? 'time not available'),
+                        Text(data['date'] ?? 'date not available'),
+                      ],
+                    ),
+                   trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: () async {
+                            try {
+                              // Update status in Firebase
+                              await FirebaseFirestore.instance
+                                  .collection('coachbooking')
+                                  .doc(document.id)
+                                  .update({'status': 1});
+
+                              // Show confirmation message
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text('Status updated to Approved'),
+                                duration: Duration(seconds: 2),
+                              ));
+                            } catch (e) {
+                              // Show error message if update fails
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text('Failed to update status: $e'),
+                                duration: Duration(seconds: 2),
+                              ));
+                            }
+                          },
+                          icon: Icon(Icons.check),
+                          label: Text('Approve'),
+                        ),
+                        SizedBox(width: 8), // Add some spacing between the icons
+                        ElevatedButton.icon(
+                          onPressed: () async {
+                            // Add code here to handle rejection
+                          },
+                          icon: Icon(Icons.close),
+                          label: Text('Reject'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
-        );
-      }
-      }
+              );
+            },
+          );
+        }
+      },
     );
   }
 }
-
-
-
 class AcceptedUser extends StatelessWidget {
  final List<User2> bookedUsers = [
     User2(name: 'John Doe', email: 'john@example.com', phoneNumber: '123-456-7890',age:'23',date:'2-09-2024'),

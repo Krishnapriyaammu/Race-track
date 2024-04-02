@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:loginrace/Community/addcommunitydetails.dart';
 import 'package:loginrace/Community/communityhome.dart';
 import 'package:loginrace/Community/communityviewrequest.dart';
 
@@ -17,8 +16,7 @@ class _NavigationState extends State<Navigation> {
   static  List<dynamic> _widgetoption= [
     //  UploadCommunity(),
     // CommHome(),
-    ProfileViewPage(selectedImages: []),
-    CommunityAbout(),
+    ProfileViewPage(),
     CommunityViewRequest(),
    
     // CommunityRegister(),

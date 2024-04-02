@@ -14,13 +14,16 @@ class ViewTrackDetails extends StatefulWidget {
   var level1;
   var level2;
   String rt_id;
-   ViewTrackDetails({Key? key, required this.rt_id, required this.level1, required this. level2, required this. upcomingevents,}) : super(key: key);
+  
+   ViewTrackDetails({Key? key, required this.rt_id, required this.level1, required this. level2, required this. upcomingevents, }) : super(key: key);
 
   @override
   State<ViewTrackDetails> createState() => _ViewTrackDetailsState();
 }
 
 class _ViewTrackDetailsState extends State<ViewTrackDetails> {
+   
+
  Future<List<DocumentSnapshot>> getdata() async {
       try {
         final QuerySnapshot snapshot = await FirebaseFirestore.instance
@@ -64,15 +67,12 @@ class _ViewTrackDetailsState extends State<ViewTrackDetails> {
                 },
                   child: _buildSessionCard('LEVEL 1', widget.level1 ?? 'LEVEL 1 not available', Colors.green)),
 
-
-                InkWell(onTap: () {
-                  //  Navigator.push(context,
-                  //               MaterialPageRoute(builder: (context) {
-                  //             return UserTrackBooking(rt_id:widget.rt_id,level1:widget.level1);
-                                
-                  //           }));
-                },
-                  child: _buildSessionCard('LEVEL 2', widget.level2 ?? 'LEVEL 2 not available', Colors.blue)),
+                  InkWell(
+                    onTap: () {
+                      // Handle onTap for LEVEL 2
+                    },
+                    child: _buildSessionCard('LEVEL 2', widget.level2 ?? 'LEVEL 2 not available', Colors.blue),
+                  ),
               ],
             ),
             SizedBox(height: 20),

@@ -88,7 +88,7 @@ class _UserViewAllCoachState extends State<UserViewAllCoach> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ViewInstructor(id:data['uid'],img:imageUrl,desc:desc,name:name),
+                          builder: (context) => ViewInstructor(id:data['uid'],img:imageUrl,desc:desc,name:name,rt_id:widget.rt_id,coach_id:data['coach_id']),
                         ),
                       );
                     },

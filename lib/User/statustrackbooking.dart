@@ -32,6 +32,7 @@ class _StatusTrackState extends State<StatusTrack> {
           .doc(documentId)
           .update({'status': '1'});
       print('Status updated successfully');
+
     } catch (e) {
       print('Error updating status: $e');
     }
@@ -44,6 +45,8 @@ class _StatusTrackState extends State<StatusTrack> {
           .doc(documentId)
           .update({'status': '2'});
       print('Status updated successfully');
+                  Navigator.of(context).pop('Level1Completed'); // Pass any data if needed
+
     } catch (e) {
       print('Error updating status: $e');
     }
@@ -107,30 +110,30 @@ class _StatusTrackState extends State<StatusTrack> {
                             }).toList(),
                           ),
                           SizedBox(height: 10),
-                          Row(
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  
-                                    updateStatus(documentId);
-                                  
-                                },
-                                child: status=='0'?Text('complete'):Text('completed'),
-                              ),
-                              ElevatedButton(onPressed: (){
-                                      onComplete(documentId);
-
-
-                                }, child: status=='1'? Text( 'Pending' ):Text('Level 1 completed'),
-
-                                )
-
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                        ],
-                      );
-                    }).toList(),
+                         Row(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                if (status == '0') {
+                                  updateStatus(documentId);
+                                }
+                              },
+                              child: Text(status == '0' ? 'Complete' : 'Completed'),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                if (status == '0') {
+                                  onComplete(documentId);
+                                }
+                              },
+                              child: Text(status == '0' ? 'Pending' : 'Level 1 completed'),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                      ],
+                    );
+                  }).toList(),
                   ),
                 );
               }

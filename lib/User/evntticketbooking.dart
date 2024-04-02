@@ -199,7 +199,7 @@ class _EventTicketBookingState extends State<EventTicketBooking> {
   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) {
-                      return EventTicketDetails();
+                      return EventTicketDetails(rt_id: widget.rt_id,);
                     }),
                   );
 
