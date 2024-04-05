@@ -10,6 +10,7 @@ import 'package:loginrace/User/viewindividualinstructor.dart';
 import 'package:loginrace/User/viewtrack.dart';
 
 class ViewTrackDetails extends StatefulWidget {
+  
   var upcomingevents;
   var level1;
   var level2;
@@ -69,7 +70,8 @@ class _ViewTrackDetailsState extends State<ViewTrackDetails> {
 
                   InkWell(
                     onTap: () {
-                      // Handle onTap for LEVEL 2
+          
+
                     },
                     child: _buildSessionCard('LEVEL 2', widget.level2 ?? 'LEVEL 2 not available', Colors.blue),
                   ),
@@ -98,6 +100,7 @@ class _ViewTrackDetailsState extends State<ViewTrackDetails> {
               'STUDENTS TESTIMONIALS',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 44, 44, 45)),
             ),
+            
             SizedBox(height: 10),
             TestimonialCard(avatar: 'TONY JOSEPH', feedback: 'I came to attend the level 1 and level 2 at Adventure Race Track Academy...'),
             TestimonialCard(avatar: 'CATHELINE', feedback: 'I came to attend the level T track academy Adventure Race Track Academy...'),
@@ -166,6 +169,7 @@ class _ViewTrackDetailsState extends State<ViewTrackDetails> {
     );
   }
 }
+
 class TestimonialCard extends StatelessWidget {
   final String avatar;
   final String feedback;

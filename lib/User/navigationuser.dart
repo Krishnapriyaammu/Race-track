@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:loginrace/User/userhome.dart';
 import 'package:loginrace/User/viewcommunity.dart';
 import 'package:loginrace/User/viewevents.dart';
 import 'package:loginrace/User/viewracetrack.dart';
 import 'package:loginrace/User/viewrentitems.dart';
+import 'package:loginrace/User/viewtrackdetails.dart';
 
 class NavigationUser extends StatefulWidget {
-  const NavigationUser({super.key});
+  
+  const NavigationUser({super.key,});
 
   @override
   State<NavigationUser> createState() => _NavigationUserState();

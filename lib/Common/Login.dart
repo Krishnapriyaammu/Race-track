@@ -10,6 +10,7 @@ import 'package:loginrace/Racetrack/registration.dart';
 import 'package:loginrace/Rental/rentalregistration.dart';
 import 'package:loginrace/Rental/rentnavigation.dart';
 import 'package:loginrace/User/navigationuser.dart';
+import 'package:loginrace/User/userhome.dart';
 import 'package:loginrace/User/userregis.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -66,38 +67,47 @@ class _LoginState extends State<Login> {
           return NavigationUser();
         }));
       } }
-      // else {
-      //   showLoginFailedDialog();
-      // }
+
+      else {
+        showLoginFailedDialog();
+      }
+
     }
 
-    if (widget.type == 'race track') {
+       
+    if (widget.type == 'race track')
+     {
       final QuerySnapshot raceSnapshot = await FirebaseFirestore.instance
           .collection('race_track_register')
           .where('name', isEqualTo: user.text)
           .where('password', isEqualTo: pass.text)
           .get();
-
+        
       if (raceSnapshot.docs.isNotEmpty) {
-        var userid = raceSnapshot.docs[0].id;
-         var image_url = raceSnapshot.docs[0]['image_url'];
-            var username = raceSnapshot.docs[0]['name'];
+    var raceTrackData = raceSnapshot.docs[0].data() as Map<String, dynamic>;
+    
+    if (raceTrackData != null && raceTrackData['status'] == 1) {
+      var userid = raceSnapshot.docs[0].id;
+      var image_url = raceTrackData['image_url'];
+      var username = raceTrackData['name'];
 
-        SharedPreferences sp = await SharedPreferences.getInstance();
-        sp.setString('uid', userid);
-         sp.setString('name', username);
-            sp.setString('image_url',image_url);
+      SharedPreferences sp = await SharedPreferences.getInstance();
+      sp.setString('uid', userid);
+      sp.setString('name', username);
+      sp.setString('image_url',image_url);
 
-
-        Fluttertoast.showToast(msg: 'Login Successful as Race Track');
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-          return RaceTrackNavigation();
-        }));
-      }
-      else {
-        showLoginFailedDialog();
-      }
+      Fluttertoast.showToast(msg: 'Login Successful as Race Track');
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return RaceTrackNavigation();
+      }));
+    } else {
+      Fluttertoast.showToast(msg: 'Race Track login is pending approval from admin');
     }
+  } else {
+    showLoginFailedDialog();
+  }
+}
+
 
     if (widget.type == 'rental') {
       final QuerySnapshot rentSnapshot = await FirebaseFirestore.instance
@@ -107,6 +117,10 @@ class _LoginState extends State<Login> {
           .get();
 
       if (rentSnapshot.docs.isNotEmpty) {
+            var rentalData = rentSnapshot.docs[0].data() as Map<String, dynamic>;
+              if (rentalData != null && rentalData['status'] == 1) {
+
+
         var userid = rentSnapshot.docs[0].id;
         SharedPreferences sp = await SharedPreferences.getInstance();
         sp.setString('uid', userid);
@@ -115,6 +129,10 @@ class _LoginState extends State<Login> {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
           return RentNavigationbar();
         }));
+      }
+       else {
+      Fluttertoast.showToast(msg: 'Race Track login is pending approval from admin');
+    }
       }
        else {
         showLoginFailedDialog();
@@ -129,6 +147,10 @@ class _LoginState extends State<Login> {
           .get();
 
       if (commSnapshot.docs.isNotEmpty) {
+                    var coomunityData = commSnapshot.docs[0].data() as Map<String, dynamic>;
+                                  if (coomunityData != null && coomunityData['status'] == 1) {
+
+
         var userid = commSnapshot.docs[0].id;
           var image_url = commSnapshot.docs[0]['image_url'];
             var username = commSnapshot.docs[0]['name'];
@@ -144,6 +166,10 @@ class _LoginState extends State<Login> {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
           return Navigation();
         }));
+      }
+       else {
+      Fluttertoast.showToast(msg: 'Race Track login is pending approval from admin');
+    }
       }
        else {
         showLoginFailedDialog();

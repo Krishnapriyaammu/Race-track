@@ -58,7 +58,7 @@ class _UserViewRentHomeState extends State<UserViewRentHome>
     try {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('rental_upload_image')
-          .where('uid',isEqualTo: widget.id)
+          .where('rent_id',isEqualTo: widget.id)
           .where('category',isEqualTo: 'Bikes')
           .get();
       print('Fetched ${snapshot.docs.length} documents');
@@ -93,11 +93,12 @@ class _UserViewRentHomeState extends State<UserViewRentHome>
                   final data = document.data() as Map<String, dynamic>;
                   final imageUrl = data['image_url'];
                   final desc = data['description'];
+                  final rent_id=data['rent_id'];
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-                                  return UserViewSingleItem(img:imageUrl,desc:desc);
+                                  return UserViewSingleItem(img:imageUrl,desc:desc,rent_id:rent_id);
                                     
                                 }));
                   },
@@ -125,7 +126,7 @@ Future<List<DocumentSnapshot>> getdata() async {
     try {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('rental_upload_image')
-          .where('uid',isEqualTo: widget.id)
+          .where('rent_id',isEqualTo: widget.id)
           .where('category',isEqualTo: 'Cars')
           .get();
       print('Fetched ${snapshot.docs.length} documents');
@@ -163,11 +164,12 @@ Future<List<DocumentSnapshot>> getdata() async {
                  final document = snapshot.data![index];
                 final data = document.data() as Map<String, dynamic>;
                 final imageUrl = data['image_url'];
+                final rent_id =data['rent_id'];
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-                                  return UserViewSingleItem(img:imageUrl,desc:data['description'],);
+                                  return UserViewSingleItem(img:imageUrl,desc:data['description'],rent_id: rent_id,);
                                     
                                 }));
                   },
@@ -198,7 +200,7 @@ Future<List<DocumentSnapshot>> getdata() async {
     try {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('rental_upload_image')
-          .where('uid',isEqualTo: widget.id)
+          .where('rent_id',isEqualTo: widget.id)
           .where('category',isEqualTo: 'Grocery')
           .get();
       print('Fetched ${snapshot.docs.length} documents');
@@ -232,12 +234,12 @@ Future<List<DocumentSnapshot>> getdata() async {
                  final document = snapshot.data![index];
                 final data = document.data() as Map<String, dynamic>;
                 final imageUrl = data['image_url'];
-
+                 final rent_id =data['rent_id'];
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-                                  return UserViewSingleItem(img:imageUrl,desc: data['description'],);
+                                  return UserViewSingleItem(img:imageUrl,desc: data['description'],rent_id: rent_id,);
                                     
                                 }));
                   },

@@ -3,8 +3,11 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loginrace/Community/addautoshows.dart';
 import 'package:loginrace/Community/addimages.dart';
+import 'package:loginrace/Community/allmessageview.dart';
 import 'package:loginrace/Community/booking.dart';
+import 'package:loginrace/Community/message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileViewPage extends StatefulWidget {
@@ -112,11 +115,11 @@ class _ProfileViewPageState extends State<ProfileViewPage> {
               children: [
                 ElevatedButton(
                   onPressed: () {
- Navigator.push(
+           Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => BookingViewPage()), // Navigate to BookingViewPage
+                      MaterialPageRoute(builder: (context) => AddAutoshows()), // Navigate to BookingViewPage
                     );                  },
-                  child: Text('BOOKING'),
+                  child: Text('AUTO SHOWS'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 229, 225, 235),
                     shape: RoundedRectangleBorder(
@@ -127,8 +130,10 @@ class _ProfileViewPageState extends State<ProfileViewPage> {
                 SizedBox(width: 20),
                 ElevatedButton(
                   onPressed: () {
-                    // Implement action
-                  },
+                     Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ViewAllMessage()), // Navigate to BookingViewPage
+                    );                      },
                   child: Text('MESSAGE'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color.fromARGB(221, 226, 219, 225),

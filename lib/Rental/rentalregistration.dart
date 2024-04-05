@@ -286,6 +286,7 @@ String imageUrl='';
                               'conform password': confirmPass.text,
                              
                               'image_url': imageUrl,
+                              'status':0,
                             });
                             print(Name.text);
                               print(Email.text);

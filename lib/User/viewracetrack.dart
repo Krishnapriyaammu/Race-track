@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:loginrace/Racetrack/trackdetails.dart';
+import 'package:loginrace/User/navigationuser.dart';
 import 'package:loginrace/User/viewtrackdetails.dart';
 
 class ViewRacetrack extends StatefulWidget {
@@ -93,7 +94,7 @@ class _ViewRacetrackState extends State<ViewRacetrack> {
                             Expanded(
                               child: InkWell(onTap: () {
                                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                  return ViewTrackDetails(rt_id:id,level1:level1,level2:level2,upcomingevents:upcomingevents);
+                                  return ViewTrackDetails(rt_id: id, level1: level1, level2: level2, upcomingevents: upcomingevents);
                                                   },));
                               },
                                 child: Container(

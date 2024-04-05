@@ -334,6 +334,7 @@ Future<List<DocumentSnapshot>> getData() async {
       },
     );
   }
+  
 Future<void> uploadImage() async {
     try {
       if (_selectedImage != null) {

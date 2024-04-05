@@ -12,6 +12,7 @@ class RentalHome extends StatefulWidget {
   State<RentalHome> createState() => _RentalHomeState();
 }
 class _RentalHomeState extends State<RentalHome> {
+  
 
    Future<List<DocumentSnapshot>> getData() async {
     try {
@@ -22,7 +23,7 @@ class _RentalHomeState extends State<RentalHome> {
       return snapshot.docs;
     } catch (e) {
       print('Error fetching data: $e');
-      throw e; // Rethrow the error to handle it in the FutureBuilder
+      throw e; 
     }
   }
  
@@ -137,7 +138,7 @@ class _RentalHomeState extends State<RentalHome> {
                           ),
                            SizedBox(height: 8),
                           Text(
-                            data['due date'] ?? 'Due date not available',
+                            data['due_date'] ?? 'Due date not available',
                             style: TextStyle(fontSize: 16),
                           ),
                            SizedBox(height: 8),
@@ -148,19 +149,17 @@ class _RentalHomeState extends State<RentalHome> {
                         ],
                       ),
                     
-                      ),
+                    
                     ),
-              );
-            }
+                  ),
+                );
+              },
             );
-            }
-        }
-      )
-
-         ) ;
-           }
-        }
-            
+          }
+        },
+      ),
+    );
+  }
 
        Future<List<DocumentSnapshot>> getdata() async {
     try {
@@ -245,7 +244,7 @@ class _RentalHomeState extends State<RentalHome> {
                           ),
                            SizedBox(height: 8),
                           Text(
-                            data['due date'] ?? 'Due date not available',
+                            data['due_date'] ?? 'Due date not available',
                             style: TextStyle(fontSize: 16),
                           ),
                            SizedBox(height: 8),
@@ -312,3 +311,4 @@ class _RentalHomeState extends State<RentalHome> {
       elevation: 8.0,
     );
   }
+}

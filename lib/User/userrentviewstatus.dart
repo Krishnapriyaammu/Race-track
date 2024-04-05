@@ -7,7 +7,8 @@ class UserRentViewStatus extends StatefulWidget {
   var img;
   var desc;
   var due_date;
-  UserRentViewStatus({super.key, required this. img,   required this.desc,required this.due_date});
+  String rent_id;
+  UserRentViewStatus({super.key, required this. img,   required this.desc,required this.due_date, required this. rent_id});
 
   @override
   State<UserRentViewStatus> createState() => _UserRentViewStatusState();
@@ -79,7 +80,7 @@ appBar: AppBar(
                   // Text('Price: 4500/-'),
                  
                   SizedBox(height: 8),
-                  Text('Status: APPROVED'),
+                  Text('Status: NOT APPROVED'),
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {

@@ -13,7 +13,7 @@ SharedPreferences sp = await SharedPreferences.getInstance();
 
 
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('rental_upload_image').where('uid',isEqualTo: a)
+          .collection('rental_upload_image').where('rent_id',isEqualTo: a)
           .get();
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;

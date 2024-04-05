@@ -24,63 +24,59 @@ class _AdminViewCommunityState extends State<AdminViewCommunity> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-
-appBar: AppBar(
-          title: Text('Community List'),
-        ),
-        body: FutureBuilder(
-          future: getData(),
-          builder: (context,AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else {
-              return ListView.builder(
+   return Scaffold(
+      appBar: AppBar(
+        title: Text('Race track List'),
+      ),
+      body: FutureBuilder(
+        future: getData(),
+        builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            return ListView.builder(
               itemCount: snapshot.data?.length ?? 0,
               itemBuilder: (context, index) {
-
-                final document = snapshot.data![index];
-                  final data = document.data() as Map<String, dynamic>;
-                  final imageUrl = data['image_url'];
+                final doc = snapshot.data![index];
+                final data = doc.data() as Map<String, dynamic>;
+                final imageUrl = data['image_url'];
 
                 return ListTile(
                   onTap: () {
-                    
+                    String documentId = doc.id; 
+                    print(
+                        'documentId: $documentId'); // Print the document ID to verify
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AdminAcceptRejectCommunity(
+                          userData: data,
+                          documentId:
+                              documentId, 
+                        ),
+                      ),
+                    );
                   },
-                   title: Text(data['name'] ?? 'Name not available'),
-                      subtitle: Text(data['email'] ?? 'email  not available'),
-
-                    leading: imageUrl != null
-
-                ? CircleAvatar(
-                                  backgroundImage: NetworkImage(imageUrl),
-                            radius: 30,
-                          )
-                            : CircleAvatar(
-                                  child: Icon(Icons.person),
-                                  radius: 30,
-                                ),    
-                
-                    trailing: InkWell(onTap: () {
-                       Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return AdminAcceptRejectCommunity();
-                  },));
-                    },
-                      child: Icon(Icons.navigate_next)));
-                
+                  title: Text(data['name'] ?? 'Name not available'),
+                  subtitle: Text(data['email'] ?? 'email not available'),
+                  leading: imageUrl != null
+                      ? CircleAvatar(
+                          backgroundImage: NetworkImage(imageUrl),
+                          radius: 30,
+                        )
+                      : CircleAvatar(
+                          child: Icon(Icons.person),
+                          radius: 30,
+                        ),
+                  trailing: Icon(Icons.navigate_next),
+                );
               },
             );
           }
-          }
-        ),
-
-
-
-
-
-
+        },
+      ),
     );
   }
 }

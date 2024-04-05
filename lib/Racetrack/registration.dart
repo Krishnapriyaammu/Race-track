@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loginrace/Common/Login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class raceRegistration extends StatefulWidget {
   const raceRegistration({super.key});
@@ -242,6 +243,7 @@ String imageUrl='';
                           
                           
                           onPressed: () async {
+                            
                             await uploadImage();
                             
                             await FirebaseFirestore.instance
@@ -256,6 +258,7 @@ String imageUrl='';
                               'conform password': confirmPass.text,
                              
                               'image_url': imageUrl,
+                              'status':0,
                             });
                             print(Name.text);
                               print(Email.text);

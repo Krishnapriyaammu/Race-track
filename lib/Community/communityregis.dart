@@ -284,7 +284,8 @@ String imageUrl='';
                               'conform password': confirmPass.text,
                              
                               'image_url': imageUrl,
-                              'community_id': a
+                              'community_id': a,
+                              'status':0,
                             });
                             print(Name.text);
                               print(Email.text);

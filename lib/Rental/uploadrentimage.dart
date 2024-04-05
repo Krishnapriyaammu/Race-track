@@ -143,7 +143,7 @@ class _RentUploadImageState extends State<RentUploadImage> {
                     'category': selectedCategory,
                     'description': DescriptionEdit.text,
                     'image_url': imageUrl,
-                    'uid':a
+                    'rent_id':a
                   });
 
                   Navigator.pushReplacement(context,
