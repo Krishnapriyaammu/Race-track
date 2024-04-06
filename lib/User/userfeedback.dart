@@ -96,6 +96,8 @@ class _UserFeedbackState extends State<UserFeedback> {
                         return FeedbackViewPage();
                       }));
                       print('Rating: $_userRating');
+                                              Navigator.pop(context); // Navigate back to the previous page
+
                     }
                   },
                   child: Text('Submit Feedback'),

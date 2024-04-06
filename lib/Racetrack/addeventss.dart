@@ -17,11 +17,10 @@ class EventAdd extends StatefulWidget {
 class _EventAddState extends State<EventAdd> {
 
  String _generalPrice = ''; // State for general ticket price
-  String _childPrice = ''; // 
- File? _image; 
-   String imageUrl='';
-   
-// Variable to store selected image
+  String _childPrice = ''; // State for child ticket price
+  String _vipPrice = ''; // State for VIP ticket price
+  File? _image;
+  String imageUrl = '';
 
   // Function to pick image from gallery
   Future<void> _pickImage() async {
@@ -37,11 +36,10 @@ class _EventAddState extends State<EventAdd> {
   }
 
   Future<void> _saveTicketDetails() async {
-
- SharedPreferences sp = await SharedPreferences.getInstance();
+    SharedPreferences sp = await SharedPreferences.getInstance();
     var a = sp.getString('uid');
 
-                await uploadImage();
+    await uploadImage();
     try {
       final CollectionReference tickets =
           FirebaseFirestore.instance.collection('racetrack_upload_event');
@@ -50,22 +48,18 @@ class _EventAddState extends State<EventAdd> {
         'event_date': _eventDateController.text,
         'total_tickets': _totalTicketsController.text,
         'general_price': _generalPrice,
-          'image_url':imageUrl,
+        'image_url': imageUrl,
         'child_price': _childPrice,
-        'rt_id':a,
+        'vip_price': _vipPrice, // Add VIP ticket price field
+        'rt_id': a,
       });
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Ticket details saved successfully.'),
         duration: Duration(seconds: 2),
       ));
-        Navigator.push(context,
-                    MaterialPageRoute(builder: (context) {
-                      return RaceTrackViewEvents();
-
-                    }));
-
-
-
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return RaceTrackViewEvents();
+      }));
     } catch (e) {
       print('Error saving ticket details: $e');
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -217,10 +211,34 @@ class _EventAddState extends State<EventAdd> {
                   ),
                 ],
               ),
+              SizedBox(height: 20),
+              // VIP category
+              Text(
+                'VIP category',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              SizedBox(height: 10),
+              TextFormField(
+                onChanged: (value) {
+                  setState(() {
+                    _vipPrice = value;
+                  });
+                },
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Price (\$)',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
               SizedBox(height: 30),
               ElevatedButton(
                 onPressed: _saveTicketDetails,
-                
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   elevation: 5,
@@ -229,7 +247,6 @@ class _EventAddState extends State<EventAdd> {
                   ),
                   padding: EdgeInsets.symmetric(vertical: 15),
                 ),
-
                 child: Text(
                   'Submit',
                   style: TextStyle(fontSize: 20),
@@ -241,23 +258,24 @@ class _EventAddState extends State<EventAdd> {
       ),
     );
   }
- Future<void> uploadImage() async {
-  try {
-    if (_image != null) {
-      Reference storageReference = FirebaseStorage.instance
-          .ref()
-          .child('image/${_image!.path.split('/').last}');
 
-      await storageReference.putFile(_image!);
+  Future<void> uploadImage() async {
+    try {
+      if (_image != null) {
+        Reference storageReference = FirebaseStorage.instance
+            .ref()
+            .child('image/${_image!.path.split('/').last}');
 
-      // Get the download URL
-      imageUrl = await storageReference.getDownloadURL();
+        await storageReference.putFile(_image!);
 
-      // Now you can use imageUrl as needed (e.g., save it to Firestore)
-      print('Image URL: $imageUrl');
+        // Get the download URL
+        imageUrl = await storageReference.getDownloadURL();
+
+        // Now you can use imageUrl as needed (e.g., save it to Firestore)
+        print('Image URL: $imageUrl');
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
     }
-  } catch (e) {
-    print('Error uploading image: $e');
   }
- }
 }

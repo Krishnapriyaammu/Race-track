@@ -26,7 +26,7 @@ class _ViewGalleryState extends State<ViewGallery> {
     }
   }
   @override
-   Widget build(BuildContext context) {
+    Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
       body: Padding(
@@ -55,10 +55,10 @@ class _ViewGalleryState extends State<ViewGallery> {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else {
                     return GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2, // Number of columns
-                        crossAxisSpacing: 10.0,
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 200, // Maximum width for each item
                         mainAxisSpacing: 10.0,
+                        crossAxisSpacing: 10.0,
                       ),
                       itemCount: snapshot.data?.length ?? 0,
                       itemBuilder: (context, index) {
@@ -78,24 +78,12 @@ class _ViewGalleryState extends State<ViewGallery> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(10.0),
-                                        topRight: Radius.circular(10.0),
-                                      ),
-                                      image: DecorationImage(
-                                        image: NetworkImage(imageUrl),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Image.network(
+                                imageUrl,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         );

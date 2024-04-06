@@ -10,8 +10,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AddImageAutoshow extends StatefulWidget {
     final String category;
+    final String price;
 
-  const AddImageAutoshow({super.key,required this.category});
+   AddImageAutoshow({super.key,required this.category, required this. price});
 
   @override
   State<AddImageAutoshow> createState() => _AddImageAutoshowState();
@@ -19,6 +20,7 @@ class AddImageAutoshow extends StatefulWidget {
 
 class _AddImageAutoshowState extends State<AddImageAutoshow> {
   List<File> _selectedImages = [];
+
 
   Future<void> _getImage(ImageSource source) async {
     final picker = ImagePicker();
@@ -62,6 +64,7 @@ class _AddImageAutoshowState extends State<AddImageAutoshow> {
               },
             ),
           ),
+         
           ElevatedButton(
             onPressed: () async {
               SharedPreferences sp = await SharedPreferences.getInstance();
@@ -76,10 +79,11 @@ class _AddImageAutoshowState extends State<AddImageAutoshow> {
 
                 String imageUrl = await storageReference.getDownloadURL();
 
-                await FirebaseFirestore.instance.collection("community_add_autoshow").add({
+                await FirebaseFirestore.instance.collection("community_add_autoshows").add({
                   'image_url': imageUrl,
-                  'uid': uid,
-                  'category': widget.category, // Include the category in the document
+                  'community_id': uid,
+                  'category': widget.category,
+                  'price':widget.price, // Include the category in the document
                 });
               }
 

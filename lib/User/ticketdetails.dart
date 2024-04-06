@@ -1,25 +1,66 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loginrace/User/ticketcart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EventTicketDetails extends StatefulWidget {
   String rt_id;
-   EventTicketDetails(  { Key? key,   required this.rt_id}): super(key: key);
+
+   EventTicketDetails(  { Key? key,   required this.rt_id, }): super(key: key);
 
   @override
   State<EventTicketDetails> createState() => _EventTicketDetailsState();
 }
 
 class _EventTicketDetailsState extends State<EventTicketDetails> {
-
-  String _name = '';
-  String _selectedCategory = 'General';
+   String _name = '';
   bool _isVIP = false;
+  int _generalTickets = 0; // Number of general tickets
+  int _childTickets = 0; // Number of child tickets
 
   // Define ticket prices
   double _generalPrice = 100.0;
   double _childPrice = 50.0;
   double _vipPrice = 200.0;
+
+  Future<void> _storeTicketDetails() async {
+    try {
+      // Get current user ID from SharedPreferences
+      // Assuming you've stored user ID under the key 'uid'
+      SharedPreferences sp = await SharedPreferences.getInstance();
+      var userid = sp.getString('uid');
+
+      // Add ticket details to Firestore
+      await FirebaseFirestore.instance.collection('Eventtickets').add({
+        'name': _name,
+        'price': _calculatePrice(),
+        'totalTickets': _generalTickets + _childTickets,
+        'timestamp': Timestamp.now(),
+        'userid': userid,
+        'rt_id': widget.rt_id,
+        'generalTickets': _generalTickets,
+        'childTickets': _childTickets,
+      });
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Ticket booking successful!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+    } catch (e) {
+      // Show error message if an error occurs
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error storing ticket details: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,28 +96,63 @@ class _EventTicketDetailsState extends State<EventTicketDetails> {
                 ),
               ),
               SizedBox(height: 20),
-              Text(
-                'Category:',
-                style: GoogleFonts.poppins(fontSize: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Number of General Tickets:',
+                          style: GoogleFonts.poppins(fontSize: 20),
+                        ),
+                        SizedBox(height: 10),
+                        TextFormField(
+                          onChanged: (value) {
+                            setState(() {
+                              _generalTickets = int.tryParse(value) ?? 0;
+                            });
+                          },
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Enter number of general tickets',
+                            prefixIcon: Icon(Icons.confirmation_number),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 20),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Number of Child Tickets:',
+                          style: GoogleFonts.poppins(fontSize: 20),
+                        ),
+                        SizedBox(height: 10),
+                        TextFormField(
+                          onChanged: (value) {
+                            setState(() {
+                              _childTickets = int.tryParse(value) ?? 0;
+                            });
+                          },
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Enter number of child tickets',
+                            prefixIcon: Icon(Icons.confirmation_number),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: 10),
-              DropdownButton<String>(
-                value: _selectedCategory,
-                onChanged: (newValue) {
-                  setState(() {
-                    _selectedCategory = newValue!;
-                  });
-                },
-                items: ['General', 'Child']
-                    .map<DropdownMenuItem<String>>(
-                      (category) => DropdownMenuItem<String>(
-                        value: category,
-                        child: Text(category),
-                      ),
-                    )
-                    .toList(),
-              ),
-               SizedBox(height: 20),
+              SizedBox(height: 20),
               Row(
                 children: [
                   Text(
@@ -98,22 +174,26 @@ class _EventTicketDetailsState extends State<EventTicketDetails> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ShoppingCart(rt_id: widget.rt_id,
-                          name: _name,
-                          category: _selectedCategory,
-                          price: _calculatePrice(),
-                          isVIP: _isVIP, // Pass the value of isVIP to ShoppingCart
-                        ),
-                      ),
-                    );
+                    _storeTicketDetails();
                   },
                   child: Text(
                     'Book Tickets',
                     style: GoogleFonts.poppins(fontSize: 20),
                   ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Center(
+                child: Text(
+                  'Total Tickets: ${_generalTickets + _childTickets}',
+                  style: GoogleFonts.poppins(fontSize: 18),
+                ),
+              ),
+              SizedBox(height: 10),
+              Center(
+                child: Text(
+                  'Total Amount: \$${_calculatePrice().toStringAsFixed(2)}',
+                  style: GoogleFonts.poppins(fontSize: 18),
                 ),
               ),
             ],
@@ -123,12 +203,12 @@ class _EventTicketDetailsState extends State<EventTicketDetails> {
     );
   }
 
-  // Function to calculate ticket price based on category and VIP status
+  // Function to calculate ticket price based on number of tickets and VIP status
   double _calculatePrice() {
-    if (_selectedCategory == 'General') {
-      return _isVIP ? _generalPrice + _vipPrice : _generalPrice;
-    } else {
-      return _isVIP ? _childPrice + _vipPrice : _childPrice;
+    double totalPrice = (_generalPrice * _generalTickets) + (_childPrice * _childTickets);
+    if (_isVIP) {
+      totalPrice += _vipPrice;
     }
+    return totalPrice;
   }
 }

@@ -12,9 +12,7 @@ import 'package:loginrace/Racetrack/trackdetails.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RaceTrackViewRace extends StatefulWidget {
-    
-
-   RaceTrackViewRace({ super.key});
+  RaceTrackViewRace({super.key});
 
   @override
   State<RaceTrackViewRace> createState() => _RaceTrackViewRaceState();
@@ -33,7 +31,7 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
   XFile? pickedFile;
   File? image;
 
-void updateStatus(String documentId) async {
+  void updateStatus(String documentId) async {
     try {
       await FirebaseFirestore.instance
           .collection('user_track_booking')
@@ -104,7 +102,8 @@ void updateStatus(String documentId) async {
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
-                          color: Color.fromARGB(255, 238, 180, 180).withOpacity(0.5),
+                          color: Color.fromARGB(255, 238, 180, 180)
+                              .withOpacity(0.5),
                           spreadRadius: 2,
                           blurRadius: 5,
                           offset: Offset(0, 3),
@@ -126,7 +125,8 @@ void updateStatus(String documentId) async {
                 Expanded(
                   child: FutureBuilder(
                     future: getData(),
-                    builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+                    builder: (context,
+                        AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
                       } else if (snapshot.hasError) {
@@ -136,7 +136,8 @@ void updateStatus(String documentId) async {
                           itemCount: snapshot.data?.length ?? 0,
                           itemBuilder: ((context, index) {
                             final document = snapshot.data![index];
-                            final data = document.data() as Map<String, dynamic>;
+                            final data =
+                                document.data() as Map<String, dynamic>;
                             final imageUrl = data['image_url'];
                             return Padding(
                               padding: const EdgeInsets.all(16.0),
@@ -149,10 +150,12 @@ void updateStatus(String documentId) async {
                                       child: Container(
                                         padding: EdgeInsets.all(12),
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              data['track name'] ?? 'Name not available',
+                                              data['track name'] ??
+                                                  'Name not available',
                                               style: TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.bold,
@@ -170,8 +173,11 @@ void updateStatus(String documentId) async {
                                                   direction: Axis.horizontal,
                                                   allowHalfRating: true,
                                                   itemCount: 5,
-                                                  itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                                                  itemBuilder: (context, _) => Icon(
+                                                  itemPadding:
+                                                      EdgeInsets.symmetric(
+                                                          horizontal: 4.0),
+                                                  itemBuilder: (context, _) =>
+                                                      Icon(
                                                     Icons.star,
                                                     size: 20,
                                                     color: Colors.amber,
@@ -192,13 +198,15 @@ void updateStatus(String documentId) async {
                                             ),
                                             SizedBox(height: 10),
                                             Text(
-                                              data['tracktype'] ?? 'Name not available',
+                                              data['tracktype'] ??
+                                                  'Name not available',
                                               style: TextStyle(
                                                 fontSize: 16,
                                               ),
                                             ),
                                             Text(
-                                              data['place'] ?? 'Name not available',
+                                              data['place'] ??
+                                                  'Name not available',
                                               style: TextStyle(
                                                 fontSize: 14,
                                                 color: Colors.grey,
@@ -214,12 +222,14 @@ void updateStatus(String documentId) async {
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(8),
                                         image: DecorationImage(
-                                          image: AssetImage('images/racing.jpg'),
+                                          image:
+                                              AssetImage('images/racing.jpg'),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
                                       child: imageUrl != null
-                                          ? Image.network(imageUrl, fit: BoxFit.cover)
+                                          ? Image.network(imageUrl,
+                                              fit: BoxFit.cover)
                                           : Icon(Icons.image),
                                     ),
                                   ],
@@ -237,122 +247,135 @@ void updateStatus(String documentId) async {
 
             // View Booked Users Tab
 
-
-
-        FutureBuilder(
-  future: getBookedUsers(),
-  builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return Center(child: CircularProgressIndicator());
-    } else if (snapshot.hasError) {
-      return Center(child: Text('Error: ${snapshot.error}'));
-    } else {
-      List<DocumentSnapshot> bookedUsers = snapshot.data ?? [];
-      return ListView.builder(
-        itemCount: bookedUsers.length,
-        itemBuilder: (context, index) {
-          final userData = bookedUsers[index].data() as Map<String, dynamic>;
-          String status = userData['status'] ?? 0; // Default to 0 if status is null
-          bool isLevel1Completed = status == 1;
+            FutureBuilder(
+              future: getBookedUsers(),
+              builder:
+                  (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else {
+                  List<DocumentSnapshot> bookedUsers = snapshot.data ?? [];
+                  return ListView.builder(
+                    itemCount: bookedUsers.length,
+                    itemBuilder: (context, index) {
+                      final userData =
+                          bookedUsers[index].data() as Map<String, dynamic>;
+                      String status = userData['status'] ??
+                          0; // Default to 0 if status is null
+                      bool isLevel1Completed = status == 1;
                       final String documentId = bookedUsers[index].id;
 
-          return Card(
-            elevation: 3,
-            margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: ListTile(
-              title: Text(userData['name'] ?? 'Name not available'),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(userData['email'] ?? 'Email not available'),
-                  Text(userData['place'] ?? 'Place not available'),
-                  Text(userData['phone'] ?? 'Phone not available'),
-                ],
-              ),
-              trailing: ElevatedButton(
-                onPressed: isLevel1Completed
-                    ? null // Disable the button if level 1 is completed
-                    : () {
-                        // Add functionality for the button
-                        // For example, show a dialog with options to approve or reject the booking
-                      showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              int selectedLevel = 1; // Default selected level
+                      return Card(
+                        elevation: 3,
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: ListTile(
+                          title: Text(userData['name'] ?? 'Name not available'),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(userData['email'] ?? 'Email not available'),
+                              Text(userData['place'] ?? 'Place not available'),
+                              Text(userData['phone'] ?? 'Phone not available'),
+                            ],
+                          ),
+                          trailing: ElevatedButton(
+                            onPressed: isLevel1Completed
+                                ? null // Disable the button if level 1 is completed
+                                : () {
+                                    // Add functionality for the button
+                                    // For example, show a dialog with options to approve or reject the booking
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        int selectedLevel =
+                                            1; // Default selected level
 
-              return StatefulBuilder(
-                builder: (BuildContext context, setState) {
-                  return AlertDialog(
-                    title: Text('Level Confirmation'),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Please choose the level:'),
-                        Row(
-                          children: [
-                            Radio(
-                              value: 1,
-                              groupValue: selectedLevel,
-                              onChanged: (int? value) {
-                                setState(() {
-                                  selectedLevel = value!;
-                                });
-                              },
-                            ),
-                            Text('Level 1'),
-                            Radio(
-                              value: 2,
-                              groupValue: selectedLevel,
-                              onChanged: (int? value) {
-                                setState(() {
-                                  selectedLevel = value!;
-                                });
-                              },
-                            ),
-                            Text('Level 2'),
-                          ],
+                                        return StatefulBuilder(
+                                          builder:
+                                              (BuildContext context, setState) {
+                                            return AlertDialog(
+                                              title: Text('Level Confirmation'),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                      'Please choose the level:'),
+                                                  Row(
+                                                    children: [
+                                                      Radio(
+                                                        value: 1,
+                                                        groupValue:
+                                                            selectedLevel,
+                                                        onChanged:
+                                                            (int? value) {
+                                                          setState(() {
+                                                            selectedLevel =
+                                                                value!;
+                                                          });
+                                                        },
+                                                      ),
+                                                      Text('Level 1'),
+                                                      Radio(
+                                                        value: 2,
+                                                        groupValue:
+                                                            selectedLevel,
+                                                        onChanged:
+                                                            (int? value) {
+                                                          setState(() {
+                                                            selectedLevel =
+                                                                value!;
+                                                          });
+                                                        },
+                                                      ),
+                                                      Text('Level 2'),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              actions: <Widget>[
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    updateStatus(documentId);
+
+                                                    Navigator.of(context)
+                                                        .pop(); // Close the dialog
+                                                  },
+                                                  child: Text('Complete'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context)
+                                                        .pop(); // Close the dialog
+                                                  },
+                                                  child: Text('Cancel'),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                    );
+                                  },
+                            child: status == '0'
+                                ? Text('Pending')
+                                : Text('Level 1 completed'),
+                          ),
+                          onTap: () {
+                            // Add functionality to view more details about the booked user
+                            // For example, navigate to a detailed profile screen
+                          },
                         ),
-                      ],
-                    ),
-                    actions: <Widget>[
-                      ElevatedButton(
-                        onPressed: () {
-                       
-                                    updateStatus(documentId);
-
-                          Navigator.of(context).pop(); // Close the dialog
-                        },
-                        child: Text('Complete'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(); // Close the dialog
-                        },
-                        child: Text('Cancel'),
-                      ),
-                    ],
+                      );
+                    },
                   );
-                },
-              );
-            },
-          );
-        },
-                      
-                child:   status=='0'?Text('Pending'):Text('Level 1 completed'),
-
-              ),
-              onTap: () {
-                // Add functionality to view more details about the booked user
-                // For example, navigate to a detailed profile screen
+                }
               },
             ),
-          );
-        },
-      );
-    }
-  },
-),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -379,7 +402,8 @@ void updateStatus(String documentId) async {
                     GestureDetector(
                       onTap: () async {
                         ImagePicker picker = ImagePicker();
-                        pickedFile = await picker.pickImage(source: ImageSource.gallery);
+                        pickedFile =
+                            await picker.pickImage(source: ImageSource.gallery);
 
                         setState(() {
                           if (pickedFile != null) {
@@ -390,8 +414,12 @@ void updateStatus(String documentId) async {
                       child: ClipOval(
                         child: CircleAvatar(
                           radius: 50,
-                          backgroundImage: profileImage != null ? FileImage(profileImage) : null,
-                          child: profileImage == null ? Icon(Icons.camera_alt, size: 30) : null,
+                          backgroundImage: profileImage != null
+                              ? FileImage(profileImage)
+                              : null,
+                          child: profileImage == null
+                              ? Icon(Icons.camera_alt, size: 30)
+                              : null,
                         ),
                       ),
                     ),
@@ -421,7 +449,81 @@ void updateStatus(String documentId) async {
                         ),
                       ),
                     ),
-                    // Add more form fields as needed...
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text('Track type'),
+                        ),
+                      ],
+                    ),
+                    TextFormField(
+                      controller: tracktype,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'enter type';
+                        }
+                      },
+                      decoration: InputDecoration(
+                        fillColor: Color.fromARGB(255, 192, 221, 224),
+                        filled: true,
+                        border: UnderlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(40)),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text('place'),
+                        ),
+                      ],
+                    ),
+                    TextFormField(
+                      controller: Place,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'enter place';
+                        }
+                      },
+                      decoration: InputDecoration(
+                        fillColor: Color.fromARGB(255, 192, 221, 224),
+                        filled: true,
+                        border: UnderlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(40)),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text('level 1'),
+                        ),
+                      ],
+                    ),
+                    TextFormField(
+                      controller: level1,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'enter price';
+                        }
+                      },
+                      decoration: InputDecoration(
+                        fillColor: Color.fromARGB(255, 192, 221, 224),
+                        filled: true,
+                        border: UnderlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(40)),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
                     SizedBox(height: 20),
                   ],
                 ),
@@ -434,11 +536,14 @@ void updateStatus(String documentId) async {
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      SharedPreferences sp = await SharedPreferences.getInstance();
+                      SharedPreferences sp =
+                          await SharedPreferences.getInstance();
                       var a = sp.getString('uid');
                       await uploadImage();
 
-                      await FirebaseFirestore.instance.collection("racetrack_upload_track").add({
+                      await FirebaseFirestore.instance
+                          .collection("racetrack_upload_track")
+                          .add({
                         'track name': Racetrackname.text,
                         'rating': Rating.text,
                         'tracktype': tracktype.text,
@@ -470,7 +575,8 @@ void updateStatus(String documentId) async {
   Future<void> uploadImage() async {
     try {
       if (profileImage != null) {
-        Reference storageReference = FirebaseStorage.instance.ref().child('image/${pickedFile!.name}');
+        Reference storageReference =
+            FirebaseStorage.instance.ref().child('image/${pickedFile!.name}');
         await storageReference.putFile(profileImage!);
         imageUrl = await storageReference.getDownloadURL();
         print('Image URL: $imageUrl');

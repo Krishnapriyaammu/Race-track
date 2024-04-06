@@ -17,7 +17,7 @@ class EventTicketBooking extends StatefulWidget {
 
 class _EventTicketBookingState extends State<EventTicketBooking> {
    late Future<DocumentSnapshot<Map<String, dynamic>>> _eventDetailsFuture;
-     String _selectedCategory = 'General'; // Default category
+     String _selectedCategory = 'General'; 
 
 
   @override

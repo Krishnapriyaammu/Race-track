@@ -93,7 +93,9 @@ class _ViewInstructorState extends State<ViewInstructor> {
                   controller: dateController,
                   decoration: InputDecoration(
                     hintText: 'Date of Training (e.g., MM/DD/YYYY)',
+
                   ),
+                  
                 ),
                 SizedBox(height: 10),
                 TextField(

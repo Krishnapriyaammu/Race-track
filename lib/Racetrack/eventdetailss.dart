@@ -16,8 +16,8 @@ class EventDetails extends StatefulWidget {
 
 class _EventDetailsState extends State<EventDetails> {
    late Future<DocumentSnapshot<Map<String, dynamic>>> _eventDetailsFuture;
-     String _selectedCategory = 'General'; // Default category
-
+  String _selectedCategory = 'General'; // Default category
+  String _vipPrice = ''; // VIP ticket price
 
   @override
   void initState() {
@@ -40,7 +40,6 @@ class _EventDetailsState extends State<EventDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    // 
       body: FutureBuilder(
         future: _eventDetailsFuture,
         builder: (context,
@@ -57,8 +56,9 @@ class _EventDetailsState extends State<EventDetails> {
                 eventData['general_price'] ?? 'Price not available';
             final childPrice =
                 eventData['child_price'] ?? 'Price not available';
+            _vipPrice = eventData['vip_price'] ?? 'Price not available'; // Fetch VIP ticket price
 
-              return Stack(
+            return Stack(
               children: [
                 Container(
                   decoration: BoxDecoration(
@@ -74,7 +74,7 @@ class _EventDetailsState extends State<EventDetails> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        SizedBox(height: 100), 
+                        SizedBox(height: 100),
                         Center(
                           child: Text(
                             eventData['event_name'] ?? 'Event Name Not Available',
@@ -192,15 +192,28 @@ class _EventDetailsState extends State<EventDetails> {
                             ),
                           ),
                         ),
+                        SizedBox(height: 20),
+                        Container(
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.8),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            'VIP Price: $_vipPrice',
+                            style: GoogleFonts.poppins(
+                              fontSize: 20,
+                              color: Color(0xFF212121),
+                            ),
+                          ),
+                        ),
                         SizedBox(height: 40),
                         ElevatedButton(
                           onPressed: () {
-                             Navigator.push(context,
+                            Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
                               return RaceTrackViewEvents();
-                                
                             }));
-
                           },
                           child: Text(
                             'View Booking',

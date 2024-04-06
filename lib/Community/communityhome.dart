@@ -117,7 +117,7 @@ class _ProfileViewPageState extends State<ProfileViewPage> {
                   onPressed: () {
            Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AddAutoshows()), // Navigate to BookingViewPage
+                      MaterialPageRoute(builder: (context) => AddAutoshows(community_id:id)), // Navigate to BookingViewPage
                     );                  },
                   child: Text('AUTO SHOWS'),
                   style: ElevatedButton.styleFrom(
