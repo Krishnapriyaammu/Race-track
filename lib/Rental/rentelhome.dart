@@ -19,6 +19,7 @@ class _RentalHomeState extends State<RentalHome> {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('user_rent_booking')
           .get();
+          
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;
     } catch (e) {
@@ -62,10 +63,7 @@ class _RentalHomeState extends State<RentalHome> {
         ),
         body: TabBarView(
           children: [
-            // Requests Tab
             _buildRequestsTab(),
-
-            // Accepted Tab
             _buildAcceptedTab(),
           ],
         ),
@@ -77,79 +75,56 @@ class _RentalHomeState extends State<RentalHome> {
     return Expanded(
       child: FutureBuilder(
         future: getData(),
-        builder: (context,AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+        builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             return ListView.builder(
-            itemCount: snapshot.data?.length ?? 0, // Replace with your actual data
-            itemBuilder: (context, index) {
+              itemCount: snapshot.data?.length ?? 0,
+              itemBuilder: (context, index) {
                 final document = snapshot.data![index];
                 final data = document.data() as Map<String, dynamic>;
-                final imageUrl = data['image_url'];
 
-              return InkWell(onTap: () {
-                   Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return ViewUserAccept();
-                                
-                            }));
-              },
-                child: Card(
-                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                      return ViewUserAccept(documentId: document.id,);
+                    }));
+                  },
+                  child: Card(
+                    margin: EdgeInsets.all(16),
                     elevation: 4,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
-                
-                    child: ListTile(
-                      contentPadding: EdgeInsets.all(16),
-                      leading: Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 200, 225, 255),
-                        
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: imageUrl != null
-                            ? Image.network(imageUrl, fit: BoxFit.cover)
-                            : Icon(Icons.image),
-                      ),
-                      subtitle: Column(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: 8),
                           Text(
-                            data['name'] ?? 'Name not available',
-                            style: TextStyle(fontSize: 16),
+                            'Name: ${data['name'] ?? 'Name not available'}',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 8),
                           Text(
-                            data['address'] ?? 'Address not available',
+                            'Address: ${data['address'] ?? 'Address not available'}',
                             style: TextStyle(fontSize: 16),
                           ),
-                           SizedBox(height: 8),
+                          SizedBox(height: 8),
                           Text(
-                            data['mobile no'] ?? 'Number not available',
+                            'Mobile No: ${data['mobile no'] ?? 'Number not available'}',
                             style: TextStyle(fontSize: 16),
                           ),
-                           SizedBox(height: 8),
+                          SizedBox(height: 8),
                           Text(
-                            data['due_date'] ?? 'Due date not available',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                           SizedBox(height: 8),
-                          Text(
-                            data['hours'] ?? 'Hours not available',
+                            'Due Date: ${data['due_date'] ?? 'Due date not available'}',
                             style: TextStyle(fontSize: 16),
                           ),
                         ],
                       ),
-                    
-                    
                     ),
                   ),
                 );
@@ -161,112 +136,86 @@ class _RentalHomeState extends State<RentalHome> {
     );
   }
 
-       Future<List<DocumentSnapshot>> getdata() async {
-    try {
-      final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('user_rent_booking')
-          .get();
-      print('Fetched ${snapshot.docs.length} documents');
-      return snapshot.docs;
-    } catch (e) {
-      print('Error fetching data: $e');
-      throw e; // Rethrow the error to handle it in the FutureBuilder
-    }
+ Future<List<DocumentSnapshot>> getAcceptedData() async {
+  try {
+    final QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('user_rent_booking')
+        .where('status', isEqualTo: 1) // Fetch only documents where status is 1
+        .get();
+    print('Fetched ${snapshot.docs.length} documents');
+    return snapshot.docs;
+  } catch (e) {
+    print('Error fetching data: $e');
+    throw e;
   }
-        
-      
-    
-
-
+}
   Widget _buildAcceptedTab() {
-    // Replace this with the actual content of the Accepted tab
-     return Expanded(
-      child: FutureBuilder(
-        future: getdata(),
-        builder: (context,AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            return ListView.builder(
-            itemCount: snapshot.data?.length ?? 0, // Replace with your actual data
-            itemBuilder: (context, index) {
-                final document = snapshot.data![index];
-                final data = document.data() as Map<String, dynamic>;
-                final imageUrl = data['image_url'];
+    return Expanded(
+      child: 
+    FutureBuilder(
+  future: getAcceptedData(),
+  builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return Center(child: CircularProgressIndicator());
+    } else if (snapshot.hasError) {
+      return Center(child: Text('Error: ${snapshot.error}'));
+    } else {
+      return ListView.builder(
+        itemCount: snapshot.data?.length ?? 0,
+        itemBuilder: (context, index) {
+          final document = snapshot.data![index];
+          final data = document.data() as Map<String, dynamic>;
+          // final imageUrl = data['image_url'];
 
-              return InkWell(onTap: () {
-                   Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return ViewUserAccept();
-                                
-                            }));
-              },
-                child: Card(
-                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+          return InkWell(
+            onTap: () {
+              // Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //   return ViewUserAccept(documentId: document.id);
+              // }));
+            },
+            child: Card(
+              margin: EdgeInsets.all(16),
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Name: ${data['name'] ?? 'Name not available'}',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                
-                    child: ListTile(
-                      contentPadding: EdgeInsets.all(16),
-                      leading: Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 200, 225, 255),
-                        
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: imageUrl != null
-                            ? Image.network(imageUrl, fit: BoxFit.cover)
-                            : Icon(Icons.image),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 8),
-                          Text(
-                            data['name'] ?? 'Name not available',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            data['address'] ?? 'Address not available',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                           SizedBox(height: 8),
-                          Text(
-                            data['mobile no'] ?? 'Number not available',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                           SizedBox(height: 8),
-                          Text(
-                            data['due_date'] ?? 'Due date not available',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                           SizedBox(height: 8),
-                          Text(
-                            data['hours'] ?? 'Hours not available',
-                            style: TextStyle(fontSize: 16),
+                    SizedBox(height: 8),
+                    Text(
+                      'Address: ${data['address'] ?? 'Address not available'}',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Mobile No: ${data['mobile no'] ?? 'Number not available'}',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Due Date: ${data['due_date'] ?? 'Due date not available'}',
+                      style: TextStyle(fontSize: 16),
                           ),
                         ],
                       ),
-                    
-                      ),
                     ),
-              );
-            }
+                  ),
+                );
+              },
             );
-            }
-        }
-      )
+          }
+        },
+      ),
+    );
+  }
 
-         ) ;
-           }
-  
   void _showPopupMenu(BuildContext context) async {
     await showMenu(
       context: context,
@@ -277,10 +226,9 @@ class _RentalHomeState extends State<RentalHome> {
             leading: Icon(Icons.account_circle),
             title: Text('View Profile'),
             onTap: () {
-               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return RentViewProfile();
-                  },));
-              // Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return RentViewProfile();
+              },));
             },
           ),
         ),
@@ -289,11 +237,9 @@ class _RentalHomeState extends State<RentalHome> {
             leading: Icon(Icons.notifications),
             title: Text('View Notifications'),
             onTap: () {
-               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return RentNotification();
-                  },));
-
-              // Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return RentNotification();
+              },));
             },
           ),
         ),

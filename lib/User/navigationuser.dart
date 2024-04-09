@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loginrace/User/userhome.dart';
+import 'package:loginrace/User/userfirstpage.dart';
 import 'package:loginrace/User/viewcommunity.dart';
 import 'package:loginrace/User/viewevents.dart';
 import 'package:loginrace/User/viewracetrack.dart';
@@ -37,6 +38,7 @@ bottomNavigationBar: BottomNavigationBar(items: [
   BottomNavigationBarItem(icon: Icon(Icons.home_sharp,),label: 'home'),
   BottomNavigationBarItem(icon: Icon(Icons.add_road_rounded,),label: 'race track'),
   BottomNavigationBarItem(icon: Icon(Icons.remove_shopping_cart_outlined,),label: 'Rental'),
+
     BottomNavigationBarItem(icon: Icon(Icons.commute,),label: 'Community'),
 
 

@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loginrace/Community/addimagesautoshow.dart';
+import 'package:loginrace/Community/searchautoshow.dart';
 import 'package:loginrace/Community/viewautoshows.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -78,13 +79,32 @@ class _AddAutoshowsState extends State<AddAutoshows> {
               Row(
                 children: [
                   Expanded(
-                    child: TextFormField(
+                    child: Text(
+                      'Price: ${_categoryPrices[_selectedCategory]}',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                  ),
+                  SizedBox(width: 10.0),
+                  Expanded(
+                    child: TextField(
                       controller: _priceController,
                       decoration: InputDecoration(
-                        labelText: 'Price',
+                        labelText: 'Enter Price',
                         border: OutlineInputBorder(),
                       ),
                     ),
+                  ),
+                  SizedBox(width: 10.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Update the price for the selected category
+                      setState(() {
+                        _categoryPrices[_selectedCategory!] = _priceController.text;
+                      });
+                      // Clear the price input field
+                      _priceController.clear();
+                    },
+                    child: Text('Update Price'),
                   ),
                 ],
               ),
@@ -96,8 +116,7 @@ class _AddAutoshowsState extends State<AddAutoshows> {
                     MaterialPageRoute(
                       builder: (context) => AddImageAutoshow(
                         category: _selectedCategory!,
-                                  price: _priceController.text, // Pass the price
-
+                        price: _categoryPrices[_selectedCategory] ?? '', // Pass the price
                       ),
                     ),
                   );
@@ -186,19 +205,25 @@ class _AddAutoshowsState extends State<AddAutoshows> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ElevatedButton(
-                    onPressed: () {
-                      Fluttertoast.showToast(
-                        msg: 'Auto Show saved successfully',
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        backgroundColor: Colors.blue,
-                        textColor: Colors.white,
-                      );
-                    },
-                    child: Text(
-                      'Save Auto Show',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                   onPressed: () async {
+    // Save the category and price to Firebase
+    await FirebaseFirestore.instance.collection('category_price').add({
+      'category': _selectedCategory,
+      'price': _categoryPrices[_selectedCategory],
+    });
+    
+    Fluttertoast.showToast(
+      msg: 'Auto Show saved successfully',
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.blue,
+      textColor: Colors.white,
+    );
+  },
+  child: Text(
+    'Save Auto Show',
+    style: TextStyle(color: Colors.white),
+  ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       elevation: 5,
@@ -210,15 +235,13 @@ class _AddAutoshowsState extends State<AddAutoshows> {
                   SizedBox(width: 10.0),
                   ElevatedButton(
                     onPressed: () {
- Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ViewAutoshow(community_id:widget.community_id
-                         // Pass the pricec
-
-                      ),
-                    ),
-                  );                    },
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SearchAutoshow(community_id: widget.community_id),
+                        ),
+                      );
+                    },
                     child: Text(
                       'View',
                       style: TextStyle(color: Colors.white),
@@ -239,4 +262,4 @@ class _AddAutoshowsState extends State<AddAutoshows> {
       ),
     );
   }
-} 
+}

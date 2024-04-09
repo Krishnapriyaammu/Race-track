@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/Community/booking.dart';
+import 'package:loginrace/User/autoshowsearch.dart';
 
 class CommunityDetails extends StatefulWidget {
   String communityImage;
@@ -42,7 +43,7 @@ late List<String> _addedImages = [];
       appBar: AppBar(
         title: Text('Community Details'),
       ),
-      body: SafeArea(
+     body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -58,20 +59,37 @@ late List<String> _addedImages = [];
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => BookingViewPage()),
-                );
-              },
-              child: Text('BOOKING'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 229, 225, 235),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6.6),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AutoshowSearch(communityId: widget.communityId)),
+                    );
+                  },
+                  child: Text('AUTOSHOWS'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 229, 225, 235),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6.6),
+                    ),
+                  ),
                 ),
-              ),
+                ElevatedButton(
+                  onPressed: () {
+                    // Add functionality for messaging
+                  },
+                  child: Text('MESSAGE'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 229, 225, 235),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6.6),
+                    ),
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 20),
             Expanded(

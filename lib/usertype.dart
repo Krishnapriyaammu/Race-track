@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loginrace/Common/Login.dart';
+import 'package:loginrace/User/userfirstpage.dart';
 
 class MyPage extends StatefulWidget {
   @override
@@ -35,7 +36,7 @@ class _MyPageState extends State<MyPage> {
                       style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
                     SizedBox(height: 20.0),
-                    _buildButton(context, 'User', Icons.person, Login(type:'user')),
+                    _buildButton(context, 'User', Icons.person, UserType(type:'user')),
                     _buildButton(
                         context, 'Race track', Icons.directions_run,Login(type:'race track')),
                     _buildButton(

@@ -18,6 +18,8 @@ class _RentUploadImageState extends State<RentUploadImage> {
    var DescriptionEdit = TextEditingController();
     var PriceEdit = TextEditingController();
   var CountEdit = TextEditingController();
+  String? documentId; // Variable to store the document ID
+
 
   File? _selectedImage;
   final picker = ImagePicker();
@@ -166,7 +168,7 @@ class _RentUploadImageState extends State<RentUploadImage> {
                   String imageUrl = await storageReference.getDownloadURL();
                     SharedPreferences sp = await SharedPreferences.getInstance();
                   var a = sp.getString('uid');
-                  await FirebaseFirestore.instance.collection("rental_upload_image").add({
+                DocumentReference docRef =   await FirebaseFirestore.instance.collection("rental_upload_image").add({
                     'category': selectedCategory,
                     'description': DescriptionEdit.text,
                     'image_url': imageUrl,
@@ -174,6 +176,7 @@ class _RentUploadImageState extends State<RentUploadImage> {
                     'total_count': CountEdit.text, // Add total count field
                     'rent_id': a,
                   });
+  documentId = docRef.id;
 
                   // Navigate to the product view page
                   Navigator.pushReplacement(context,

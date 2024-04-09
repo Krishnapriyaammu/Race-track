@@ -1,23 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class LuxuryCar extends StatefulWidget {
+class LuxuaryPage extends StatefulWidget {
   String community_id;
-   LuxuryCar({super.key,required this.community_id });
+   LuxuaryPage({super.key, required this. community_id});
 
   @override
-  State<LuxuryCar> createState() => _LuxuryCarState();
+  State<LuxuaryPage> createState() => _LuxuaryPageState();
 }
 
-class _LuxuryCarState extends State<LuxuryCar> {
-  
+class _LuxuaryPageState extends State<LuxuaryPage> {
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(' Cars'),
+        title: Text('  Luxuary Cars'),
       ),
-      body: StreamBuilder<QuerySnapshot>(
+     body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('community_add_autoshows')
             .where('community_id', isEqualTo: widget.community_id)

@@ -1,27 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:loginrace/User/bookautoshow.dart';
 
-class LuxuryCar extends StatefulWidget {
+class SportsCarPage extends StatefulWidget {
   String community_id;
-   LuxuryCar({super.key,required this.community_id });
+   SportsCarPage({super.key, required this. community_id});
 
   @override
-  State<LuxuryCar> createState() => _LuxuryCarState();
+  State<SportsCarPage> createState() => _SportsCarPageState();
 }
 
-class _LuxuryCarState extends State<LuxuryCar> {
-  
+class _SportsCarPageState extends State<SportsCarPage> {
+
+ 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+      return Scaffold(
       appBar: AppBar(
         title: Text(' Cars'),
       ),
-      body: StreamBuilder<QuerySnapshot>(
+     body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('community_add_autoshows')
             .where('community_id', isEqualTo: widget.community_id)
-            .where('category', isEqualTo: 'Luxury Car')
+            .where('category', isEqualTo: 'Sports Car')
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -38,7 +40,7 @@ class _LuxuryCarState extends State<LuxuryCar> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   child: Text(
-                    'VINTAGE CARS',
+                    'Sports CARS',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,

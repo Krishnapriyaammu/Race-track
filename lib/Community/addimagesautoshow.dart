@@ -10,9 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AddImageAutoshow extends StatefulWidget {
     final String category;
-    final String price;
-
-   AddImageAutoshow({super.key,required this.category, required this. price});
+  final String price;
+   AddImageAutoshow({super.key,required this.category, required this. price, });
 
   @override
   State<AddImageAutoshow> createState() => _AddImageAutoshowState();
@@ -83,7 +82,6 @@ class _AddImageAutoshowState extends State<AddImageAutoshow> {
                   'image_url': imageUrl,
                   'community_id': uid,
                   'category': widget.category,
-                  'price':widget.price, // Include the category in the document
                 });
               }
 

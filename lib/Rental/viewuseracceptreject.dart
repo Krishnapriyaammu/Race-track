@@ -3,34 +3,39 @@ import 'package:flutter/material.dart';
 import 'package:loginrace/Rental/viewaccepatrequestrental.dart';
 
 class ViewUserAccept extends StatefulWidget {
-  const ViewUserAccept({super.key});
+  String documentId;
+   ViewUserAccept({super.key, required this. documentId});
 
   @override
   State<ViewUserAccept> createState() => _ViewUserAcceptState();
 }
 
 class _ViewUserAcceptState extends State<ViewUserAccept> {
+  bool isAccepted = false; // Track if the request is already accepted
+  Color rejectButtonColor = Colors.red; // Initially set to red
 
   Future<Map<String, dynamic>> getUserBookingData() async {
     try {
-      final QuerySnapshot userBookingSnapshot =
+      final DocumentSnapshot userBookingSnapshot =
           await FirebaseFirestore.instance
               .collection('user_rent_booking')
+              .doc(widget.documentId) // Use the provided documentId
               .get();
+
       final QuerySnapshot imageSnapshot = await FirebaseFirestore.instance
           .collection('rental_upload_image')
           .get();
 
-      if (userBookingSnapshot.docs.isNotEmpty &&
-          imageSnapshot.docs.isNotEmpty) {
+      if (userBookingSnapshot.exists && imageSnapshot.docs.isNotEmpty) {
         final userBookingData =
-            userBookingSnapshot.docs.first.data() as Map<String, dynamic>;
-        final imageData =
-            imageSnapshot.docs.first.data() as Map<String, dynamic>;
+            userBookingSnapshot.data() as Map<String, dynamic>;
+        final imageData = imageSnapshot.docs.first.data() as Map<String, dynamic>;
+        final bookingDate = userBookingData['booking_date'];
 
         return {
           'userBookingData': userBookingData,
           'imageData': imageData,
+          'bookingDate': bookingDate,
         };
       } else {
         return {};
@@ -46,7 +51,7 @@ class _ViewUserAcceptState extends State<ViewUserAccept> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        elevation: 0, // Remove appbar shadow
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -92,21 +97,18 @@ class _ViewUserAcceptState extends State<ViewUserAccept> {
                       SizedBox(height: 20),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 40),
-                        child: Text(userBookingData['address'] ??
-                            'Address not available'),
+                        child: Text(userBookingData['address'] ?? 'Address not available'),
                       ),
                       SizedBox(height: 10),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 40),
-                        child: Text(userBookingData['mobile no'] ??
-                            'Mobile number not available'),
+                        child: Text(userBookingData['mobile no'] ?? 'Mobile number not available'),
                       ),
                       SizedBox(height: 10),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 40),
                         child: Text(
-                          imageData['description'] ??
-                              'Description not available',
+                          imageData['description'] ?? 'Description not available',
                           style: TextStyle(fontSize: 18),
                         ),
                       ),
@@ -114,15 +116,14 @@ class _ViewUserAcceptState extends State<ViewUserAccept> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 40),
                         child: Text(
-                          'Rent date: 08/9/2024',
+                          'Booking date: ${snapshot.data!['bookingDate'] ?? 'Booking date not available'}',
                           style: TextStyle(fontSize: 18),
                         ),
                       ),
                       SizedBox(height: 10),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 40),
-                        child: Text(userBookingData['due_date'] ??
-                            'Due date not available'),
+                        child: Text(userBookingData['due_date'] ?? 'Due date not available'),
                       ),
                       SizedBox(height: 10),
                       Padding(
@@ -153,16 +154,30 @@ class _ViewUserAcceptState extends State<ViewUserAccept> {
                           ElevatedButton(
                             onPressed: () async {
                               // Handle accept action
+                              if (!isAccepted) {
+                                await FirebaseFirestore.instance
+                                    .collection('user_rent_booking')
+                                    .doc(widget.documentId)
+                                    .update({'status': 1});
+
+                                setState(() {
+                                  isAccepted = true;
+                                  rejectButtonColor = Colors.grey;
+                                });
+                              }
                             },
                             child: Text('Accept'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                            ),
                           ),
                           ElevatedButton(
-                            onPressed: () {
+                            onPressed: isAccepted ? null : () {
                               // Handle reject action
                             },
                             child: Text('Reject'),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
+                              backgroundColor: rejectButtonColor,
                             ),
                           ),
                         ],

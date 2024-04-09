@@ -88,13 +88,13 @@ class CategoryCard extends StatelessWidget {
         case 'Vintage Car':
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => VintageCar(community_id: community_id,)),
+            MaterialPageRoute(builder: (context) => VintageCar(community_id:community_id ,)),
           );
           break;
         case 'Luxury Car':
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => LuxuryCar(community_id: community_id)),
+            MaterialPageRoute(builder: (context) => LuxuryCar(community_id: community_id,),),
           );
           break;
         case 'Motor Bikes':

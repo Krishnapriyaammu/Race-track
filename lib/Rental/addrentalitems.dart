@@ -21,7 +21,7 @@ class _RentalServicePageState extends State<RentalServicePage> {
                      var a = sp.getString('uid');
 
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('rental_add_service').where('uid',isEqualTo: a)
+          .collection('rental_add_service').where('rent_id',isEqualTo: a)
           .get();
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;
@@ -40,7 +40,7 @@ class _RentalServicePageState extends State<RentalServicePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+      appBar: AppBar(
         title: Text('Rental Service Products'),
         backgroundColor: Colors.blue,
       ),
@@ -72,10 +72,6 @@ class _RentalServicePageState extends State<RentalServicePage> {
                       height: 80,
                       decoration: BoxDecoration(
                         color: const Color.fromARGB(255, 200, 225, 255),
-                        // image: DecorationImage(
-                        //   image: AssetImage(product.imagePath),
-                        //   fit: BoxFit.cover,
-                        // ),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: imageUrl != null
@@ -106,8 +102,7 @@ class _RentalServicePageState extends State<RentalServicePage> {
                             IconButton(
                               icon: Icon(Icons.delete),
                               onPressed: () {
-                                // Handle delete action
-                                // You can show a confirmation dialog and delete the product
+                                _showDeleteConfirmationDialog(context, document);
                               },
                             ),
                           ],
@@ -118,8 +113,7 @@ class _RentalServicePageState extends State<RentalServicePage> {
                             IconButton(
                               icon: Icon(Icons.edit),
                               onPressed: () {
-                                // Handle edit action
-                                // You can navigate to the edit page or show a dialog for editing
+                                _editProduct(context, document);
                               },
                             ),
                           ],
@@ -141,6 +135,72 @@ class _RentalServicePageState extends State<RentalServicePage> {
         backgroundColor: Colors.blue,
       ),
     );
+  }
+
+  void _editProduct(BuildContext context, DocumentSnapshot document) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => EditProductPage(document: document, onDataEdited: refreshData)),
+    );
+    if (result != null && result) {
+      setState(() {
+        // Refresh the data
+      });
+    }
+  }
+
+  void refreshData() {
+    setState(() {
+      // Refresh the data
+    });
+  }
+
+  void _showDeleteConfirmationDialog(BuildContext context, DocumentSnapshot document) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Deletion'),
+          content: Text('Are you sure you want to delete this item?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await _deleteProduct(document);
+              },
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteProduct(DocumentSnapshot document) async {
+    try {
+      await document.reference.delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Product deleted successfully.'),
+        ),
+      );
+      setState(() {
+        // Refresh the data
+      });
+    } catch (e) {
+      print('Error deleting product: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error deleting product: $e'),
+        ),
+      );
+    }
   }
 
   void _showAddDetailsDialog(BuildContext context) {
@@ -214,26 +274,20 @@ class _RentalServicePageState extends State<RentalServicePage> {
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: () async {
-                 SharedPreferences sp = await SharedPreferences.getInstance();
-                     var a = sp.getString('uid');
+                SharedPreferences sp = await SharedPreferences.getInstance();
+                var a = sp.getString('uid');
 
                 await uploadImage();
-               
-                await FirebaseFirestore.instance
-                    .collection('rental_add_service')
-                    .add({
+
+                await FirebaseFirestore.instance.collection('rental_add_service').add({
                   'Renter Name': _nameController.text,
                   'Rental Service': _serviceController.text,
-
                   'image_url': imageUrl,
-                  'uid':a
+                  'rent_id': a
                 });
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) {
-                      return RentalServicePage();
-
-                    }));
-
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return RentalServicePage();
+                }));
               },
               child: Text('Add'),
             ),
@@ -246,10 +300,7 @@ class _RentalServicePageState extends State<RentalServicePage> {
   Future<void> uploadImage() async {
     try {
       if (profileImage != null) {
-        Reference storageReference =
-        FirebaseStorage.instance
-            .ref()
-            .child('image/${pickedFile!.name}');
+        Reference storageReference = FirebaseStorage.instance.ref().child('image/${pickedFile!.name}');
 
         await storageReference.putFile(profileImage!);
 
@@ -262,5 +313,78 @@ class _RentalServicePageState extends State<RentalServicePage> {
     } catch (e) {
       print('Error uploading image: $e');
     }
+  }
+}
+
+class EditProductPage extends StatefulWidget {
+  final DocumentSnapshot document;
+  final VoidCallback onDataEdited;
+
+  EditProductPage({required this.document, required this.onDataEdited});
+
+  @override
+  _EditProductPageState createState() => _EditProductPageState();
+}
+
+class _EditProductPageState extends State<EditProductPage> {
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _serviceController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    final data = widget.document.data() as Map<String, dynamic>;
+    _nameController.text = data['Renter Name'];
+    _serviceController.text = data['Rental Service'];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Edit Product'),
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: _nameController,
+              decoration: InputDecoration(labelText: 'Renter Name'),
+            ),
+            TextField(
+              controller: _serviceController,
+              decoration: InputDecoration(labelText: 'Rental Service'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  await widget.document.reference.update({
+                    'Renter Name': _nameController.text,
+                    'Rental Service': _serviceController.text,
+                  });
+                  widget.onDataEdited(); // Trigger data refresh in RentalServicePage
+                  Navigator.pop(context, true); // Pass true to indicate changes saved
+                } catch (e) {
+                  print('Error updating data: $e');
+                  // Handle error updating data
+                  // You can show a snackbar or dialog to inform the user about the error
+                }
+              },
+              child: Text('Save'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _serviceController.dispose();
+    super.dispose();
   }
 }

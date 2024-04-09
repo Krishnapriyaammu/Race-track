@@ -4,16 +4,28 @@ import 'package:loginrace/Rental/uploadrentimage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
-class ProductViewPage extends StatelessWidget {
+class ProductViewPage extends StatefulWidget {
+  @override
+  _ProductViewPageState createState() => _ProductViewPageState();
+}
+
+class _ProductViewPageState extends State<ProductViewPage> {
+  late Future<List<DocumentSnapshot>> _dataFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _dataFuture = getData();
+  }
+
   Future<List<DocumentSnapshot>> getData() async {
     try {
-
-SharedPreferences sp = await SharedPreferences.getInstance();
-                     var a = sp.getString('uid');
-
+      SharedPreferences sp = await SharedPreferences.getInstance();
+      var a = sp.getString('uid');
 
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('rental_upload_image').where('rent_id',isEqualTo: a)
+          .collection('rental_upload_image')
+          .where('rent_id', isEqualTo: a)
           .get();
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;
@@ -22,9 +34,6 @@ SharedPreferences sp = await SharedPreferences.getInstance();
       throw e; // Rethrow the error to handle it in the FutureBuilder
     }
   }
-    TextEditingController description = TextEditingController();
-
- 
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +63,10 @@ SharedPreferences sp = await SharedPreferences.getInstance();
                   price: data['price'] ?? 'Price not available',
                   totalCount: data['total_count'] ?? 'Count not available',
                   onDelete: () {
-                    // Handle delete action
-                    // You can show a confirmation dialog and delete the product
+                    setState(() {
+                      snapshot.data!.removeAt(index); // Remove from local list
+                    });
+                    _deleteProduct(document);
                   },
                   onEdit: () async {
                     await Navigator.push(
@@ -65,8 +76,7 @@ SharedPreferences sp = await SharedPreferences.getInstance();
                       }),
                     );
                     setState(() {
-                      // Refresh the data
-                      _dataFuture = getData();
+                      _dataFuture = getData(); // Refresh the data
                     });
                   },
                 );
@@ -87,6 +97,20 @@ SharedPreferences sp = await SharedPreferences.getInstance();
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  void _deleteProduct(DocumentSnapshot document) async {
+    try {
+      await document.reference.delete();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Product deleted successfully.'),
+      ));
+    } catch (e) {
+      print('Error deleting product: $e');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Error deleting product: $e'),
+      ));
+    }
   }
 }
 

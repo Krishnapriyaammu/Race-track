@@ -61,7 +61,11 @@ class _UserViewRentHomeState extends State<UserViewRentHome>
           .where('rent_id',isEqualTo: widget.id)
           .where('category',isEqualTo: 'Bikes')
           .get();
-      print('Fetched ${snapshot.docs.length} documents');
+         print('Fetched ${snapshot.docs.length} documents');
+      // Print document IDs
+      for (var doc in snapshot.docs) {
+        print('Document ID: ${doc.id}');
+      }
       return snapshot.docs;
     } catch (e) {
       print('Error fetching data: $e');
@@ -90,15 +94,17 @@ class _UserViewRentHomeState extends State<UserViewRentHome>
               itemCount:  snapshot.data?.length ?? 0,
               itemBuilder: (context, index) {
                  final document = snapshot.data![index];
+                 print('Snapshot Length: ${snapshot.data?.length ?? 0}');
+
                   final data = document.data() as Map<String, dynamic>;
                   final imageUrl = data['image_url'];
-                  final desc = data['description'];
+                  // final desc = data['description'];
                   final rent_id=data['rent_id'];
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-                                  return UserViewSingleItem(img:imageUrl,desc:desc,rent_id:rent_id);
+                                  return UserViewSingleItem(rent_id:document.id);
                                     
                                 }));
                   },
@@ -169,7 +175,7 @@ Future<List<DocumentSnapshot>> getdata() async {
                   onTap: () {
                     Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-                                  return UserViewSingleItem(img:imageUrl,desc:data['description'],rent_id: rent_id,);
+                                  return UserViewSingleItem(rent_id:document.id);
                                     
                                 }));
                   },
@@ -239,7 +245,7 @@ Future<List<DocumentSnapshot>> getdata() async {
                   onTap: () {
                     Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-                                  return UserViewSingleItem(img:imageUrl,desc: data['description'],rent_id: rent_id,);
+                                  return UserViewSingleItem(rent_id: document.id,);
                                     
                                 }));
                   },

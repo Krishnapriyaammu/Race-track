@@ -102,7 +102,7 @@ class UserViewFullRenters extends StatelessWidget {
                      Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => UserViewRentHome(id:data['uid']),
+                                  builder: (context) => UserViewRentHome(id:data['rent_id']),
                                 ),
                               );
                             },
