@@ -147,7 +147,7 @@ class _ViewEventsState extends State<ViewEvents> {
                                   Icon(Icons.calendar_today, size: 16, color: Colors.grey),
                                   SizedBox(width: 4),
                                   Text(
-                                    data['total_tickets'] ?? 'Date not available',
+                                    data['total_tickets'].toString() ?? 'Tickets not available',
                                     style: GoogleFonts.poppins(color: Colors.grey),
                                   ),
                                 ],

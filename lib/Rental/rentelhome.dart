@@ -174,48 +174,59 @@ class _RentalHomeState extends State<RentalHome> {
               // }));
             },
             child: Card(
-              margin: EdgeInsets.all(16),
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Name: ${data['name'] ?? 'Name not available'}',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Address: ${data['address'] ?? 'Address not available'}',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Mobile No: ${data['mobile no'] ?? 'Number not available'}',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Due Date: ${data['due_date'] ?? 'Due date not available'}',
-                      style: TextStyle(fontSize: 16),
-                          ),
-                        ],
-                      ),
+                  margin: EdgeInsets.all(16),
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Name: ${data['name'] ?? 'Name not available'}',
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            // Add notification icon here
+                            IconButton(
+                              icon: Icon(Icons.notifications), // You can change the icon as needed 
+                              onPressed: () {
+                                // Handle notification icon tap
+                              },
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Address: ${data['address'] ?? 'Address not available'}',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Mobile No: ${data['mobile no'] ?? 'Number not available'}',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Due Date: ${data['due_date'] ?? 'Due date not available'}',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
                     ),
                   ),
-                );
-              },
-            );
-          }
-        },
-      ),
-    );
-  }
-
+                ),
+              );
+            },
+          );
+        }
+      },
+    ),
+  );
+}
   void _showPopupMenu(BuildContext context) async {
     await showMenu(
       context: context,

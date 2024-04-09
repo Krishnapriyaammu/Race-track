@@ -1,28 +1,40 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 
 class ViewStatusPage extends StatefulWidget {
-  final String ticketName;
-  final double totalPrice;
-  final int totalTickets;
+ 
 
   const ViewStatusPage(
-      {Key? key,
-      required this.ticketName,
-      required this.totalPrice,
-      required this.totalTickets})
-      : super(key: key);
+      {Key? key,}) : super(key: key);
 
   @override
   State<ViewStatusPage> createState() => _ViewStatusPageState();
 }
 
 class _ViewStatusPageState extends State<ViewStatusPage> {
+  late Future<List<DocumentSnapshot>> _ticketDetails;
+
+  @override
+  void initState() {
+    super.initState();
+    _ticketDetails = fetchTicketDetails();
+  }
+
+  Future<List<DocumentSnapshot>> fetchTicketDetails() async {
+    final QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('Eventtickets')
+        .orderBy('timestamp', descending: true)
+        .limit(1)
+        .get();
+
+    return snapshot.docs;
+  }
+
   Future<void> _downloadTicket() async {
     final pdf = pw.Document();
     pdf.addPage(
@@ -37,17 +49,17 @@ class _ViewStatusPageState extends State<ViewStatusPage> {
               ),
               pw.SizedBox(height: 10),
               pw.Text(
-                'Ticket Name: ${widget.ticketName}',
+                'Ticket Name:',
                 style: pw.TextStyle(fontSize: 18),
               ),
               pw.SizedBox(height: 10),
               pw.Text(
-                'Total Tickets: ${widget.totalTickets}',
+                'Total Tickets: ',
                 style: pw.TextStyle(fontSize: 18),
               ),
               pw.SizedBox(height: 10),
               pw.Text(
-                'Total Price: \$${widget.totalPrice.toStringAsFixed(2)}',
+                'Total Price: ',
                 style: pw.TextStyle(fontSize: 18),
               ),
             ],
@@ -79,25 +91,61 @@ class _ViewStatusPageState extends State<ViewStatusPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Ticket Name: ${widget.ticketName}',
-              style: GoogleFonts.poppins(fontSize: 18),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Total Tickets: ${widget.totalTickets}',
-              style: GoogleFonts.poppins(fontSize: 18),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Total Price: \$${widget.totalPrice.toStringAsFixed(2)}',
-              style: GoogleFonts.poppins(fontSize: 18),
+              'Ticket Details',
+              style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
+            FutureBuilder<List<DocumentSnapshot>>(
+              future: _ticketDetails,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Text('No ticket details found');
+                } else {
+final Map<String, dynamic> ticketData = snapshot.data!.first.data() as Map<String, dynamic>;
+final int generalPrice = ticketData['general_price'] != null ? int.parse(ticketData['general_price']) : 0;
+final int childPrice = ticketData['child_price'] != null ? int.parse(ticketData['child_price']) : 0;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        ' Name: ${ticketData['name']}',
+                        style: GoogleFonts.poppins(fontSize: 18),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        'Total Tickets: ${ticketData['totalTickets']}',
+                        style: GoogleFonts.poppins(fontSize: 18),
+                      ),
+                      SizedBox(height: 10),
+    //                     Text(
+    //   'Total General tickets: $generalPrice',
+    //   style: GoogleFonts.poppins(fontSize: 18),
+    // ),
+    //                    SizedBox(height: 10),
+    //                     Text(
+    //   'Total Child tickets: $childPrice',
+    //   style: GoogleFonts.poppins(fontSize: 18),
+    // ),
+                       SizedBox(height: 10),
+
+                      Text(
+                        'Total Price: ${ticketData['price']}',
+                        style: GoogleFonts.poppins(fontSize: 18),
+                      ),
+                    ],
+                  );
+                }
+              },
+            ),
+            SizedBox(height: 40),
             ElevatedButton(
               onPressed: _downloadTicket,
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20.0, vertical: 10.0),
+                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                 child: Text(
                   'Download Ticket',
                   style: GoogleFonts.poppins(fontSize: 20),

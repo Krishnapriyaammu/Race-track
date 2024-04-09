@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:loginrace/firebase_options.dart';
+import 'package:loginrace/business_logic/firebase_options.dart';
 import 'package:loginrace/usertype.dart';
 
 void main() async

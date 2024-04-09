@@ -1,13 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:loginrace/User/ticketbookingstatus.dart';
 import 'package:loginrace/User/ticketcart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EventTicketDetails extends StatefulWidget {
   String rt_id;
-
-   EventTicketDetails(  { Key? key,   required this.rt_id, }): super(key: key);
+  final int totalTickets;
+   EventTicketDetails(  { Key? key,   required this.rt_id, required this. totalTickets, }): super(key: key);
 
   @override
   State<EventTicketDetails> createState() => _EventTicketDetailsState();
@@ -24,18 +26,39 @@ class _EventTicketDetailsState extends State<EventTicketDetails> {
   double _childPrice = 50.0;
   double _vipPrice = 200.0;
 
-  Future<void> _storeTicketDetails() async {
-    try {
-      // Get current user ID from SharedPreferences
-      // Assuming you've stored user ID under the key 'uid'
-      SharedPreferences sp = await SharedPreferences.getInstance();
-      var userid = sp.getString('uid');
+ Future<void> _storeTicketDetails() async {
+  try {
+    // Get current user ID from SharedPreferences
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    var userid = sp.getString('uid');
+
+    // Calculate total number of tickets booked
+    int totalBookedTickets = _generalTickets + _childTickets;
+
+    // Get current total tickets count from Firestore
+    DocumentSnapshot<Map<String, dynamic>> eventSnapshot =
+        await FirebaseFirestore.instance
+            .collection('racetrack_upload_event')
+            .doc(widget.rt_id)
+            .get();
+
+    int currentTotalTickets = eventSnapshot['total_tickets'];
+
+    // Ensure that booking doesn't exceed available tickets
+    if (totalBookedTickets <= currentTotalTickets) {
+      // Update total tickets count in Firestore
+      await FirebaseFirestore.instance
+          .collection('racetrack_upload_event')
+          .doc(widget.rt_id)
+          .update({
+        'total_tickets': currentTotalTickets - totalBookedTickets,
+      });
 
       // Add ticket details to Firestore
       await FirebaseFirestore.instance.collection('Eventtickets').add({
         'name': _name,
         'price': _calculatePrice(),
-        'totalTickets': _generalTickets + _childTickets,
+        'totalTickets': totalBookedTickets,
         'timestamp': Timestamp.now(),
         'userid': userid,
         'rt_id': widget.rt_id,
@@ -44,20 +67,43 @@ class _EventTicketDetailsState extends State<EventTicketDetails> {
       });
 
       // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Ticket booking successful!'),
+     Fluttertoast.showToast(
+          msg: "Ticket booking successful!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
           backgroundColor: Colors.green,
-        ),
-      );
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
 
+        // Navigate to ShoppingCart page
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ViewStatusPage(),
+        ));
+      } else {
+        // Show error message if booking exceeds available tickets
+        Fluttertoast.showToast(
+          msg: "Booking exceeds available tickets!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      }
     } catch (e) {
       // Show error message if an error occurs
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error storing ticket details: $e'),
-          backgroundColor: Colors.red,
-        ),
+      Fluttertoast.showToast(
+        msg: "Error storing ticket details: $e",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     }
   }

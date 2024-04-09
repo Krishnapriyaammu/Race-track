@@ -11,6 +11,7 @@ class _RentNotificationState extends State<RentNotification> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
 
  appBar: AppBar(
           title: Text('Notifications'),

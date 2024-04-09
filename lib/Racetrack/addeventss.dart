@@ -15,12 +15,13 @@ class EventAdd extends StatefulWidget {
 }
 
 class _EventAddState extends State<EventAdd> {
-
- String _generalPrice = ''; // State for general ticket price
-  String _childPrice = ''; // State for child ticket price
-  String _vipPrice = ''; // State for VIP ticket price
-  File? _image;
-  String imageUrl = '';
+  int _generalPrice = 0; // State for general ticket price
+  int _childPrice = 0; // State for child ticket price
+  String _vipPrice = '';
+    File? _image;
+      String imageUrl = ''; // Declare imageUrl here
+ // Declare _image here
+ // State for VIP ticket price
 
   // Function to pick image from gallery
   Future<void> _pickImage() async {
@@ -43,14 +44,15 @@ class _EventAddState extends State<EventAdd> {
     try {
       final CollectionReference tickets =
           FirebaseFirestore.instance.collection('racetrack_upload_event');
+      int totalTickets = int.tryParse(_totalTicketsController.text) ?? 0;
       await tickets.add({
         'event_name': _eventNameController.text,
         'event_date': _eventDateController.text,
-        'total_tickets': _totalTicketsController.text,
+        'total_tickets': totalTickets,
         'general_price': _generalPrice,
         'image_url': imageUrl,
         'child_price': _childPrice,
-        'vip_price': _vipPrice, // Add VIP ticket price field
+        'vip_price': _vipPrice,
         'rt_id': a,
       });
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -63,7 +65,7 @@ class _EventAddState extends State<EventAdd> {
     } catch (e) {
       print('Error saving ticket details: $e');
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Error saving ticket details.'),
+        content: Text('Error saving ticket details: $e'),
         duration: Duration(seconds: 2),
       ));
     }
@@ -165,7 +167,7 @@ class _EventAddState extends State<EventAdd> {
                         TextFormField(
                           onChanged: (value) {
                             setState(() {
-                              _generalPrice = value;
+                              _generalPrice = int.tryParse(value) ?? 0;
                             });
                           },
                           keyboardType: TextInputType.number,
@@ -195,7 +197,7 @@ class _EventAddState extends State<EventAdd> {
                         TextFormField(
                           onChanged: (value) {
                             setState(() {
-                              _childPrice = value;
+                              _childPrice = int.tryParse(value) ?? 0;
                             });
                           },
                           keyboardType: TextInputType.number,

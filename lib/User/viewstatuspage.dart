@@ -1,100 +1,179 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:loginrace/User/rentnotificationuser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
 class ViewStatusPage extends StatefulWidget {
-   final String name;
-  final String address;
-  final String mobileNumber;
-  final String dueDate;
-  final String imageUrl;
-  final String price;
-  const ViewStatusPage({super.key, required this. name, required this. address, required this. mobileNumber, required this. dueDate, required this. imageUrl, required this.price});
+  String rent_id;
+   ViewStatusPage({super.key,  required this. rent_id, });
 
   @override
   State<ViewStatusPage> createState() => _ViewStatusPageState();
 }
 
 class _ViewStatusPageState extends State<ViewStatusPage> {
-  
+ Future<List<Map<String, dynamic>>> getBookingData() async {
+    try {
+      final QuerySnapshot<Map<String, dynamic>> bookingSnapshot =
+          await FirebaseFirestore.instance
+              .collection('user_rent_booking')
+              .where('rent_id', isEqualTo: widget.rent_id)
+              .get();
+
+      final List<Map<String, dynamic>> bookingDataList = [];
+
+      for (final doc in bookingSnapshot.docs) {
+        final bookingData = doc.data();
+        bookingData['doc_id'] = doc.id; // Add document ID to the data
+        bookingDataList.add(bookingData);
+      }
+
+      return bookingDataList;
+    } catch (e) {
+      print('Error fetching data: $e');
+      throw e;
+    }
+  }
+
+ 
   @override
   Widget build(BuildContext context) {
-  return Scaffold(
+    return Scaffold(
       appBar: AppBar(
-        title: Text('View Booking Status'),
+        title: Text('Booking Details'),
+        actions: [
+          IconButton(
+            onPressed: () {
+Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return RentNotificationUser();
+              }));            },
+            icon: Icon(Icons.notifications),
+          ),
+        ],
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 200,
-                height: 200,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 3,
-                      blurRadius: 7,
-                      offset: Offset(0, 3),
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: getBookingData(),
+        builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            final bookingDataList = snapshot.data ?? [];
+
+            return SingleChildScrollView(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Booking Details',
+                    style: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 16.0),
+                  for (final bookingData in bookingDataList) ...[
+                    Container(
+                      margin: EdgeInsets.only(bottom: 16.0),
+                      padding: EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Name: ${bookingData['name'] ?? 'Not available'}',
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 8.0),
+                          Text(
+                            'Phone Number: ${bookingData['mobile no'] ?? 'Not available'}',
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                          SizedBox(height: 8.0),
+                          Text(
+                            'Due Date: ${bookingData['due_date'] ?? 'Not available'}',
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                          SizedBox(height: 8.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  // Add action for pending button
+                                },
+                                child: Text('Pending'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  _showDeleteConfirmationDialog(context, bookingData);
+                                },
+                                child: Text('Cancel Booking'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    widget.imageUrl,
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                ],
               ),
-              SizedBox(height: 20),
-              Text(
-                'Name: ${widget.name}',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Address: ${widget.address}',
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Mobile Number: ${widget.mobileNumber}',
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Due Date: ${widget.dueDate}',
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Price: ${widget.price}',
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(height: 20), // Add space between text and button
-              ElevatedButton(
-                onPressed: () {
-                  // Handle pending action
-                  // Update the status to pending
-                  // You can add your logic here
-                },
-                child: Text('Pending'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange, // Set button color
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16), // Set button padding
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)), // Set button border radius
-                  textStyle: TextStyle(fontSize: 16), // Set button text style
-                ),
-              ),
-            ],
-          ),
-        ),
+            );
+          }
+        },
       ),
     );
+  }
+
+  void _showDeleteConfirmationDialog(BuildContext context, Map<String, dynamic> bookingData) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirmation'),
+          content: Text('Are you sure you want to cancel this booking?'),
+          actions: [
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close the dialog
+                await _deleteBooking(bookingData);
+              },
+              child: Text('OK'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteBooking(Map<String, dynamic> bookingData) async {
+    try {
+      await FirebaseFirestore.instance.collection('user_rent_booking').doc(bookingData['doc_id']).delete();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Booking canceled')));
+      setState(() {
+        // Refresh the UI if necessary
+      });
+    } catch (e) {
+      print('Error deleting booking: $e');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to cancel booking')));
+    }
   }
 }

@@ -173,7 +173,7 @@ class _RentUploadImageState extends State<RentUploadImage> {
                     'description': DescriptionEdit.text,
                     'image_url': imageUrl,
                     'price': PriceEdit.text, // Add price field
-                    'total_count': CountEdit.text, // Add total count field
+                    'total_count': CountEdit, // Add total count field
                     'rent_id': a,
                   });
   documentId = docRef.id;

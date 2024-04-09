@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,166 +25,209 @@ class ViewTrackDetails extends StatefulWidget {
 }
 
 class _ViewTrackDetailsState extends State<ViewTrackDetails> {
-   
-
- Future<List<DocumentSnapshot>> getdata() async {
-      try {
-        final QuerySnapshot snapshot = await FirebaseFirestore.instance
-            .collection('racetrack_upload_track')
-            .get();
-        print('Fetched ${snapshot.docs.length} documents');
-        return snapshot.docs;
-      } catch (e) {
-        print('Error fetching data: $e');
-        throw e; // Rethrow the error to handle it in the FutureBuilder
-      }
-    }
-
+   late ScrollController _controller;
+  double _scrollPosition = 0.0;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    _controller = ScrollController();
+    _startScrolling();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _startScrolling() {
+    Timer.periodic(Duration(milliseconds: 30), (timer) {
+      if (_controller.hasClients) {
+        setState(() {
+          _scrollPosition += 1.0;
+          if (_scrollPosition >= _controller.position.maxScrollExtent) {
+            _scrollPosition = 0.0;
+          }
+          _controller.jumpTo(_scrollPosition);
+        });
+      }
+    });
+  }
+
+  @override
+   Widget build(BuildContext context) {
     return Scaffold(
-          appBar: AppBar(
-        title: Text('Adventure Race Track'),
-        backgroundColor: Colors.blue,
+      appBar: AppBar(
+        // title: Text('Adventure Race Track'),
+        backgroundColor: Colors.black87,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+      backgroundColor: Colors.transparent,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("images/bikee.jpeg"), // Replace with your image path
+            fit: BoxFit.cover,
+          ),
+        ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              widget.upcomingevents ?? 'Events not available',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(onTap: () {
-                   Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return UserTrackBooking(rt_id:widget.rt_id,level1:widget.level1,);
-                                
-                            }));
-                },
-                  child: _buildSessionCard('LEVEL 1', widget.level1 ?? 'LEVEL 1 not available', Colors.green)),
-
-                  InkWell(
-                    onTap: () {
-          
-
-                    },
-                    child: _buildSessionCard('LEVEL 2', widget.level2 ?? 'LEVEL 2 not available', Colors.blue),
+            Container(
+              height: 200,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                controller: _controller,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    'Upcoming Events: Kari motors racing event',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
-              ],
+                ),
+              ),
             ),
-            SizedBox(height: 20),
-            _buildActionButton('OUR INSTRUCTORS', Icons.arrow_forward, () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return UserViewAllCoach(rt_id: widget.rt_id);
-              }));
-            }),
             SizedBox(height: 10),
-            _buildActionButton('VIEW TRACK', Icons.arrow_forward, () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return ViewTrack(rt_id: widget.rt_id);
-              }));
-            }),
-            SizedBox(height: 10),
-            _buildActionButton('VIEW GALLERY', Icons.arrow_forward, () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return ViewGallery(rt_id: widget.rt_id);
-              }));
-            }),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  SizedBox(width: 16),
+                  Text(
+                    widget.upcomingevents ?? 'Events not available',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.blue,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             SizedBox(height: 20),
             Text(
-              'STUDENTS TESTIMONIALS',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 44, 44, 45)),
+              'LEVEL 1 Amount: ${widget.level1}',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
-            
+            SizedBox(height: 20),
+            _buildActionButton(
+              'LEVEL 1',
+              Icons.arrow_forward,
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return UserTrackBooking(
+                      rt_id: widget.rt_id,
+                      level1: widget.level1,
+                    );
+                  }),
+                );
+              },
+              Colors.green,
+              isExpanded: false,
+            ),
+            SizedBox(height: 20),
+            _buildActionButton(
+              'View All Instructors',
+              Icons.arrow_forward,
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return UserViewAllCoach(rt_id: widget.rt_id);
+                  }),
+                );
+              },
+              Colors.blue,
+            ),
             SizedBox(height: 10),
-            TestimonialCard(avatar: 'TONY JOSEPH', feedback: 'I came to attend the level 1 and level 2 at Adventure Race Track Academy...'),
-            TestimonialCard(avatar: 'CATHELINE', feedback: 'I came to attend the level T track academy Adventure Race Track Academy...'),
+            _buildActionButton(
+              'View Track',
+              Icons.arrow_forward,
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return ViewTrack(rt_id: widget.rt_id);
+                  }),
+                );
+              },
+              Colors.blue,
+            ),
+            SizedBox(height: 10),
+            _buildActionButton(
+              'View Gallery',
+              Icons.arrow_forward,
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return ViewGallery(rt_id: widget.rt_id);
+                  }),
+                );
+              },
+              Colors.blue,
+            ),
+            SizedBox(height: 20),
             SizedBox(height: 10),
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return FeedbackViewPage();
-                  }));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) {
+                      return FeedbackViewPage();
+                    }),
+                  );
                 },
-                child: Text('View all', style: TextStyle(color: Colors.blue)),
+                child: Text(
+                  'View all',
+                  style: TextStyle(color: Colors.blue),
+                ),
               ),
             ),
+            SizedBox(height: 20),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSessionCard(String title, String value, Color color) {
-    return Expanded(
-      child: Card(
-        color: color,
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-              ),
-              SizedBox(height: 8),
-              Text(
-                value,
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActionButton(String title, IconData icon, VoidCallback onTap) {
+  Widget _buildActionButton(
+    String title,
+    IconData icon,
+    void Function()? onTap,
+    Color color, {
+    bool isExpanded = true,
+  }) {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.blue,
+          color: color,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
+          mainAxisSize: isExpanded ? MainAxisSize.max : MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, color: Colors.white),
             SizedBox(width: 8),
-            Text(title, style: TextStyle(fontSize: 18, color: Colors.white)),
+            Text(
+              title,
+              style: TextStyle(fontSize: 18, color: Colors.white),
+            ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class TestimonialCard extends StatelessWidget {
-  final String avatar;
-  final String feedback;
-
-  TestimonialCard({required this.avatar, required this.feedback});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 8),
-      child: ListTile(
-        leading: CircleAvatar(child: Text(avatar)),
-        title: Text(feedback),
       ),
     );
   }

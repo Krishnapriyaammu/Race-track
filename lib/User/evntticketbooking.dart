@@ -16,9 +16,8 @@ class EventTicketBooking extends StatefulWidget {
 }
 
 class _EventTicketBookingState extends State<EventTicketBooking> {
-   late Future<DocumentSnapshot<Map<String, dynamic>>> _eventDetailsFuture;
-     String _selectedCategory = 'General'; 
-
+    late Future<DocumentSnapshot<Map<String, dynamic>>> _eventDetailsFuture;
+  String _selectedCategory = 'General';
 
   @override
   void initState() {
@@ -41,7 +40,6 @@ class _EventTicketBookingState extends State<EventTicketBooking> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    // 
       body: FutureBuilder(
         future: _eventDetailsFuture,
         builder: (context,
@@ -54,12 +52,11 @@ class _EventTicketBookingState extends State<EventTicketBooking> {
             return Center(child: Text('No data found'));
           } else {
             final eventData = snapshot.data!.data()!;
-            final generalPrice =
-                eventData['general_price'] ?? 'Price not available';
-            final childPrice =
-                eventData['child_price'] ?? 'Price not available';
+            final generalPrice = (eventData['general_price'] ?? 0) as int;
+            final childPrice = (eventData['child_price'] ?? 0) as int;
+            final totalTickets = (eventData['total_tickets'] ?? 0) as int;
 
-              return Stack(
+            return Stack(
               children: [
                 Container(
                   decoration: BoxDecoration(
@@ -75,7 +72,7 @@ class _EventTicketBookingState extends State<EventTicketBooking> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        SizedBox(height: 100), 
+                        SizedBox(height: 100),
                         Center(
                           child: Text(
                             eventData['event_name'] ?? 'Event Name Not Available',
@@ -135,7 +132,7 @@ class _EventTicketBookingState extends State<EventTicketBooking> {
                               ),
                               SizedBox(height: 10),
                               Text(
-                                '${eventData['total_tickets'] ?? 'Tickets Not Available'}',
+                                '$totalTickets',
                                 style: GoogleFonts.poppins(
                                   fontSize: 18,
                                   color: Color(0xFF212121),
@@ -196,13 +193,15 @@ class _EventTicketBookingState extends State<EventTicketBooking> {
                         SizedBox(height: 40),
                         ElevatedButton(
                           onPressed: () {
-  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return EventTicketDetails(rt_id: widget.rt_id,);
-                    }),
-                  );
-
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) {
+                                return EventTicketDetails(
+                                  rt_id: widget.rt_id,
+                                  totalTickets: totalTickets, // Pass total tickets to the next page
+                                );
+                              }),
+                            );
                           },
                           child: Text(
                             'Next',

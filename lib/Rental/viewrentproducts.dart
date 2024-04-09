@@ -61,7 +61,7 @@ class _ProductViewPageState extends State<ProductViewPage> {
                   imageUrl: imageUrl,
                   description: data['description'] ?? 'Description not available',
                   price: data['price'] ?? 'Price not available',
-                  totalCount: data['total_count'] ?? 'Count not available',
+                  totalCount: data['total_count'] != null ? data['total_count'].toInt() : 0, // Convert to int
                   onDelete: () {
                     setState(() {
                       snapshot.data!.removeAt(index); // Remove from local list

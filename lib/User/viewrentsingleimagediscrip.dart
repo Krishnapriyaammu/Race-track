@@ -14,13 +14,15 @@ class UserViewSingleItem extends StatefulWidget {
 }
 
 class _UserViewSingleItemState extends State<UserViewSingleItem> {
+
    var _nameController = TextEditingController();
   var _mobileController = TextEditingController();
   var _addressController = TextEditingController();
   var _dueDateController = TextEditingController();
-  var _hoursController = TextEditingController();
+  var _quantityController = TextEditingController(); // Controller for quantity
   String? documentId; // Variable to store the document ID
-  bool isItemBooked = false; // Track if the item is booked
+
+  int _selectedQuantity = 1; // Default selected quantity
 
   Future<void> _bookItem() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
@@ -33,136 +35,202 @@ class _UserViewSingleItemState extends State<UserViewSingleItem> {
       'address': _addressController.text,
       'mobile no': _mobileController.text,
       'due_date': _dueDateController.text,
-      // 'hours': _hoursController.text,
+      'quantity': _selectedQuantity, // Include selected quantity
       'userid': userid,
       'rent_id': widget.rent_id,
       'status': 0,
       'booking_date': currentDate, // Add booking date
     });
     documentId = docRef.id;
-    setState(() {
-      isItemBooked = true; // Update the state to indicate the item is booked
-    });
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Item Details'),
+        title: Text('Rent Details'),
       ),
       body: FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance.collection('rental_upload_image').doc(widget.rent_id).get(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            var data = snapshot.data!.data() as Map<String, dynamic>?;
+          future: FirebaseFirestore.instance.collection('rental_upload_image').doc(widget.rent_id).get(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else {
+              var data = snapshot.data!.data() as Map<String, dynamic>?;
 
-            if (data == null) {
-              print('Item not found for Rent ID: ${widget.rent_id}');
-              return Center(child: Text('Item not found'));
-            }
+              if (data == null) {
+                print('Item not found for Rent ID: ${widget.rent_id}');
+                return Center(child: Text('Item not found'));
+              }
 
-            return SingleChildScrollView(
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Container(
-                    child: data['image_url'] != null ? Image.network(data['image_url'] as String, fit: BoxFit.cover) : Icon(Icons.image),
-                  ),
-                  SizedBox(height: 8.0),
-                  Text(
-                    data['description'] ?? 'Description not available',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  Text(
-                    data['price'] ?? 'Description not available',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  Text(
-                    data['total_count'] ?? 'Description not available',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-
-                  SizedBox(height: 16.0),
-                  // Conditionally render the button based on whether the item is booked or not
-                  isItemBooked
-                      ? ElevatedButton(
-                          onPressed: () {
-  Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return ViewStatusPage( name: _nameController.text,
-        address: _addressController.text,
-        mobileNumber: _mobileController.text,
-        dueDate: _dueDateController.text,
-        imageUrl: snapshot.data!['image_url'],
-        price: snapshot.data!['price'],);
-                                    
-                                }));                          },
-                          child: Text('View Status'),
-                        )
-                      : ElevatedButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return SingleChildScrollView(
-                                  child: AlertDialog(
-                                    title: Text('Rent Item'),
-                                    content: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text('Enter your details to rent the item:'),
-                                        SizedBox(height: 10.0),
-                                        TextFormField(
-                                          controller: _nameController,
-                                          decoration: InputDecoration(labelText: 'Full Name'),
-                                        ),
-                                        SizedBox(height: 8.0),
-                                        TextFormField(
-                                          controller: _mobileController,
-                                          decoration: InputDecoration(labelText: 'Contact Number'),
-                                        ),
-                                        SizedBox(height: 8.0),
-                                        TextFormField(
-                                          controller: _addressController,
-                                          decoration: InputDecoration(labelText: 'Address'),
-                                        ),
-                                        SizedBox(height: 8.0),
-                                        TextFormField(
-                                          controller: _dueDateController,
-                                          decoration: InputDecoration(labelText: 'Due date'),
-                                        ),
-                                        SizedBox(height: 8.0),
-                                        // TextFormField(
-                                        //   controller: _hoursController,
-                                        //   decoration: InputDecoration(labelText: 'Total hours'),
-                                        // ),
-                                        SizedBox(height: 10.0),
-                                        ElevatedButton(
-                                          onPressed: _bookItem,
-                                          child: Center(child: Text('Submit')),
-                                        ),
-                                      ],
+              return SingleChildScrollView(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                      height: 200,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        image: DecorationImage(
+                          image: NetworkImage(data['image_url'] as String),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16.0),
+                    Row(
+                      children: [
+                        Text('Select Quantity: '),
+                       DropdownButton<int>(
+  value: _selectedQuantity,
+  onChanged: (value) {
+    setState(() {
+      if (value! <= 3) {
+        _selectedQuantity = value;
+      } else {
+        _showCustomQuantityDialog();
+      }
+    });
+  },
+  items: List.generate(
+    3, // Generate dropdown items up to 3
+    (index) => DropdownMenuItem<int>(
+      value: index + 1,
+      child: Text((index + 1).toString()),
+    ),
+  )..add(
+    DropdownMenuItem<int>(
+      value: 4, // Value for "More"
+      child: Text('More'),
+                              ),
+                            ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16.0),
+                    Text(
+                      data['description'] ?? 'Description not available',
+                      style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      'Price: \$${data['price']}',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      'Total Count: ${data['total_count']}',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                    SizedBox(height: 16.0),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Handle Rent button press
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Rent Item'),
+                              content: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Enter your details to rent the item:'),
+                                    SizedBox(height: 10.0),
+                                    TextFormField(
+                                      controller: _nameController,
+                                      decoration: InputDecoration(labelText: 'Full Name'),
                                     ),
-                                  ),
-                                );
-                              },
+                                    SizedBox(height: 8.0),
+                                    TextFormField(
+                                      controller: _mobileController,
+                                      decoration: InputDecoration(labelText: 'Contact Number'),
+                                    ),
+                                    SizedBox(height: 8.0),
+                                    TextFormField(
+                                      controller: _addressController,
+                                      decoration: InputDecoration(labelText: 'Address'),
+                                    ),
+                                    SizedBox(height: 8.0),
+                                    TextFormField(
+                                      controller: _dueDateController,
+                                      decoration: InputDecoration(labelText: 'Due date'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: _bookItem,
+                                  child: Text('Submit'),
+                                ),
+                              ],
                             );
                           },
-                          child: Text('Rent'),
-                        ),
-                ],
+                        );
+                      },
+                      child: Text('Rent'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Navigate to ViewStatusPage
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ViewStatusPage(rent_id: widget.rent_id)),
+                        );
+                      },
+                      child: Text('View Status'),
+                    ),
+                  ],
+                ),
+              );
+            }
+          }),
+    );
+  }
+
+  // Function to show custom quantity dialog
+  void _showCustomQuantityDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Enter Quantity'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: _quantityController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: 'Quantity'),
               ),
-            );
-          }
-        },
-      ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                // Update selected quantity with custom value
+                setState(() {
+                  _selectedQuantity = int.tryParse(_quantityController.text) ?? 1;
+                  Navigator.pop(context); // Close dialog
+                });
+              },
+              child: Text('OK'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Close dialog
+              },
+              child: Text('Cancel'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -21,14 +21,14 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
   var paymentOption = 'Google Pay'; 
   // Default payment option
   bool isBookingSubmitted = false;
+late String userId = '';
 
   final _formKey = GlobalKey<FormState>();
- @override
+
+  @override
   void initState() {
     super.initState();
-    // Retrieve user details from SharedPreferences and set them as initial values
     getUserDetails();
-    // Check if the user has already booked the track
     checkBookingStatus();
   }
 
@@ -39,27 +39,26 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
       email.text = prefs.getString('email') ?? '';
       phone.text = prefs.getString('phone') ?? '';
       place.text = prefs.getString('place') ?? '';
+      userId = prefs.getString('uid') ?? '';
     });
   }
 
-  void checkBookingStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var userId = prefs.getString('uid');
+ void checkBookingStatus() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  userId = prefs.getString('uid') ?? '';
 
-    // Query Firestore to check if the user has already booked the track
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('user_track_booking')
-        .where('userid', isEqualTo: userId)
-        .get();
+  QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+      .collection('user_track_booking')
+      .where('userid', isEqualTo: userId)
+      .where('rt_id', isEqualTo: widget.rt_id)
+      .get();
 
-    if (querySnapshot.docs.isNotEmpty) {
-      // User has already booked the track
-      setState(() {
-        isBookingSubmitted = true;
-      });
-    }
+  if (querySnapshot.docs.isNotEmpty) {
+    setState(() {
+      isBookingSubmitted = true;
+    });
   }
-
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,26 +104,25 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
                       }
                       return null;
                     }),
-                    buildTextFieldRow('phone', Icons.phone, phone, (value) {
+                    buildTextFieldRow('Phone', Icons.phone, phone, (value) {
                       if (value!.isEmpty) {
-                        return 'Please enter your email';
+                        return 'Please enter your phone';
                       }
                       return null;
                     }),
-                    buildTextFieldRow('place', Icons.place, place, (value) {
+                    buildTextFieldRow('Place', Icons.place, place, (value) {
                       if (value!.isEmpty) {
-                        return 'Please enter your email';
+                        return 'Please enter your place';
                       }
                       return null;
                     }),
                     SizedBox(height: 20),
                     buildPaymentDropdown(),
                     SizedBox(height: 20),
-                    if (!isBookingSubmitted) // Render the submit button if booking is not yet submitted
+                    if (!isBookingSubmitted)
                       ElevatedButton(
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            // Form is validated, proceed to save data to Firestore
                             try {
                               SharedPreferences sp = await SharedPreferences.getInstance();
                               var userid = sp.getString('uid');
@@ -140,14 +138,11 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
                                 'userid': userid,
                               });
 
-                              // Data saved successfully, update the state to show status button
                               setState(() {
                                 isBookingSubmitted = true;
                               });
                             } catch (e) {
-                              // Error occurred while saving data
                               print('Error saving data: $e');
-                              // Handle error appropriately, e.g., show an error dialog
                               showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
@@ -156,7 +151,7 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
                                   actions: [
                                     TextButton(
                                       onPressed: () {
-                                        Navigator.pop(context); // Close dialog
+                                        Navigator.pop(context);
                                       },
                                       child: Text('OK'),
                                     ),
@@ -179,12 +174,14 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
                           child: Text('Submit', style: TextStyle(color: Colors.white)),
                         ),
                       ),
-                    if (isBookingSubmitted) // Render the status button if booking is submitted
+                    if (isBookingSubmitted)
                       ElevatedButton(
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => StatusTrack()),
+                            MaterialPageRoute(
+                              builder: (context) => StatusTrack(rt_id: widget.rt_id, userId: userId),
+                            ),
                           );
                         },
                         style: ButtonStyle(
@@ -234,7 +231,6 @@ class _UserTrackBookingState extends State<UserTrackBooking> {
             controller: controller,
             validator: validator,
             onChanged: (value) {
-              // Update the corresponding text field value as user types
               setState(() {});
             },
             decoration: InputDecoration(

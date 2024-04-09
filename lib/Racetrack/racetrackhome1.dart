@@ -103,6 +103,13 @@ class _RaceTrackViewEventsState extends State<RaceTrackViewEvents> {
       // print(id);
     final data = document.data() as Map<String, dynamic>;
     final imageUrl = data['image_url'];
+    int totalTickets = data['total_tickets'] != null ? data['total_tickets'] as int : 0;
+    final childPrice = data['child_price'] != null ? data['child_price'] as int : 0;
+    final generalPrice = data['general_price'] != null ? data['general_price'] as int : 0;
+
+
+
+
 
 
     print('ImageUrl: $imageUrl'); // Debug print
@@ -149,13 +156,13 @@ class _RaceTrackViewEventsState extends State<RaceTrackViewEvents> {
                     ),
                   ),
                   SizedBox(height: 4),
-                  Text(
-                    data['total_tickets'] ?? 'Tickets not available',
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: Colors.grey,
-                    ),
-                  ),
+             Text(
+  'Total Tickets: $totalTickets',
+  style: GoogleFonts.poppins(
+    fontSize: 14,
+    color: Colors.grey,
+  ),
+),
                   SizedBox(height: 4),
                   Row(
                     children: [
