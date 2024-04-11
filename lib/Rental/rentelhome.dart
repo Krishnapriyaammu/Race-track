@@ -47,8 +47,7 @@ class _RentalHomeState extends State<RentalHome> {
             IconButton(
               icon: Icon(Icons.line_weight_outlined),
               onPressed: () {
-                    print("IconButton pressed"); // Temporary print statement
-
+                print("IconButton pressed"); // Temporary print statement
                 _showPopupMenu(context);
               },
             ),
@@ -139,97 +138,123 @@ class _RentalHomeState extends State<RentalHome> {
     );
   }
 
- Future<List<DocumentSnapshot>> getAcceptedData() async {
-  try {
-    final QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('user_rent_booking')
-        .where('status', isEqualTo: 1) // Fetch only documents where status is 1
-        .get();
-    print('Fetched ${snapshot.docs.length} documents');
-    return snapshot.docs;
-  } catch (e) {
-    print('Error fetching data: $e');
-    throw e;
+  Future<List<DocumentSnapshot>> getAcceptedData() async {
+    try {
+      final QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('user_rent_booking')
+          .where('status', isEqualTo: 1) // Fetch only documents where status is 1
+          .get();
+      print('Fetched ${snapshot.docs.length} documents');
+      return snapshot.docs;
+    } catch (e) {
+      print('Error fetching data: $e');
+      throw e;
+    }
   }
-}
+
   Widget _buildAcceptedTab() {
     return Expanded(
-      child: 
-    FutureBuilder(
-  future: getAcceptedData(),
-  builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return Center(child: CircularProgressIndicator());
-    } else if (snapshot.hasError) {
-      return Center(child: Text('Error: ${snapshot.error}'));
-    } else {
-      return ListView.builder(
-        itemCount: snapshot.data?.length ?? 0,
-        itemBuilder: (context, index) {
-          final document = snapshot.data![index];
-          final data = document.data() as Map<String, dynamic>;
-          // final imageUrl = data['image_url'];
+      child: FutureBuilder(
+        future: getAcceptedData(),
+        builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data?.length ?? 0,
+              itemBuilder: (context, index) {
+                final document = snapshot.data![index];
+                final data = document.data() as Map<String, dynamic>;
+                // final imageUrl = data['image_url'];
 
-          return InkWell(
-            onTap: () {
-              // Navigator.push(context, MaterialPageRoute(builder: (context) {
-              //   return ViewUserAccept(documentId: document.id);
-              // }));
-            },
-            child: Card(
-                  margin: EdgeInsets.all(16),
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Name: ${data['name'] ?? 'Name not available'}',
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                            // Add notification icon here
-                            IconButton(
-                              icon: Icon(Icons.notifications), // You can change the icon as needed 
-                              onPressed: () {
-                                // Handle notification icon tap
-                              },
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Address: ${data['address'] ?? 'Address not available'}',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Mobile No: ${data['mobile no'] ?? 'Number not available'}',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Due Date: ${data['due_date'] ?? 'Due date not available'}',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ],
+                return InkWell(
+                  onTap: () {
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    //   return ViewUserAccept(documentId: document.id);
+                    // }));
+                  },
+                  child: Card(
+                    margin: EdgeInsets.all(16),
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Name: ${data['name'] ?? 'Name not available'}',
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              // Add notification icon here
+                              IconButton(
+                                icon: Icon(Icons.notifications), // You can change the icon as needed 
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text('Send Notification'),
+                                        content: TextField(
+                                          decoration: InputDecoration(hintText: 'Enter your message'),
+                                        ),
+                                        actions: [
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              // Add code to send the notification/message
+                                              Navigator.pop(context); // Close the dialog
+                                            },
+                                            child: Text('Send'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context); // Close the dialog
+                                            },
+                                            child: Text('Cancel'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Address: ${data['address'] ?? 'Address not available'}',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Mobile No: ${data['mobile no'] ?? 'Number not available'}',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Due Date: ${data['due_date'] ?? 'Due date not available'}',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
-          );
-        }
-      },
-    ),
-  );
-}
+                );
+              },
+            );
+          }
+        },
+      ),
+    );
+  }
+
   void _showPopupMenu(BuildContext context) async {
     await showMenu(
       context: context,
@@ -240,13 +265,13 @@ class _RentalHomeState extends State<RentalHome> {
             leading: Icon(Icons.account_circle),
             title: Text('View Profile'),
             onTap: () async {
-            SharedPreferences sp = await SharedPreferences.getInstance();
-            String userId = sp.getString('uid') ?? '';
-                        print('UserID: $userId'); // Add this line for debugging
+              SharedPreferences sp = await SharedPreferences.getInstance();
+              String userId = sp.getString('uid') ?? '';
+              print('UserID: $userId'); // Add this line for debugging
 
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return RentViewProfile(userId: userId );
-              },));
+                return RentViewProfile(userId: userId);
+              }));
             },
           ),
         ),
@@ -257,7 +282,7 @@ class _RentalHomeState extends State<RentalHome> {
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return RentNotification();
-              },));
+              }));
             },
           ),
         ),
