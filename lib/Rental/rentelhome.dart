@@ -4,6 +4,7 @@ import 'package:loginrace/Rental/rentalviewprofile.dart';
 import 'package:loginrace/Rental/rentnotification.dart';
 import 'package:loginrace/Rental/viewaccepatrequestrental.dart';
 import 'package:loginrace/Rental/viewuseracceptreject.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RentalHome extends StatefulWidget {
   const RentalHome({super.key});
@@ -46,6 +47,8 @@ class _RentalHomeState extends State<RentalHome> {
             IconButton(
               icon: Icon(Icons.line_weight_outlined),
               onPressed: () {
+                    print("IconButton pressed"); // Temporary print statement
+
                 _showPopupMenu(context);
               },
             ),
@@ -236,9 +239,13 @@ class _RentalHomeState extends State<RentalHome> {
           child: ListTile(
             leading: Icon(Icons.account_circle),
             title: Text('View Profile'),
-            onTap: () {
+            onTap: () async {
+            SharedPreferences sp = await SharedPreferences.getInstance();
+            String userId = sp.getString('uid') ?? '';
+                        print('UserID: $userId'); // Add this line for debugging
+
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return RentViewProfile();
+                return RentViewProfile(userId: userId );
               },));
             },
           ),

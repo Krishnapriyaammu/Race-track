@@ -55,13 +55,15 @@ class _ProductViewPageState extends State<ProductViewPage> {
                 final document = snapshot.data![index];
                 final data = document.data() as Map<String, dynamic>;
                 final imageUrl = data['image_url'];
+                    final totalCount = (data['total_count'] != null) ? int.tryParse(data['total_count'].toString()) ?? 0 : 0;
+
 
                 return ProductTile(
                   document: document,
                   imageUrl: imageUrl,
                   description: data['description'] ?? 'Description not available',
                   price: data['price'] ?? 'Price not available',
-                  totalCount: data['total_count'] != null ? data['total_count'].toInt() : 0, // Convert to int
+      totalCount: totalCount,
                   onDelete: () {
                     setState(() {
                       snapshot.data!.removeAt(index); // Remove from local list

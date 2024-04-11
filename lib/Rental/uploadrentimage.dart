@@ -20,7 +20,8 @@ class _RentUploadImageState extends State<RentUploadImage> {
   var CountEdit = TextEditingController();
   String? documentId; // Variable to store the document ID
 
-
+ String imageUrl='';
+  var profileImage;
   File? _selectedImage;
   final picker = ImagePicker();
   String? selectedCategory;
@@ -137,59 +138,53 @@ class _RentUploadImageState extends State<RentUploadImage> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () async {
-                // Existing validation and upload code...
-                        if (selectedCategory == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Please select a category.'),
-                  ));
-                  return;
-                }
-                if (_selectedImage == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Please select an image.'),
-                  ));
-                  return;
-                }
-                if (DescriptionEdit.text.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Description is required.'),
-                  ));
-                  return;
-                }
-                try {
-                  // Existing upload code...
-                       Reference storageReference = FirebaseStorage.instance
-                      .ref()
-                      .child('images/${DateTime.now().millisecondsSinceEpoch}.jpg');
+            onPressed: () async {
+  SharedPreferences sp = await SharedPreferences.getInstance();
+  var a = sp.getString('uid');
 
-                  await storageReference.putFile(_selectedImage!);
+  // Upload image
+  await uploadImage();
+    int totalCount = int.tryParse(CountEdit.text) ?? 0;
 
-                  String imageUrl = await storageReference.getDownloadURL();
-                    SharedPreferences sp = await SharedPreferences.getInstance();
-                  var a = sp.getString('uid');
-                DocumentReference docRef =   await FirebaseFirestore.instance.collection("rental_upload_image").add({
-                    'category': selectedCategory,
-                    'description': DescriptionEdit.text,
-                    'image_url': imageUrl,
-                    'price': PriceEdit.text, // Add price field
-                    'total_count': CountEdit, // Add total count field
-                    'rent_id': a,
-                  });
+
+  // Add data to Firestore
+  DocumentReference docRef = await FirebaseFirestore.instance.collection('rental_upload_image').add({
+    'category': selectedCategory,
+    'description': DescriptionEdit.text,
+    'image_url': imageUrl,
+    'price': PriceEdit.text, // Add price field
+    'total_count': totalCount, // Add total count field
+    'rent_id': a,
+  });
   documentId = docRef.id;
 
-                  // Navigate to the product view page
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => ProductViewPage()));
-                } catch (e) {
-                  // Existing error handling code...
-                }
-              },
-              child: Text('UPLOAD'),
-            )
+  Navigator.push(context, MaterialPageRoute(builder: (context) {
+    return ProductViewPage();
+  }));
+},
+              child: Text('Add'),
+            ),
           ],
         ),
       ),
     );
   }
+
+ Future<void> uploadImage() async {
+  try {
+    if (_selectedImage != null) {
+      Reference storageReference = FirebaseStorage.instance.ref().child('image/${DateTime.now().millisecondsSinceEpoch}.jpg');
+
+      await storageReference.putFile(_selectedImage!);
+
+      // Get the download URL
+      imageUrl = await storageReference.getDownloadURL();
+
+      // Now you can use imageUrl as needed (e.g., save it to Firestore)
+      print('Image URL: $imageUrl');
+    }
+  } catch (e) {
+    print('Error uploading image: $e');
+  }
+}
 }

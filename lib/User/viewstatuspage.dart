@@ -1,121 +1,161 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/User/rentnotificationuser.dart';
+import 'package:loginrace/User/rentpayement.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class ViewStatusPage extends StatefulWidget {
   String rent_id;
-   ViewStatusPage({super.key,  required this. rent_id, });
+  final double price; // New parameter for price
+  var documentId;
+
+  ViewStatusPage(
+      {super.key,
+      required this.rent_id,
+      required this.price,
+      required this.documentId});
 
   @override
   State<ViewStatusPage> createState() => _ViewStatusPageState();
 }
 
 class _ViewStatusPageState extends State<ViewStatusPage> {
- Future<List<Map<String, dynamic>>> getBookingData() async {
+ late List<Map<String, dynamic>> _bookingData;
+  bool isBookingPaid = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _bookingData = [];
+    getBookingData();
+  }
+
+  Future<void> getBookingData() async {
     try {
+      SharedPreferences sp = await SharedPreferences.getInstance();
+      var userId = sp.getString('uid');
+
       final QuerySnapshot<Map<String, dynamic>> bookingSnapshot =
           await FirebaseFirestore.instance
               .collection('user_rent_booking')
+              .where('userid', isEqualTo: userId)
               .where('rent_id', isEqualTo: widget.rent_id)
               .get();
 
-      final List<Map<String, dynamic>> bookingDataList = [];
+      if (bookingSnapshot.docs.isNotEmpty) {
+        setState(() {
+          _bookingData = bookingSnapshot.docs.map((doc) {
+            print('Booking Doc ID: ${doc.id}'); // Print doc.id
 
-      for (final doc in bookingSnapshot.docs) {
-        final bookingData = doc.data();
-        bookingData['doc_id'] = doc.id; // Add document ID to the data
-        bookingDataList.add(bookingData);
+            var data = doc.data();
+            data['docId'] = doc.id; // Assign docId to booking data
+            return data;
+          }).toList();
+        });
+      } else {
+        print('No booking data found for rent_id: ${widget.rent_id}');
       }
-
-      return bookingDataList;
     } catch (e) {
       print('Error fetching data: $e');
-      throw e;
     }
   }
 
- 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Booking Details'),
+        title: Text('Booking Details '),
         actions: [
-          IconButton(
-            onPressed: () {
-Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return RentNotificationUser();
-              }));            },
-            icon: Icon(Icons.notifications),
-          ),
+          
         ],
       ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: getBookingData(),
-        builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            final bookingDataList = snapshot.data ?? [];
-
-            return SingleChildScrollView(
-              padding: EdgeInsets.all(16.0),
-              child: Column(
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16.0),
+        child: _bookingData.isNotEmpty
+            ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Booking Details',
-                    style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
+                children: _bookingData.map((booking) {
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 16.0),
+                    padding: EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(8.0),
                     ),
-                  ),
-                  SizedBox(height: 16.0),
-                  for (final bookingData in bookingDataList) ...[
-                    Container(
-                      margin: EdgeInsets.only(bottom: 16.0),
-                      padding: EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Name: ${bookingData['name'] ?? 'Not available'}',
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 8.0),
-                          Text(
-                            'Phone Number: ${bookingData['mobile no'] ?? 'Not available'}',
-                            style: TextStyle(fontSize: 16.0),
-                          ),
-                          SizedBox(height: 8.0),
-                          Text(
-                            'Due Date: ${bookingData['due_date'] ?? 'Not available'}',
-                            style: TextStyle(fontSize: 16.0),
-                          ),
-                          SizedBox(height: 8.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  // Add action for pending button
-                                },
-                                child: Text('Pending'),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Name: ${booking['name'] ?? 'Not available'}',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
                               ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                // Add action for notification icon
+                              },
+                              icon: Icon(Icons.notifications),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8.0),
+                        Text(
+                          'Phone Number: ${booking['mobile no'] ?? 'Not available'}',
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                        SizedBox(height: 8.0),
+                        Text(
+                          'Due Date: ${booking['due_date'] ?? 'Not available'}',
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                        SizedBox(
+                          height: 8.0,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            if (!isBookingPaid) ...[
+                              if (booking['status'] == 0)
+                                ElevatedButton(
+                                  onPressed: () {
+                                    // Add action for pending button
+                                  },
+                                  child: Text('Pending'),
+                                )
+                              else if (booking['status'] == 1)
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => RentPayment(
+                                          rent_id: widget.rent_id,
+                                          price: widget.price,
+                                          onPaymentSuccess: () {
+                                            setState(() {
+                                              isBookingPaid = true;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Text('Payment'),
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green),
+                                ),
                               ElevatedButton(
                                 onPressed: () async {
-                                  _showDeleteConfirmationDialog(context, bookingData);
+                                  await _showDeleteConfirmationDialog(
+                                      context, booking['docId']);
+                                  // log(_bookingData);
                                 },
                                 child: Text('Cancel Booking'),
                                 style: ElevatedButton.styleFrom(
@@ -123,22 +163,29 @@ Navigator.push(context, MaterialPageRoute(builder: (context) {
                                 ),
                               ),
                             ],
-                          ),
-                        ],
-                      ),
+                            if (isBookingPaid) ...[
+                              Text(
+                                'Paid',
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ],
                     ),
-                  ],
-                ],
-              ),
-            );
-          }
-        },
+                  );
+                }).toList(),
+              )
+            : Center(child: CircularProgressIndicator()),
       ),
     );
   }
 
-  void _showDeleteConfirmationDialog(BuildContext context, Map<String, dynamic> bookingData) {
-    showDialog(
+  Future<void> _showDeleteConfirmationDialog(
+      BuildContext context, String? docId) {
+    print('Booking Doc ID: $docId'); // Print the docId
+
+    return showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -148,7 +195,7 @@ Navigator.push(context, MaterialPageRoute(builder: (context) {
             ElevatedButton(
               onPressed: () async {
                 Navigator.of(context).pop(); // Close the dialog
-                await _deleteBooking(bookingData);
+                await _deleteBooking(context, docId);
               },
               child: Text('OK'),
             ),
@@ -164,16 +211,25 @@ Navigator.push(context, MaterialPageRoute(builder: (context) {
     );
   }
 
-  Future<void> _deleteBooking(Map<String, dynamic> bookingData) async {
-    try {
-      await FirebaseFirestore.instance.collection('user_rent_booking').doc(bookingData['doc_id']).delete();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Booking canceled')));
-      setState(() {
-        // Refresh the UI if necessary
-      });
-    } catch (e) {
-      print('Error deleting booking: $e');
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to cancel booking')));
-    }
+Future<void> _deleteBooking(BuildContext context, String? docId) async {
+  try {
+    // Delete booking from Firestore
+    await FirebaseFirestore.instance
+        .collection('user_rent_booking')
+        .doc(docId)
+        .delete();
+
+    // Remove booking from local list
+    setState(() {
+      _bookingData.removeWhere((booking) => booking['docId'] == docId);
+    });
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('Booking canceled')));
+  } catch (e) {
+    print('Error deleting booking: $e');
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('Failed to cancel booking')));
   }
+}
 }

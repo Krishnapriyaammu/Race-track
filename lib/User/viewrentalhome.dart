@@ -99,12 +99,14 @@ class _UserViewRentHomeState extends State<UserViewRentHome>
                   final data = document.data() as Map<String, dynamic>;
                   final imageUrl = data['image_url'];
                   // final desc = data['description'];
-                  final rent_id=data['rent_id'];
+                  // final rent_id=data['rent_id'];
                 return GestureDetector(
                   onTap: () {
+                      final rentId = data['rent_id']; // Extract rent_id from document data
+
                     Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-                                  return UserViewSingleItem(rent_id:document.id);
+                                  return UserViewSingleItem(rent_id:rentId);
                                     
                                 }));
                   },
