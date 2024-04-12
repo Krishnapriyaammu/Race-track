@@ -177,20 +177,20 @@ class _ViewTrackDetailsState extends State<ViewTrackDetails> {
             ),
             SizedBox(height: 20),
             SizedBox(height: 10),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return FeedbackViewPage();
-                    }),
-                  );
-                },
-                child: Text(
-                  'View all',
-                  style: TextStyle(color: Colors.blue),
+           Align(
+  alignment: Alignment.centerRight,
+  child: TextButton(
+    onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) {
+          return FeedbackViewPage(rt_id: widget.rt_id);
+        }),
+      );
+    },
+    child: Text(
+      'View all',
+      style: TextStyle(color: Colors.blue),
                 ),
               ),
             ),

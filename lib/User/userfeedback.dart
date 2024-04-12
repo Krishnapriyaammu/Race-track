@@ -5,7 +5,8 @@ import 'package:loginrace/User/userviewfeedback.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserFeedback extends StatefulWidget {
-  const UserFeedback({Key? key}) : super(key: key);
+  final String rt_id;
+   UserFeedback({Key? key, required this. rt_id}) : super(key: key);
 
   @override
   State<UserFeedback> createState() => _UserFeedbackState();
@@ -88,12 +89,13 @@ class _UserFeedbackState extends State<UserFeedback> {
                       'username':name,
                       'image_url':img,
                       'uid':uid,
+                      'rt_id':widget.rt_id,
                     });
 
                     if (_formKey.currentState!.validate()) {
                       print(feedback.text);
                       Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return FeedbackViewPage();
+                        return FeedbackViewPage(rt_id: widget.rt_id,);
                       }));
                       print('Rating: $_userRating');
                                               Navigator.pop(context); // Navigate back to the previous page

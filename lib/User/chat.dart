@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatefulWidget {
@@ -29,81 +30,38 @@ class _ChatPageState extends State<ChatPage> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Container(
-              color: Colors.grey[200],
-              child: ListView.builder(
-                itemCount: messages.length,
-                itemBuilder: (context, index) {
-                  return ChatBubble(
-                    text: messages[index],
-                    isMe: index % 2 == 0, 
-                  );
-                },
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Write your message...',
-                      filled: true,
-                      fillColor: Colors.white, 
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16),
+     body: Container(
+        color: Colors.grey[200], // Background color for message list
+        // Display messages from Firestore
+        child: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection('messages').orderBy('timestamp', descending: true).snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+            final documents = snapshot.data!.docs;
+            return ListView.builder(
+              reverse: true, // Display newest messages at the bottom
+              itemCount: documents.length,
+              itemBuilder: (context, index) {
+                final message = documents[index]['message'];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  child: Container(
+                    padding: EdgeInsets.all(12.0),
+                    decoration: BoxDecoration(
+                      color: Colors.blueAccent, // Message bubble color
+                      borderRadius: BorderRadius.circular(12.0),
                     ),
-                    onChanged: (text) {
-                      // Handle text input
-                    },
+                    child: Text(
+                      message,
+                      style: TextStyle(fontSize: 16.0, color: Colors.white), // Text color
+                    ),
                   ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: () {
-                    // Handle sending message
-                    setState(() {
-                      messages.add('Helloo'); // Example message
-                    });
-                  },
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ChatBubble extends StatelessWidget {
-  final String text;
-  final bool isMe;
-
-  const ChatBubble({required this.text, required this.isMe});
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: EdgeInsets.all(8),
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: isMe ? Color.fromARGB(255, 207, 96, 96) : Color.fromARGB(255, 86, 141, 189), // Message bubble color
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Text(
-          text,
-          style: TextStyle(color: Colors.white),
+                );
+              },
+            );
+          },
         ),
       ),
     );

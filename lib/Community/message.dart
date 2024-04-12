@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Message extends StatefulWidget {
@@ -8,15 +9,21 @@ class Message extends StatefulWidget {
 }
 
 class _MessageState extends State<Message> {
-  TextEditingController _messageController = TextEditingController();
-  List<String> _messages = []; // List to store messages
+   TextEditingController _messageController = TextEditingController();
 
-  // Function to send message
-  void _sendMessage(String message) {
-    setState(() {
-      _messages.add(message);
-      _messageController.clear(); // Clear message input field after sending
-    });
+  // Function to send message to Firestore
+  Future<void> _sendMessage(String message) async {
+    try {
+      // Add message to Firestore
+      await FirebaseFirestore.instance.collection('messages').add({
+        'message': message,
+        'timestamp': DateTime.now(),
+      });
+      // Clear message input field after sending
+      _messageController.clear();
+    } catch (error) {
+      print('Error sending message: $error');
+    }
   }
 
   @override
@@ -30,22 +37,34 @@ class _MessageState extends State<Message> {
           Expanded(
             child: Container(
               color: Colors.grey[200], // Background color for message list
-              child: ListView.builder(
-                itemCount: _messages.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                    child: Container(
-                      padding: EdgeInsets.all(12.0),
-                      decoration: BoxDecoration(
-                        color: Colors.blueAccent, // Message bubble color
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: Text(
-                        _messages[index],
-                        style: TextStyle(fontSize: 16.0, color: Colors.white), // Text color
-                      ),
-                    ),
+              // Display messages from Firestore
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance.collection('messages').orderBy('timestamp', descending: true).snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  final documents = snapshot.data!.docs;
+                  return ListView.builder(
+                    reverse: true, // Display newest messages at the bottom
+                    itemCount: documents.length,
+                    itemBuilder: (context, index) {
+                      final message = documents[index]['message'];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                        child: Container(
+                          padding: EdgeInsets.all(12.0),
+                          decoration: BoxDecoration(
+                            color: Colors.blueAccent, // Message bubble color
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          child: Text(
+                            message,
+                            style: TextStyle(fontSize: 16.0, color: Colors.white), // Text color
+                          ),
+                        ),
+                      );
+                    },
                   );
                 },
               ),

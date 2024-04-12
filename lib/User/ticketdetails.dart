@@ -55,7 +55,7 @@ class _EventTicketDetailsState extends State<EventTicketDetails> {
       });
 
       // Add ticket details to Firestore
-      await FirebaseFirestore.instance.collection('Eventtickets').add({
+     var ticketRef = await FirebaseFirestore.instance.collection('Eventtickets').add({
         'name': _name,
         'price': _calculatePrice(),
         'totalTickets': totalBookedTickets,
@@ -66,6 +66,9 @@ class _EventTicketDetailsState extends State<EventTicketDetails> {
         'childTickets': _childTickets,
       });
 
+      // Get the document ID and store it in the document
+      String ticketId = ticketRef.id;
+      await ticketRef.update({'ticketId': ticketId});
       // Show success message
      Fluttertoast.showToast(
           msg: "Ticket booking successful!",

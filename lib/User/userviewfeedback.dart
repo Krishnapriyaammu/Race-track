@@ -5,9 +5,14 @@ import 'package:loginrace/User/userfeedback.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FeedbackViewPage extends StatefulWidget {
+  final String rt_id;
+    FeedbackViewPage({Key? key, required this.rt_id}) : super(key: key);
+
   @override
   _FeedbackViewPageState createState() => _FeedbackViewPageState();
 }
+
+
 
 class _FeedbackViewPageState extends State<FeedbackViewPage> {
   String image_url = '';
@@ -95,7 +100,7 @@ class _FeedbackViewPageState extends State<FeedbackViewPage> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) {
-              return UserFeedback();
+              return UserFeedback(rt_id:widget.rt_id);
             }),
           );
         },

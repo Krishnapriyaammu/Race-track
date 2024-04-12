@@ -152,7 +152,7 @@ Future<List<DocumentSnapshot>> getData() async {
                   String imageUrl = await storageReference.getDownloadURL();
                         await uploadImage();
                         
-                       await FirebaseFirestore.instance.collection("race_track_add_track").add({
+                      DocumentReference trackRef =  await FirebaseFirestore.instance.collection("race_track_add_track").add({
                        'track':track.text,
                        'surface':surface.text,
                        'length':length.text,
@@ -160,12 +160,15 @@ Future<List<DocumentSnapshot>> getData() async {
                        'record':record.text,
                        'image_url': imageUrl,
                        'uid':uid,
+                       'track_id': '',
+
 
                       
-                                         });
+                          });
+                                          String trackId = trackRef.id;
+                      await trackRef.update({'track_id': trackId});
                       
 
-                      Navigator.of(context).pop();
                     },
                   child: Text('Upload'),
                 ),

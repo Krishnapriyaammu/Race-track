@@ -75,10 +75,27 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
     }
   }
 
+ Future<List<DocumentSnapshot>> getFeedbacks() async {
+  try {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    var uid = sp.getString('uid');
+    final QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('user_send_feedback')
+        .where('rt_id', isEqualTo: uid)
+        .get();
+    print('Fetched ${snapshot.docs.length} feedbacks');
+    print('Feedback documents: ${snapshot.docs}');
+    return snapshot.docs;
+  } catch (e) {
+    print('Error fetching feedbacks: $e');
+    throw e;
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: Text('Explore Racetracks'),
@@ -86,6 +103,7 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
             tabs: [
               Tab(text: 'Add Track'),
               Tab(text: 'View Booked Users'),
+              Tab(text: 'Feedbacks'), // New tab for feedbacks
             ],
           ),
         ),
@@ -94,34 +112,6 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
             // Add Track Tab
             Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color.fromARGB(255, 238, 180, 180)
-                              .withOpacity(0.5),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Search for racetracks',
-                          prefixIcon: Icon(Icons.search),
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
                 Expanded(
                   child: FutureBuilder(
                     future: getData(),
@@ -246,11 +236,10 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
             ),
 
             // View Booked Users Tab
-
             FutureBuilder(
               future: getBookedUsers(),
-              builder:
-                  (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+              builder: (context,
+                  AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
@@ -262,9 +251,8 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                     itemBuilder: (context, index) {
                       final userData =
                           bookedUsers[index].data() as Map<String, dynamic>;
-                      String status = userData['status'] ??
-                          0; // Default to 0 if status is null
-                      bool isLevel1Completed = status == 1;
+                      String status = userData['status'] ?? '0';
+                      bool isLevel1Completed = status == '1';
                       final String documentId = bookedUsers[index].id;
 
                       return Card(
@@ -283,19 +271,16 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                           ),
                           trailing: ElevatedButton(
                             onPressed: isLevel1Completed
-                                ? null // Disable the button if level 1 is completed
+                                ? null
                                 : () {
-                                    // Add functionality for the button
-                                    // For example, show a dialog with options to approve or reject the booking
                                     showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        int selectedLevel =
-                                            1; // Default selected level
+                                        int selectedLevel = 1;
 
                                         return StatefulBuilder(
-                                          builder:
-                                              (BuildContext context, setState) {
+                                          builder: (BuildContext context,
+                                              StateSetter setState) {
                                             return AlertDialog(
                                               title: Text('Level Confirmation'),
                                               content: Column(
@@ -341,16 +326,15 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                                                 ElevatedButton(
                                                   onPressed: () {
                                                     updateStatus(documentId);
-
                                                     Navigator.of(context)
-                                                        .pop(); // Close the dialog
+                                                        .pop();
                                                   },
                                                   child: Text('Complete'),
                                                 ),
                                                 TextButton(
                                                   onPressed: () {
                                                     Navigator.of(context)
-                                                        .pop(); // Close the dialog
+                                                        .pop();
                                                   },
                                                   child: Text('Cancel'),
                                                 ),
@@ -365,10 +349,7 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                                 ? Text('Pending')
                                 : Text('Level 1 completed'),
                           ),
-                          onTap: () {
-                            // Add functionality to view more details about the booked user
-                            // For example, navigate to a detailed profile screen
-                          },
+                          onTap: () {},
                         ),
                       );
                     },
@@ -376,6 +357,67 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                 }
               },
             ),
+
+            // Feedbacks Tab
+            
+       FutureBuilder(
+  future: getFeedbacks(),
+  builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return Center(child: CircularProgressIndicator());
+    } else if (snapshot.hasError) {
+      return Center(child: Text('Error: ${snapshot.error}'));
+    } else {
+      return ListView.builder(
+        itemCount: snapshot.data?.length ?? 0,
+        itemBuilder: (context, index) {
+          final document = snapshot.data![index];
+          final data = document.data() as Map<String, dynamic>;
+          final imageUrl = data['image_url'];
+
+          return Card(
+            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  imageUrl != null
+                      ? CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage(imageUrl),
+                        )
+                      : Icon(Icons.image),
+                  SizedBox(height: 8),
+                  Text(
+                    data['username'] ?? 'Username not available',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 8),
+                  RatingBarIndicator(
+                    rating: data['rating'] ?? 0.0,
+                    itemBuilder: (context, index) => Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                    ),
+                    itemCount: 5,
+                    itemSize: 20.0,
+                    direction: Axis.horizontal,
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    data['feedback'] ?? 'Feedback not available',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
+  },
+),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -415,7 +457,7 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                         child: CircleAvatar(
                           radius: 50,
                           backgroundImage: profileImage != null
-                              ? FileImage(profileImage)
+                              ? FileImage(profileImage!)
                               : null,
                           child: profileImage == null
                               ? Icon(Icons.camera_alt, size: 30)

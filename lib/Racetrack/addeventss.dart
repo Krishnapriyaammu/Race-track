@@ -37,6 +37,9 @@ class _EventAddState extends State<EventAdd> {
   }
 
   Future<void> _saveTicketDetails() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
     SharedPreferences sp = await SharedPreferences.getInstance();
     var a = sp.getString('uid');
 
@@ -70,11 +73,63 @@ class _EventAddState extends State<EventAdd> {
       ));
     }
   }
+   String? _validateEventName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Event name is required';
+    }
+    return null;
+  }
+
+  String? _validateEventDate(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Event date is required';
+    }
+    return null;
+  }
+
+  String? _validateTotalTickets(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Total tickets is required';
+    }
+    int? totalTickets = int.tryParse(value);
+    if (totalTickets == null || totalTickets <= 0) {
+      return 'Invalid total tickets';
+    }
+    return null;
+  }
+
+  String? _validatePrice(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Price is required';
+    }
+    int? price = int.tryParse(value);
+    if (price == null || price <= 0) {
+      return 'Invalid price';
+    }
+    return null;
+  }
+    DateTime? _selectedDate;
+
 
   final TextEditingController _eventNameController = TextEditingController();
   final TextEditingController _eventDateController = TextEditingController();
   final TextEditingController _totalTicketsController =
       TextEditingController();
+        final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(DateTime.now().year + 10),
+    );
+    if (picked != null && picked != _selectedDate)
+      setState(() {
+        _selectedDate = picked;
+        _eventDateController.text = picked.toString();
+      });
+  }
 
   @override
   void dispose() {
@@ -93,168 +148,180 @@ class _EventAddState extends State<EventAdd> {
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(height: 30),
-              // Image display
-              _image != null
-                  ? Container(
-                      height: 200,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: FileImage(_image!),
-                          fit: BoxFit.cover,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(height: 30),
+                _image != null
+                    ? Container(
+                        height: 200,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: FileImage(_image!),
+                            fit: BoxFit.cover,
+                          ),
                         ),
+                      )
+                    : Container(
+                        height: 200,
+                        color: Colors.grey[200],
+                        child: Icon(Icons.image, size: 100, color: Colors.grey),
                       ),
-                    )
-                  : Container(
-                      height: 200,
-                      color: Colors.grey[200],
-                      child: Icon(Icons.image, size: 100, color: Colors.grey),
+                SizedBox(height: 10),
+                TextButton(
+                  onPressed: _pickImage,
+                  child: Text('Pick Image'),
+                ),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _eventNameController,
+                  validator: _validateEventName,
+                  decoration: InputDecoration(
+                    labelText: 'Event Name',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-              SizedBox(height: 10),
-              // Button to pick image
-              TextButton(
-                onPressed: _pickImage,
-                child: Text('Pick Image'),
-              ),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: _eventNameController,
-                decoration: InputDecoration(
-                  labelText: 'Event Name',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-              ),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: _eventDateController,
-                decoration: InputDecoration(
-                  labelText: 'Event Date',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _eventDateController,
+                  readOnly: true,
+                  onTap: () => _selectDate(context),
+                  validator: _validateEventDate,
+                  decoration: InputDecoration(
+                    labelText: 'Event Date',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    suffixIcon: Icon(Icons.calendar_today),
                   ),
                 ),
-              ),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: _totalTicketsController,
-                decoration: InputDecoration(
-                  labelText: 'Total tickets',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _totalTicketsController,
+                  validator: _validateTotalTickets,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'Total tickets',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 30),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          'General category',
-                          style: TextStyle(
+                SizedBox(height: 30),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            'General category',
+                            style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black87),
-                        ),
-                        SizedBox(height: 10),
-                        TextFormField(
-                          onChanged: (value) {
-                            setState(() {
-                              _generalPrice = int.tryParse(value) ?? 0;
-                            });
-                          },
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: 'Price (\$)',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.black87,
                             ),
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 10),
+                          TextFormField(
+                            onChanged: (value) {
+                              setState(() {
+                                _generalPrice = int.tryParse(value) ?? 0;
+                              });
+                            },
+                            validator: _validatePrice,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: 'Price (\$)',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 20),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          'Child category',
-                          style: TextStyle(
+                    SizedBox(width: 20),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            'Child category',
+                            style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black87),
-                        ),
-                        SizedBox(height: 10),
-                        TextFormField(
-                          onChanged: (value) {
-                            setState(() {
-                              _childPrice = int.tryParse(value) ?? 0;
-                            });
-                          },
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: 'Price (\$)',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.black87,
                             ),
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 10),
+                          TextFormField(
+                            onChanged: (value) {
+                              setState(() {
+                                _childPrice = int.tryParse(value) ?? 0;
+                              });
+                            },
+                            validator: _validatePrice,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: 'Price (\$)',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'VIP category',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextFormField(
+                  onChanged: (value) {
+                    setState(() {
+                      _vipPrice = value;
+                    });
+                  },
+                  validator: _validatePrice,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'Price (\$)',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                ],
-              ),
-              SizedBox(height: 20),
-              // VIP category
-              Text(
-                'VIP category',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
                 ),
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                onChanged: (value) {
-                  setState(() {
-                    _vipPrice = value;
-                  });
-                },
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Price (\$)',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+                SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: _saveTicketDetails,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                  ),
+                  child: Text(
+                    'Submit',
+                    style: TextStyle(fontSize: 20),
                   ),
                 ),
-              ),
-              SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: _saveTicketDetails,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                ),
-                child: Text(
-                  'Submit',
-                  style: TextStyle(fontSize: 20),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -270,10 +337,7 @@ class _EventAddState extends State<EventAdd> {
 
         await storageReference.putFile(_image!);
 
-        // Get the download URL
         imageUrl = await storageReference.getDownloadURL();
-
-        // Now you can use imageUrl as needed (e.g., save it to Firestore)
         print('Image URL: $imageUrl');
       }
     } catch (e) {
