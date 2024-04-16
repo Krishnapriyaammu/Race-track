@@ -2,62 +2,80 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class RentNotificationUser extends StatefulWidget {
-  const RentNotificationUser({super.key});
+  String bookingDocId;
+   RentNotificationUser({super.key,   required  this.bookingDocId});
 
   @override
   State<RentNotificationUser> createState() => _RentNotificationUserState();
 }
 
 class _RentNotificationUserState extends State<RentNotificationUser> {
- List<Map<String, dynamic>> notifications = [];
-
-  @override
-  void initState() {
-    super.initState();
-    fetchNotifications();
-  }
-
-  Future<void> fetchNotifications() async {
-    try {
-      QuerySnapshot<Map<String, dynamic>> snapshot =
-          await FirebaseFirestore.instance.collection('user_rent_booking').get();
-
-      List<Map<String, dynamic>> approachingDueDates = [];
-      DateTime now = DateTime.now();
-      int daysThreshold = 3;
-      snapshot.docs.forEach((doc) {
-        Map<String, dynamic> data = doc.data();
-        DateTime dueDate = DateTime.parse(data['due_date']);
-        if (dueDate.isAfter(now) && dueDate.difference(now).inDays <= daysThreshold) {
-          approachingDueDates.add(data);
-        }
-      });
-
-      setState(() {
-        notifications = approachingDueDates;
-      });
-    } catch (e) {
-      print('Error fetching notifications: $e');
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Notifications'),
       ),
-      body: ListView.builder(
-        itemCount: notifications.length,
-        itemBuilder: (context, index) {
-          Map<String, dynamic> notification = notifications[index];
-          return ListTile(
-            title: Text('Due Date: ${notification['due_date']}'),
-            subtitle: Text('Name: ${notification['name']}'),
-            // Add more details as needed
-          );
+      body: FutureBuilder(
+        future: FirebaseFirestore.instance
+            .collection('user_rent_booking')
+            .doc(widget.bookingDocId)
+            .collection('notifications')
+            .orderBy('timestamp', descending: true)
+            .limit(1)
+            .get(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.data!.docs.isEmpty) {
+            return Center(child: Text('No notifications'));
+          } else {
+            final message = snapshot.data!.docs.first['message'];
+            final timestamp = snapshot.data!.docs.first['timestamp'];
+
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 10),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 50.0),
+                    child: Card(
+                      elevation: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                           
+                            SizedBox(height: 10),
+                            Text(
+                              message,
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            SizedBox(height: 20),
+                            Text(
+                              'Received at: ${_formatTimestamp(timestamp)}',
+                              style: TextStyle(fontSize: 14, color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
         },
       ),
     );
+  }
+
+  String _formatTimestamp(Timestamp timestamp) {
+    final dateTime = timestamp.toDate();
+    return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute}';
   }
 }

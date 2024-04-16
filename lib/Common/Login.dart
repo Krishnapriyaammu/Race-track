@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loginrace/Admin/adminhome.dart';
 import 'package:loginrace/Community/communityregis.dart';
@@ -25,11 +26,12 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   TextEditingController user = TextEditingController();
+  TextEditingController email = TextEditingController();
   TextEditingController pass = TextEditingController();
   final GlobalKey<FormState> fkey = GlobalKey<FormState>();
 
   Future<void> checkData() async {
-    if (user.text == 'admin@gmail.com' && pass.text == 'admin123') {
+    if (email.text == 'admin@gmail.com' && pass.text == 'admin123') {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
         return AdminHome();
       }));
@@ -39,7 +41,7 @@ class _LoginState extends State<Login> {
       
       final QuerySnapshot userSnapshot = await FirebaseFirestore.instance
           .collection('user_register')
-          .where('name', isEqualTo: user.text)
+          .where('email', isEqualTo: email.text)
           .where('password', isEqualTo: pass.text)
           .get();
 
@@ -80,7 +82,7 @@ class _LoginState extends State<Login> {
      {
       final QuerySnapshot raceSnapshot = await FirebaseFirestore.instance
           .collection('race_track_register')
-          .where('name', isEqualTo: user.text)
+          .where('email', isEqualTo: email.text)
           .where('password', isEqualTo: pass.text)
           .get();
         
@@ -113,7 +115,7 @@ class _LoginState extends State<Login> {
     if (widget.type == 'rental') {
       final QuerySnapshot rentSnapshot = await FirebaseFirestore.instance
           .collection('rentalregister')
-          .where('name', isEqualTo: user.text)
+          .where('email', isEqualTo: email.text)
           .where('password', isEqualTo: pass.text)
           .get();
 
@@ -143,7 +145,7 @@ class _LoginState extends State<Login> {
     if (widget.type == 'community') {
       final QuerySnapshot commSnapshot = await FirebaseFirestore.instance
           .collection('community_register')
-          .where('name', isEqualTo: user.text)
+          .where('email', isEqualTo: email.text)
           .where('password', isEqualTo: pass.text)
           .get();
 
@@ -155,10 +157,12 @@ class _LoginState extends State<Login> {
         var userid = commSnapshot.docs[0].id;
           var image_url = commSnapshot.docs[0]['image_url'];
             var username = commSnapshot.docs[0]['name'];
+            var email =commSnapshot.docs[0]['email'];
 
         SharedPreferences sp = await SharedPreferences.getInstance();
         sp.setString('uid', userid);
           sp.setString('name', username);
+          sp.setString('email', email);
             sp.setString('image_url',image_url);
 
 
@@ -214,7 +218,7 @@ class _LoginState extends State<Login> {
                     SizedBox(height: 20),
                     Text('Enter username'),
                     TextFormField(
-                      controller: user,
+                      controller: email,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Enter username';

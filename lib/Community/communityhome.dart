@@ -21,7 +21,7 @@ class ProfileViewPage extends StatefulWidget {
 class _ProfileViewPageState extends State<ProfileViewPage> {
  final ImagePicker _picker = ImagePicker();
   late File _image;
-  late List<String> _imageUrls;
+  late List<String> _imageUrls = []; // Initialize _imageUrls as an empty list
   bool _isLoading = false;
 
   @override
@@ -30,15 +30,15 @@ class _ProfileViewPageState extends State<ProfileViewPage> {
     _loadImages();
   }
 
-  var sp;
-  var img;
-  var id;
+  late String? sp=null;
+  late String? img= null;
+  late String? id;
 
   Future<void> _loadImages() async {
     SharedPreferences spr = await SharedPreferences.getInstance();
     setState(() {
-      sp = spr.get('name');
-      img = spr.get('image_url');
+      sp = spr.getString('name');
+      img = spr.getString('image_url');
       id = spr.getString('uid');
     });
     setState(() {
@@ -100,13 +100,13 @@ class _ProfileViewPageState extends State<ProfileViewPage> {
           children: [
             SizedBox(height: 20),
             CircleAvatar(
-              backgroundImage: img != null ? NetworkImage(img) : null,
+              backgroundImage: img != null ? NetworkImage(img!) : null,
               radius: 70,
               backgroundColor: Colors.grey,
             ),
             SizedBox(height: 10),
             Text(
-              sp,
+              sp ?? '',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
@@ -115,10 +115,11 @@ class _ProfileViewPageState extends State<ProfileViewPage> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-           Navigator.push(
+                    Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AddAutoshows(community_id:id)), // Navigate to BookingViewPage
-                    );                  },
+                      MaterialPageRoute(builder: (context) => AddAutoshows(community_id: id ?? '')),
+                    );
+                  },
                   child: Text('AUTO SHOWS'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 229, 225, 235),
@@ -130,10 +131,11 @@ class _ProfileViewPageState extends State<ProfileViewPage> {
                 SizedBox(width: 20),
                 ElevatedButton(
                   onPressed: () {
-                     Navigator.push(
+                    Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ViewAllMessage()), // Navigate to BookingViewPage
-                    );                      },
+                      MaterialPageRoute(builder: (context) => ViewAllMessage()),
+                    );
+                  },
                   child: Text('MESSAGE'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color.fromARGB(221, 226, 219, 225),

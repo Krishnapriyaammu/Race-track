@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ViewStatusPage extends StatefulWidget {
   String rent_id;
   final double price; // New parameter for price
-  var documentId;
+  String documentId;
 
   ViewStatusPage(
       {super.key,
@@ -99,7 +99,15 @@ class _ViewStatusPageState extends State<ViewStatusPage> {
                             ),
                             IconButton(
                               onPressed: () {
-                                // Add action for notification icon
+
+ Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return RentNotificationUser(      
+                    bookingDocId: booking['docId'], // Pass the booking document ID
+);
+              }));
+
+
+
                               },
                               icon: Icon(Icons.notifications),
                             ),

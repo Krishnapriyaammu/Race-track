@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:loginrace/Community/communityhome.dart';
 import 'package:loginrace/Community/communityviewrequest.dart';
+import 'package:loginrace/Community/home3.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({super.key});
@@ -14,12 +15,12 @@ class _NavigationState extends State<Navigation> {
   int selectedindex=1;
 
   static  List<dynamic> _widgetoption= [
-    //  UploadCommunity(),
-    // CommHome(),
+  
     ProfileViewPage(),
     CommunityViewRequest(),
+    HomePayement(),
    
-    // CommunityRegister(),
+   
     
     
   ];
@@ -52,15 +53,15 @@ class _NavigationState extends State<Navigation> {
 
 
        BottomNavigationBarItem(icon: Icon(Icons.person,color: Colors.black,),
-       label: 'profile')
+       label: 'Payment')
        ],
 
-       type: BottomNavigationBarType.shifting,
+       type: BottomNavigationBarType.fixed,
        currentIndex: selectedindex,
        selectedItemColor: Colors.red,
        iconSize: 40,
        onTap: _ontopItem ,
-       elevation: 5
+      //  elevation: 5
        
        ),
        

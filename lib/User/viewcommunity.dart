@@ -29,6 +29,7 @@ class ViewCommunity extends StatelessWidget {
               final communityData = documents[index].data() as Map<String, dynamic>;
 
               final String name = communityData['name'];
+              final String email =communityData['email'];
               final String imageUrl = communityData['image_url'];
            final String communityId = documents[index].id;
 
@@ -61,6 +62,7 @@ class ViewCommunity extends StatelessWidget {
                        communityName: name,
                         communityImage: imageUrl,
                         communityId: communityId,
+                        email:email,
 
 
                       )),

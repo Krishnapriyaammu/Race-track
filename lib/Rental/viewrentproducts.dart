@@ -10,12 +10,14 @@ class ProductViewPage extends StatefulWidget {
 }
 
 class _ProductViewPageState extends State<ProductViewPage> {
-  late Future<List<DocumentSnapshot>> _dataFuture;
+   late Future<List<DocumentSnapshot>> _dataFuture;
+  late TextEditingController _categoryController;
 
   @override
   void initState() {
     super.initState();
     _dataFuture = getData();
+    _categoryController = TextEditingController();
   }
 
   Future<List<DocumentSnapshot>> getData() async {
@@ -35,57 +37,104 @@ class _ProductViewPageState extends State<ProductViewPage> {
     }
   }
 
+  Future<List<DocumentSnapshot>> filterData(String category) async {
+    try {
+      SharedPreferences sp = await SharedPreferences.getInstance();
+      var a = sp.getString('uid');
+
+      final QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('rental_upload_image')
+          .where('rent_id', isEqualTo: a)
+          .where('category', isEqualTo: category)
+          .get();
+
+      print('Fetched ${snapshot.docs.length} documents');
+      return snapshot.docs;
+    } catch (e) {
+      print('Error fetching data: $e');
+      throw e;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Product List'),
       ),
-      body: FutureBuilder(
-        future: _dataFuture,
-        builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data?.length ?? 0,
-              itemBuilder: (context, index) {
-                final document = snapshot.data![index];
-                final data = document.data() as Map<String, dynamic>;
-                final imageUrl = data['image_url'];
-                    final totalCount = (data['total_count'] != null) ? int.tryParse(data['total_count'].toString()) ?? 0 : 0;
-
-
-                return ProductTile(
-                  document: document,
-                  imageUrl: imageUrl,
-                  description: data['description'] ?? 'Description not available',
-                  price: data['price'] ?? 'Price not available',
-      totalCount: totalCount,
-                  onDelete: () {
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _categoryController,
+                    decoration: InputDecoration(labelText: 'Enter Category'),
+                  ),
+                ),
+                SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: () {
                     setState(() {
-                      snapshot.data!.removeAt(index); // Remove from local list
-                    });
-                    _deleteProduct(document);
-                  },
-                  onEdit: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) {
-                        return EditProductPage(document: document);
-                      }),
-                    );
-                    setState(() {
-                      _dataFuture = getData(); // Refresh the data
+                      _dataFuture = filterData(_categoryController.text.trim());
                     });
                   },
-                );
+                  child: Text('Filter'),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder(
+              future: _dataFuture,
+              builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else {
+                  return ListView.builder(
+                    itemCount: snapshot.data?.length ?? 0,
+                    itemBuilder: (context, index) {
+                      final document = snapshot.data![index];
+                      final data = document.data() as Map<String, dynamic>;
+                      final imageUrl = data['image_url'];
+                      final totalCount = (data['total_count'] != null) ? int.tryParse(data['total_count'].toString()) ?? 0 : 0;
+
+                      return ProductTile(
+                        document: document,
+                        imageUrl: imageUrl,
+                        description: data['description'] ?? 'Description not available',
+                        price: data['price'] ?? 'Price not available',
+                        totalCount: totalCount,
+                        onDelete: () {
+                          setState(() {
+                            _dataFuture = getData();
+                          });
+                          _deleteProduct(document);
+                        },
+                        onEdit: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) {
+                              return EditProductPage(document: document);
+                            }),
+                          );
+                          setState(() {
+                            _dataFuture = getData();
+                          });
+                        },
+                      );
+                    },
+                  );
+                }
               },
-            );
-          }
-        },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

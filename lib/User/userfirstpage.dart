@@ -1,6 +1,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:loginrace/Common/Login.dart';
 import 'package:loginrace/User/navigationuser.dart';
 import 'package:loginrace/User/viewrentitems.dart';
@@ -15,123 +16,173 @@ class UserType extends StatefulWidget {
 }
 
 class _UserTypeState extends State<UserType> {
+     late Future<List<DocumentSnapshot>> _futureData;
 
-  
+  @override
+  void initState() {
+    super.initState();
+    _futureData = getData();
+  }
+
+  Future<List<DocumentSnapshot>> getData() async {
+    try {
+      final QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('racetrack_upload_event')
+          .get();
+      print('Fetched ${snapshot.docs.length} documents');
+      return snapshot.docs;
+    } catch (e) {
+      print('Error fetching data: $e');
+      throw e;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-  return Scaffold(
-      appBar: AppBar(
-        title: Text('Racing Events'),
-      ),
-     body: ListView.builder(
-        itemCount: 5, // Dummy number of racing events
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-             
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) {
-                  return Login(type: 'user');
-                }),
-              );
-            },
-            child: Container(
-              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.3),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Event ${index + 1}', // Dummy event title
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      Icon(Icons.arrow_forward),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Location: City ${index + 1}', // Dummy event location
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Date: ${DateTime.now().add(Duration(days: index)).toString().split(' ')[0]}', // Dummy event date
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Time: ${TimeOfDay(hour: 10 + index, minute: 0)}', // Dummy event time
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  SizedBox(height: 12),
-                  Container(
-                    height: 180,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      image: DecorationImage(
-                        image: AssetImage('assets/event_placeholder.jpg'), // Dummy event image
-                        fit: BoxFit.cover,
-                      ),
+    return Scaffold(
+     
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: FutureBuilder(
+              future: _futureData,
+              builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else {
+                  return GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, // Number of columns
+                      crossAxisSpacing: 10.0,
+                      mainAxisSpacing: 10.0,
                     ),
-                  ),
-                  SizedBox(height: 12),
-                  Text(
-                    'Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit.', // Dummy event description
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      final document = snapshot.data![index];
+                      final data = document.data() as Map<String, dynamic>;
+                      final imageUrl = data['image_url'];
+
+                      return GestureDetector(
+                        onTap: () {
+                          if (!isLoggedIn()) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Login Required'),
+                                  content: Text('Please login to view more details.'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            // Handle event details navigation
+                          }
+                        },
+                        child: Card(
+                          elevation: 5,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10.0),
+                                child: Image.network(
+                                  imageUrl,
+                                  fit: BoxFit.cover,
+                                  loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    } else {
+                                      return Center(child: CircularProgressIndicator());
+                                    }
+                                  },
+                                ),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Colors.transparent,
+                                      Colors.black.withOpacity(0.7),
+                                    ],
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        data['event_name'] ?? 'Name not available',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      SizedBox(height: 4),
+                                      Text(
+                                        data['event_date'] ?? 'Date not available',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 14,
+                                          color: Colors.grey[300],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Login(type: 'user')),
+                  );
+                },
+                child: Text(
+                  'Login Here',
+                  style: TextStyle(color: Colors.blue),
+                ),
               ),
             ),
-          );
-        },
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) {
-                  return Login(type: 'user');
-                }),
-              );
-            },
-            tooltip: 'Rental Service',
-            child: Icon(Icons.shopping_cart),
-          ),
-          SizedBox(height: 16),
-          FloatingActionButton(
-            onPressed: () {
-               Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) {
-                  return Login(type: 'user');
-                }),
-              );
-            },
-            tooltip: 'Community',
-            child: Icon(Icons.group),
           ),
         ],
       ),
     );
+  }
+
+  bool isLoggedIn() {
+    // Logic to check if user is logged in
+    return false; // Replace with actual logic
   }
 }

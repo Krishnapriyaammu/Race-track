@@ -8,13 +8,13 @@ class UserViewFullRenters extends StatefulWidget {
 }
 
 class _UserViewFullRentersState extends State<UserViewFullRenters> {
-  late Future<List<DocumentSnapshot>> _dataFuture;
+  late Stream<QuerySnapshot> _dataStream;
   late TextEditingController _searchController;
 
   @override
   void initState() {
     super.initState();
-    _dataFuture = getData();
+    _dataStream = FirebaseFirestore.instance.collection('rental_add_service').snapshots();
     _searchController = TextEditingController();
   }
 
@@ -24,23 +24,16 @@ class _UserViewFullRentersState extends State<UserViewFullRenters> {
     super.dispose();
   }
 
-  Future<List<DocumentSnapshot>> getData() async {
-    try {
-      final QuerySnapshot snapshot =
-          await FirebaseFirestore.instance.collection('rental_add_service').get();
-      print('Fetched ${snapshot.docs.length} documents');
-      return snapshot.docs;
-    } catch (e) {
-      print('Error fetching data: $e');
-      throw e;
+  Stream<QuerySnapshot> getDataStream(String query) {
+    if (query.isEmpty) {
+      return FirebaseFirestore.instance.collection('rental_add_service').snapshots();
+    } else {
+      return FirebaseFirestore.instance
+          .collection('rental_add_service')
+          .where('Rental Service', isGreaterThanOrEqualTo: query)
+          .where('Rental Service', isLessThan: query + 'z')
+          .snapshots();
     }
-  }
-
-  List<DocumentSnapshot> filterRentalServices(List<DocumentSnapshot> data, String query) {
-    return data.where((document) {
-      final rentalService = document['Rental Service'] as String?;
-      return rentalService != null && rentalService.toLowerCase().contains(query.toLowerCase());
-    }).toList();
   }
 
   @override
@@ -70,7 +63,7 @@ class _UserViewFullRentersState extends State<UserViewFullRenters> {
                         style: TextStyle(color: Colors.black),
                         onChanged: (query) {
                           setState(() {
-                            _dataFuture = getData().then((data) => filterRentalServices(data, query));
+                            _dataStream = getDataStream(query);
                           });
                         },
                         decoration: InputDecoration(
@@ -85,21 +78,24 @@ class _UserViewFullRentersState extends State<UserViewFullRenters> {
             ),
           ),
           Expanded(
-            child: FutureBuilder(
-              future: _dataFuture,
-              builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+            child: StreamBuilder(
+              stream: _dataStream,
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else {
                   return ListView.builder(
-                    itemCount: snapshot.data?.length ?? 0,
+                    itemCount: snapshot.data?.docs.length ?? 0,
                     itemBuilder: (context, index) {
-                      final document = snapshot.data![index];
-                      final id = snapshot.data![index].id;
+                      final document = snapshot.data!.docs[index];
+                      final id = document.id;
                       final data = document.data() as Map<String, dynamic>;
                       final imageUrl = data['image_url'];
+                      final availability = data['availability'];
+                      final buttonText = availability == 'available' ? 'AVAILABLE' : 'NOT AVAILABLE';
+                      final buttonColor = availability == 'available' ? Colors.green : Colors.red;
                       return ListTile(
                         onTap: () {},
                         title: Text(data['Renter Name'] ?? 'Name not available'),
@@ -124,12 +120,12 @@ class _UserViewFullRentersState extends State<UserViewFullRenters> {
                           },
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                            backgroundColor: Color.fromARGB(255, 28, 43, 129),
+                            backgroundColor: buttonColor,
                           ),
                           child: Text(
-                            'AVAILABLE',
+                            buttonText,
                             style: TextStyle(
-                              color: const Color.fromARGB(255, 231, 234, 236),
+                              color: Colors.white,
                               fontSize: 10,
                             ),
                           ),

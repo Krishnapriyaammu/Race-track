@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:loginrace/Common/Login.dart';
 import 'package:loginrace/Rental/renteditprofile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +15,7 @@ class RentViewProfile extends StatefulWidget {
 
 class _RentViewProfileState extends State<RentViewProfile> {
   late Future<DocumentSnapshot> userData;
+  String selectedStatus = 'available'; // Track selected status
 
   @override
   void initState() {
@@ -69,9 +71,7 @@ class _RentViewProfileState extends State<RentViewProfile> {
                     radius: 70,
                     backgroundColor: Colors.blue,
                     backgroundImage: NetworkImage(data['image_url'] ?? ''),
-                    child: data['image_url'] == null
-                        ? Icon(Icons.person, size: 70, color: Colors.white)
-                        : null,
+                    child: data['image_url'] == null ? Icon(Icons.person, size: 70, color: Colors.white) : null,
                   ),
                 ),
                 _buildProfileDetails(data),
@@ -89,37 +89,67 @@ class _RentViewProfileState extends State<RentViewProfile> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DataTable(
-            columns: [
-                  const DataColumn(
-                    label: SizedBox.shrink(),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal, // Set the scroll direction to horizontal
+            child: DataTable(
+              columns: [
+                const DataColumn(
+                  label: SizedBox.shrink(),
+                ),
+                const DataColumn(
+                  label: SizedBox.shrink(),
+                ),
+              ],
+              rows: [
+                DataRow(cells: [
+                  DataCell(Text('Name')),
+                  DataCell(Text(data['name'])),
+                ]),
+                DataRow(cells: [
+                  DataCell(Text('Email')),
+                  DataCell(Text(data['email'])),
+                ]),
+                DataRow(cells: [
+                  DataCell(Text('Phone')),
+                  DataCell(Text(data['mobile no'])),
+                ]),
+                DataRow(cells: [
+                  DataCell(Text('Place')),
+                  DataCell(Text(data['place'])),
+                ]),
+                DataRow(cells: [
+                  DataCell(Text('Proof')),
+                  DataCell(Text(data['proof'])),
+                ]),
+                DataRow(cells: [
+                  DataCell(Text('Status')),
+                  DataCell(
+                    Row(
+                      children: [
+                        DropdownButton<String>(
+                          value: selectedStatus,
+                          onChanged: (String? value) {
+                            setState(() {
+                              selectedStatus = value!;
+                            });
+                          },
+                          items: ['available', 'not available']
+                              .map((String status) => DropdownMenuItem<String>(
+                                    value: status,
+                                    child: Text(status),
+                                  ))
+                              .toList(),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => _updateStatus(data),
+                          child: Text('Update'),
+                        ),
+                      ],
+                    ),
                   ),
-                  const DataColumn(
-                    label: SizedBox.shrink(),
-                  ),
-                ],
-            rows: [
-              DataRow(cells: [
-                DataCell(Text('Name')),
-                DataCell(Text(data['name'])),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('Email')),
-                DataCell(Text(data['email'])),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('Phone')),
-                DataCell(Text(data['mobile no'])),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('Place')),
-                DataCell(Text(data['place'])),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('Proof')),
-                DataCell(Text(data['proof'])),
-              ]),
-            ],
+                ]),
+              ],
+            ),
           ),
           SizedBox(height: 20),
           ElevatedButton.icon(
@@ -190,5 +220,22 @@ class _RentViewProfileState extends State<RentViewProfile> {
         );
       },
     );
+  }
+
+  Future<void> _updateStatus(Map<String, dynamic> data) async {
+    try {
+      await FirebaseFirestore.instance.collection('rentalregister').doc(widget.userId).update({
+        'availability': selectedStatus,
+      });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Status updated successfully'),
+        duration: Duration(seconds: 2),
+      ));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Failed to update status: $e'),
+        duration: Duration(seconds: 2),
+      ));
+    }
   }
 }

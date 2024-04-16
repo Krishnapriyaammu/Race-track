@@ -71,12 +71,12 @@ class _GalleryState extends State<Gallery> {
                       SizedBox(height: 40),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) {
-                              return RaceTrackViewTrackdetails();
-                            }),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(builder: (context) {
+                          //     return RaceTrackViewTrackdetails(uid: '',);
+                          //   }),
+                          // );
                         },
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 218, 209, 210))),

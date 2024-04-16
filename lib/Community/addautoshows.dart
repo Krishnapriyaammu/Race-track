@@ -156,7 +156,9 @@ class _AddAutoshowsState extends State<AddAutoshows> {
                       ? StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                           stream: FirebaseFirestore.instance
                               .collection('community_add_autoshows')
-                              .where('category', isEqualTo: _selectedCategory)
+                              .where('category', isEqualTo: _selectedCategory)                   
+                               .where('community_id', isEqualTo: widget.community_id) // Filter by community ID
+
                               .snapshots(),
                           builder: (context, snapshot) {
                             if (!snapshot.hasData) {

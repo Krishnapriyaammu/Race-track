@@ -99,34 +99,35 @@ class _UserViewSingleItemState extends State<UserViewSingleItem> {
     var rentId = widget.rent_id;
   double totalPrice = (_rentalImageData['price'] as num).toDouble() * _selectedQuantity;
 
-    DocumentReference docRef = await FirebaseFirestore.instance
-        .collection('user_rent_booking')
-        .add({
-      'name': _nameController.text,
-      'place': _placeController.text,
-      'mobile no': _mobileController.text,
-      'due_date': _dueDateController.text,
-      'address': _addressController.text,
-      'quantity': _selectedQuantity, // Include selected quantity
-      'userid': userid,
-      'rent_id': widget.rent_id, // Set the correct rent_id here
-      'status': 0,
-      'booking_date': currentDate,
-          'total_price': totalPrice, // Include total price
- // Add booking date
-    });
-    documentId = docRef.id;
+  
+  DocumentReference docRef = await FirebaseFirestore.instance
+      .collection('user_rent_booking')
+      .add({
+    'name': _nameController.text,
+    'place': _placeController.text,
+    'mobile no': _mobileController.text,
+    'due_date': _dueDateController.text,
+    'address': _addressController.text,
+    'quantity': _selectedQuantity, // Include selected quantity
+    'userid': userid,
+    'rent_id': widget.rent_id, // Set the correct rent_id here
+    'status': 0,
+    'booking_date': currentDate,
+    'total_price': totalPrice, // Include total price
+  });
+  setState(() {
+    documentId = docRef.id; // Assign the documentId here
+  });
 
-    // Update the total_count in the rental_upload_image document
-    await FirebaseFirestore.instance
-        .collection('rental_upload_image')
-        .doc(rentId) // Use the correct rent_id here
-        .update({
-      'total_count': (_rentalImageData['total_count'] as int) -
-          _selectedQuantity,
-    });
-
-    setState(() {});
+  // Update the total_count in the rental_upload_image document
+  await FirebaseFirestore.instance
+      .collection('rental_upload_image')
+      .doc(rentId) // Use the correct rent_id here
+      .update({
+    'total_count': (_rentalImageData['total_count'] as int) -
+        _selectedQuantity,
+  });
+    
   }
 
   @override
@@ -316,8 +317,8 @@ class _UserViewSingleItemState extends State<UserViewSingleItem> {
                           MaterialPageRoute(
                               builder: (context) => ViewStatusPage(
                                     rent_id: widget.rent_id,
-                                              documentId:documentId
-                                              , // Pass the document ID here
+                                              documentId:documentId ??'',
+                                               // Pass the document ID here
 
                                     price: (data['price'] as num).toDouble(),
                                   )),

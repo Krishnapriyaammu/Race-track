@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loginrace/Rental/rentalviewprofile.dart';
 import 'package:loginrace/Rental/rentnotification.dart';
-import 'package:loginrace/Rental/viewaccepatrequestrental.dart';
 import 'package:loginrace/Rental/viewuseracceptreject.dart';
+import 'package:loginrace/User/rentnotificationuser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RentalHome extends StatefulWidget {
@@ -12,24 +13,23 @@ class RentalHome extends StatefulWidget {
   @override
   State<RentalHome> createState() => _RentalHomeState();
 }
-class _RentalHomeState extends State<RentalHome> {
-  
 
-   Future<List<DocumentSnapshot>> getData() async {
+class _RentalHomeState extends State<RentalHome> {
+  final TextEditingController _messageController = TextEditingController();
+
+  Future<List<DocumentSnapshot>> getData() async {
     try {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('user_rent_booking')
           .get();
-          
+
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;
     } catch (e) {
       print('Error fetching data: $e');
-      throw e; 
+      throw e;
     }
   }
- 
-  
 
   final List<Tab> _tabs = [
     Tab(text: 'Requests'),
@@ -143,6 +143,7 @@ class _RentalHomeState extends State<RentalHome> {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('user_rent_booking')
           .where('status', isEqualTo: 1) // Fetch only documents where status is 1
+          .orderBy('due_date', descending: false) // Order by due_date in ascending order
           .get();
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;
@@ -152,108 +153,116 @@ class _RentalHomeState extends State<RentalHome> {
     }
   }
 
-  Widget _buildAcceptedTab() {
-    return Expanded(
-      child: FutureBuilder(
-        future: getAcceptedData(),
-        builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data?.length ?? 0,
-              itemBuilder: (context, index) {
-                final document = snapshot.data![index];
-                final data = document.data() as Map<String, dynamic>;
-                // final imageUrl = data['image_url'];
+Widget _buildAcceptedTab() {
+  return Expanded(
+    child: FutureBuilder(
+      future: getAcceptedData(),
+      builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          return ListView.builder(
+            itemCount: snapshot.data?.length ?? 0,
+            itemBuilder: (context, index) {
+              final document = snapshot.data![index];
+              final data = document.data() as Map<String, dynamic>;
+              final documentId = document.id; // Get the booking ID
 
-                return InkWell(
-                  onTap: () {
-                    // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    //   return ViewUserAccept(documentId: document.id);
-                    // }));
-                  },
-                  child: Card(
-                    margin: EdgeInsets.all(16),
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+              return Card(
+                margin: EdgeInsets.all(16),
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Name: ${data['name'] ?? 'Name not available'}',
-                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                              // Add notification icon here
-                              IconButton(
-                                icon: Icon(Icons.notifications), // You can change the icon as needed 
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: Text('Send Notification'),
-                                        content: TextField(
-                                          decoration: InputDecoration(hintText: 'Enter your message'),
-                                        ),
-                                        actions: [
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              // Add code to send the notification/message
-                                              Navigator.pop(context); // Close the dialog
-                                            },
-                                            child: Text('Send'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context); // Close the dialog
-                                            },
-                                            child: Text('Cancel'),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 8),
                           Text(
-                            'Address: ${data['address'] ?? 'Address not available'}',
-                            style: TextStyle(fontSize: 16),
+                            'Name: ${data['name'] ?? 'Name not available'}',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Mobile No: ${data['mobile no'] ?? 'Number not available'}',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Due Date: ${data['due_date'] ?? 'Due date not available'}',
-                            style: TextStyle(fontSize: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              // Send notification
+                              _sendNotification(documentId);
+                            },
+                            child: Text('Send Notification'),
                           ),
                         ],
                       ),
-                    ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Address: ${data['address'] ?? 'Address not available'}',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Mobile No: ${data['mobile no'] ?? 'Number not available'}',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Due Date: ${data['due_date'] ?? 'Due date not available'}',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ],
                   ),
-                );
-              },
-            );
-          }
-        },
-      ),
-    );
-  }
+                ),
+              );
+            },
+          );
+        }
+      },
+    ),
+  );
+}
+
+void _sendNotification(String documentId) {
+  FirebaseFirestore.instance
+      .collection('user_rent_booking')
+      .doc(documentId)
+      .get()
+      .then((doc) {
+    if (doc.exists) {
+      Map<String, dynamic>? data = doc.data();
+      if (data?['status'] == 1) {
+        FirebaseFirestore.instance
+            .collection('user_rent_booking')
+            .doc(documentId)
+            .collection('notifications')
+            .add({
+          'message': 'Due date is about to reach',
+          'timestamp': Timestamp.now(),
+        }).then((_) {
+          // Show toast message when notification is sent successfully
+          Fluttertoast.showToast(
+            msg: 'Notification has been sent',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+          );
+        }).catchError((error) {
+          print('Error sending notification: $error');
+        });
+      } else {
+        print('Document status is not 1. Notification not sent.');
+      }
+    } else {
+      print('Document does not exist. Notification not sent.');
+    }
+  }).catchError((error) {
+    print('Error getting document: $error');
+  });
+}
+
 
   void _showPopupMenu(BuildContext context) async {
     await showMenu(

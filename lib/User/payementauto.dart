@@ -1,19 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 class PayementAutoshow extends StatefulWidget {
   String price;
   String name;
   String community_id;
-   PayementAutoshow({super.key,  required this. price, required this. name, required this. community_id});
+  
+  PayementAutoshow({Key? key, required this.price, required this.name, required this.community_id}) : super(key: key);
 
   @override
   State<PayementAutoshow> createState() => _PayementAutoshowState();
 }
 
 class _PayementAutoshowState extends State<PayementAutoshow> {
-
-  String? _selectedPaymentMethod;
+   String? _selectedPaymentMethod;
   List<String> _paymentMethods = ['Credit Card', 'Debit Card', 'PayPal', 'Google Pay'];
   bool _paymentSuccessful = false;
 
@@ -87,37 +88,37 @@ class _PayementAutoshowState extends State<PayementAutoshow> {
                       }).toList(),
                     ),
                     SizedBox(height: 32),
-                 ElevatedButton(
-  onPressed: () {
-    // Simulate payment process (set a delay of 2 seconds)
-    setState(() {
-      _paymentSuccessful = true;
-    });
+                    ElevatedButton(
+                      onPressed: () async {
+                        // Simulate payment process (set a delay of 2 seconds)
+                        setState(() {
+                          _paymentSuccessful = true;
+                        });
 
-    // Save payment details to Firestore
-    FirebaseFirestore.instance.collection('autoshowpayments').add({
-      'community_id': widget.community_id,
-      'amount': widget.price,
-      'type_of_payment': _selectedPaymentMethod,
-      'status': _paymentSuccessful ? 'Successful' : 'Failed',
-      'name': widget.name,
-    }).then((value) {
-      print("Payment details saved successfully!");
-    }).catchError((error) {
-      print("Failed to save payment details: $error");
-    });
+                        // Save payment details to Firestore
+                        await FirebaseFirestore.instance.collection('autoshowpayments').add({
+                          'community_id': widget.community_id,
+                          'amount': widget.price,
+                          'type_of_payment': _selectedPaymentMethod,
+                          'status': _paymentSuccessful ? 'Successful' : 'Failed',
+                          'name': widget.name,
+                        }).then((value) {
+                          print("Payment details saved successfully!");
+                        }).catchError((error) {
+                          print("Failed to save payment details: $error");
+                        });
 
-    Future.delayed(Duration(seconds: 2), () {
-      setState(() {
-        _paymentSuccessful = false;
-      });
-    });
-  },
-  child: Padding(
-    padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
-    child: Text(
-      'Pay',
-      style: TextStyle(fontSize: 18),
+                        Future.delayed(Duration(seconds: 2), () {
+                          setState(() {
+                            _paymentSuccessful = false;
+                          });
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+                        child: Text(
+                          'Pay',
+                          style: TextStyle(fontSize: 18),
                         ),
                       ),
                     ),

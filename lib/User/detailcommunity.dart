@@ -2,12 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/Community/booking.dart';
 import 'package:loginrace/User/autoshowsearch.dart';
+import 'package:loginrace/User/chat.dart';
 
 class CommunityDetails extends StatefulWidget {
   String communityImage;
   String communityName;
   String communityId;
-   CommunityDetails({super.key, required this. communityName, required this. communityImage, required this. communityId, });
+  String email;
+   CommunityDetails({super.key, required this. communityName, required this. communityImage, required this. communityId, required this. email, });
 
   @override
   State<CommunityDetails> createState() => _CommunityDetailsState();
@@ -79,7 +81,17 @@ late List<String> _addedImages = [];
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Add functionality for messaging
+            //  Navigator.push(
+            //               context,
+            //               MaterialPageRoute(
+            //                 builder: (context) => ChatPage(
+            //                   userId: widget.communityId, // Pass the community ID as userId
+            //              userEmail: widget.email, //
+            //                 )
+            //               ),
+            //             );
+
+
                   },
                   child: Text('MESSAGE'),
                   style: ElevatedButton.styleFrom(

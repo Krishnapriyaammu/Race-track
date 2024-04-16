@@ -362,8 +362,12 @@ class UserTab extends StatelessWidget {
 
   Future<List<DocumentSnapshot>> getdetails() async {
     try {
+       SharedPreferences sp = await SharedPreferences.getInstance();
+      var uid = sp.getString('uid');
       final QuerySnapshot snapshot =
-          await FirebaseFirestore.instance.collection('coachbooking').get();
+          await FirebaseFirestore.instance.collection('coachbooking').where('rt_id', isEqualTo: uid).
+
+          get();
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;
     } catch (e) {
@@ -499,9 +503,12 @@ class AcceptedUser extends StatelessWidget {
 
     Future<List<Map<String, dynamic>>> getAcceptedDetails() async {
     try {
+      SharedPreferences sp = await SharedPreferences.getInstance();
+      var uid = sp.getString('uid');
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('coachbooking')
-          .where('status', isEqualTo: 1)
+          .where('status', isEqualTo: 1) .where('rt_id', isEqualTo: uid)
+
           .get();
       print('Fetched ${snapshot.docs.length} accepted documents');
 

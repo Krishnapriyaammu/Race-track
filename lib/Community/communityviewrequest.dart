@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:loginrace/Community/communityacceptrejectuser.dart';
 import 'package:loginrace/Community/viewprofileComm.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,7 +13,7 @@ class CommunityViewRequest extends StatefulWidget {
 }
 
 class _CommunityViewRequestState extends State<CommunityViewRequest> {
-     late List<String> _rejectedBookingIds;
+    late List<String> _rejectedBookingIds;
   late List<String> _acceptedBookingIds;
 
   @override
@@ -116,6 +117,8 @@ class _CommunityViewRequestState extends State<CommunityViewRequest> {
                       _rejectedBookingIds.contains(bookingId);
                   final bool isAccepted =
                       _acceptedBookingIds.contains(bookingId);
+                  final bool isApproved = documentData['status'] == 1;
+
                   return Card(
                     elevation: 3,
                     shape: RoundedRectangleBorder(
@@ -127,14 +130,47 @@ class _CommunityViewRequestState extends State<CommunityViewRequest> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            documentData['name'] ?? '',
+                            'Name: ${documentData['name'] ?? ''}',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          // Other details here...
-
+                          Text(
+                            'Email: ${documentData['email'] ?? ''}',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'Date: ${documentData['date'] != null ? (documentData['date'] as Timestamp).toDate().toString() : ''}',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'Category: ${documentData['category'] ?? ''}',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'Phone Number: ${documentData['phone_number'] ?? ''}',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'Place: ${documentData['place'] ?? ''}',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           SizedBox(height: 8),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -151,38 +187,29 @@ class _CommunityViewRequestState extends State<CommunityViewRequest> {
                                 ),
                               SizedBox(width: 16),
                               ElevatedButton(
-                                onPressed: isAccepted || isRejected ? null : () {
-                                  // Reject button action
-                                },
+                                onPressed: isApproved || isRejected
+                                    ? null
+                                    : () {
+                                        // Reject button action
+                                      },
                                 style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.white, backgroundColor: isRejected ? Colors.red : Colors.grey,
+                                  foregroundColor: Colors.white, backgroundColor: isApproved ? Colors.grey : Colors.red,
                                 ),
                                 child: Text('Reject'),
                               ),
-                              SizedBox(width: 16),
-                              FutureBuilder<bool>(
-                                future: isPaymentSuccessful(bookingId),
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState == ConnectionState.waiting) {
-                                    return CircularProgressIndicator();
-                                  } else if (snapshot.hasError) {
-                                    return Text('Error: ${snapshot.error}');
-                                  } else {
-                                    final bool paymentSuccessful = snapshot.data ?? false;
-                                    return paymentSuccessful
-                                        ? ElevatedButton(
-                                            onPressed: null,
-                                            style: ElevatedButton.styleFrom(
-                                              foregroundColor: Colors.white, backgroundColor: Colors.grey,
-                                            ),
-                                            child: Text('Payment Complete'),
-                                          )
-                                        : SizedBox.shrink();
-                                  }
-                                },
-                              ),
                             ],
                           ),
+                          if (isApproved)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: Text(
+                                'Status: Approved',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                     ),
