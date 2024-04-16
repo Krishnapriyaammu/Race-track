@@ -3,14 +3,15 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 class HomePayement extends StatefulWidget {
-  const HomePayement({super.key});
+  String communityId;
+   HomePayement({super.key, required this. communityId});
 
   @override
   State<HomePayement> createState() => _HomePayementState();
 }
 
 class _HomePayementState extends State<HomePayement> {
- late Future<List<DocumentSnapshot>> _futureBookings;
+  late Future<List<DocumentSnapshot>> _futureBookings;
   DateTime? _selectedDate;
 
   @override
@@ -22,6 +23,7 @@ class _HomePayementState extends State<HomePayement> {
   Future<List<DocumentSnapshot>> _getAllBookings() async {
     final querySnapshot = await FirebaseFirestore.instance
         .collection('auto_show_booking')
+        .where('community_id', isEqualTo: widget.communityId)
         .where('status', isEqualTo: 1)
         .get();
 
@@ -31,6 +33,7 @@ class _HomePayementState extends State<HomePayement> {
   Future<List<DocumentSnapshot>> _getBookingsByDate(DateTime date) async {
     final querySnapshot = await FirebaseFirestore.instance
         .collection('auto_show_booking')
+        .where('community_id', isEqualTo: widget.communityId)
         .where('status', isEqualTo: 1)
         .where('date', isEqualTo: date)
         .get();

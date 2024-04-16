@@ -18,8 +18,7 @@ class AddImageAutoshow extends StatefulWidget {
 }
 
 class _AddImageAutoshowState extends State<AddImageAutoshow> {
-  List<File> _selectedImages = [];
-
+    List<File> _selectedImages = [];
 
   Future<void> _getImage(ImageSource source) async {
     final picker = ImagePicker();
@@ -45,6 +44,16 @@ class _AddImageAutoshowState extends State<AddImageAutoshow> {
             onPressed: () => _getImage(ImageSource.gallery),
             child: Text('Select Image from Gallery'),
           ),
+          SizedBox(height: 10),
+          Text(
+            'Category: ${widget.category}',
+            style: TextStyle(fontSize: 16),
+          ),
+          SizedBox(height: 10),
+          Text(
+            'Price: ${widget.price}',
+            style: TextStyle(fontSize: 16),
+          ),
           Expanded(
             child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -63,7 +72,6 @@ class _AddImageAutoshowState extends State<AddImageAutoshow> {
               },
             ),
           ),
-         
           ElevatedButton(
             onPressed: () async {
               SharedPreferences sp = await SharedPreferences.getInstance();
@@ -82,6 +90,7 @@ class _AddImageAutoshowState extends State<AddImageAutoshow> {
                   'image_url': imageUrl,
                   'community_id': uid,
                   'category': widget.category,
+                  'price': widget.price,
                 });
               }
 

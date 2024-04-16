@@ -6,7 +6,8 @@ import 'package:loginrace/Community/viewprofileComm.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CommunityViewRequest extends StatefulWidget {
-  const CommunityViewRequest({super.key});
+  String communityId;
+   CommunityViewRequest({super.key, required this. communityId});
 
   @override
   State<CommunityViewRequest> createState() => _CommunityViewRequestState();
@@ -39,7 +40,10 @@ class _CommunityViewRequestState extends State<CommunityViewRequest> {
   Future<List<DocumentSnapshot>> getdata() async {
     try {
       final QuerySnapshot snapshot =
-          await FirebaseFirestore.instance.collection('auto_show_booking').get();
+          await FirebaseFirestore.instance.collection('auto_show_booking').
+            where('community_id', isEqualTo: widget.communityId).
+
+          get();
 
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;

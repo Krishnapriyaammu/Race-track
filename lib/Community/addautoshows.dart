@@ -18,7 +18,7 @@ class AddAutoshows extends StatefulWidget {
 }
 
 class _AddAutoshowsState extends State<AddAutoshows> {
-   TextEditingController _priceController = TextEditingController(); // Controller for price input
+ TextEditingController _priceController = TextEditingController(); // Controller for price input
 
   String? _selectedCategory; // Change to nullable
   Map<String, String> _categoryPrices = {
@@ -68,6 +68,7 @@ class _AddAutoshowsState extends State<AddAutoshows> {
                 onChanged: (value) {
                   setState(() {
                     _selectedCategory = value;
+                    _priceController.text = _categoryPrices[value] ?? ''; // Update price text field with the selected category's price
                   });
                 },
                 decoration: InputDecoration(
@@ -80,7 +81,7 @@ class _AddAutoshowsState extends State<AddAutoshows> {
                 children: [
                   Expanded(
                     child: Text(
-                      'Price: ${_categoryPrices[_selectedCategory]}',
+                      'Price:',
                       style: TextStyle(fontSize: 16.0),
                     ),
                   ),
@@ -97,12 +98,10 @@ class _AddAutoshowsState extends State<AddAutoshows> {
                   SizedBox(width: 10.0),
                   ElevatedButton(
                     onPressed: () {
-                      // Update the price for the selected category
                       setState(() {
-                        _categoryPrices[_selectedCategory!] = _priceController.text;
+                        _categoryPrices[_selectedCategory!] = _priceController.text; // Update the price for the selected category
                       });
-                      // Clear the price input field
-                      _priceController.clear();
+                      _priceController.clear(); // Clear the price input field
                     },
                     child: Text('Update Price'),
                   ),
@@ -212,6 +211,8 @@ class _AddAutoshowsState extends State<AddAutoshows> {
     await FirebaseFirestore.instance.collection('category_price').add({
       'category': _selectedCategory,
       'price': _categoryPrices[_selectedCategory],
+      'community_id': widget.community_id, // Add community_id
+
     });
     
     Fluttertoast.showToast(

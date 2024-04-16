@@ -13,24 +13,34 @@ class AdminAcceptrejectRacetrack extends StatefulWidget {
 }
 
 class _AdminAcceptrejectRacetrackState extends State<AdminAcceptrejectRacetrack> {
- Future<void> updateStatus(String? documentId) async {
-  try {
-    print('Document ID: $documentId'); // Print documentId for debugging
-    if (documentId != null) {
-      await FirebaseFirestore.instance
-          .collection('race_track_register')
-          .doc(documentId)
-          .update({'status': 1});
-      print('Status updated successfully');
-    } else {
-      print('Document ID is null');
-    }
-  } catch (e) {
-    print('Error updating status: $e');
-    throw e;
-  }
-}
+  late Stream<DocumentSnapshot> _raceTrackStream;
 
+  @override
+  void initState() {
+    super.initState();
+    _raceTrackStream = FirebaseFirestore.instance
+        .collection('race_track_register')
+        .doc(widget.documentId)
+        .snapshots();
+  }
+
+  Future<void> updateStatus(String? documentId) async {
+    try {
+      print('Document ID: $documentId'); // Print documentId for debugging
+      if (documentId != null) {
+        await FirebaseFirestore.instance
+            .collection('race_track_register')
+            .doc(documentId)
+            .update({'status': 1});
+        print('Status updated successfully');
+      } else {
+        print('Document ID is null');
+      }
+    } catch (e) {
+      print('Error updating status: $e');
+      throw e;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,68 +55,71 @@ class _AdminAcceptrejectRacetrackState extends State<AdminAcceptrejectRacetrack>
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Center(
-            child: Column(
-              children: [
-                imageUrl != null
-                    ? Center(
-                        child: CircleAvatar(
-                          backgroundImage: NetworkImage(imageUrl),
-                          radius: 50,
-                        ),
-                      )
-                    : SizedBox(), // Placeholder if image URL is not available
-                Center(
-                  child: Column(
-                    children: [
-                      Text(userData['name'] ?? ''),
-                    ],
+          child: StreamBuilder<DocumentSnapshot>(
+            stream: _raceTrackStream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator(); // Placeholder for loading state
+              }
+
+              if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              }
+
+              var status = snapshot.data?['status'] ?? 0;
+
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  if (imageUrl != null)
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(imageUrl),
+                      radius: 50,
+                    ),
+                  SizedBox(height: 20),
+                  Text(
+                    userData['name'] ?? '',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                ),
-                SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 130),
-                  child: Text(
+                  SizedBox(height: 10),
+                  Text(
                     userData['place'] ?? '',
                     style: TextStyle(fontSize: 18),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 130),
-                  child: Text(
+                  Text(
                     userData['mobile_no'] ?? '',
                     style: TextStyle(fontSize: 18),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 130),
-                  child: Text(
+                  Text(
                     userData['license'] ?? '',
                     style: TextStyle(fontSize: 18),
                   ),
-                ),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        updateStatus(widget.documentId);
-                      },
-                      child: Text('Accept'),
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Implement reject logic
-                      },
-                      child: Text('Reject'),
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          updateStatus(widget.documentId);
+                        },
+                        child: Text('Accept'),
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Implement reject logic
+                        },
+                        child: Text('Reject'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: status == 1 ? Colors.grey : Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),

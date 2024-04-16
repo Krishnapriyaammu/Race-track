@@ -1,16 +1,20 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:loginrace/Common/Login.dart';
 import 'package:loginrace/User/userfirstpage.dart';
 import 'package:loginrace/usertype.dart';
 
 class SplashScreen extends StatefulWidget {
+
   const SplashScreen({super.key});
 
-  @override
+
+  @override 
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  
   @override
   void initState() {
     Timer(Duration(seconds: 4), () {
