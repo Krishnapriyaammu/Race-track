@@ -100,15 +100,15 @@ class _UserViewRentHomeState extends State<UserViewRentHome>
                   final imageUrl = data['image_url'];
                   // final desc = data['description'];
                   // final rent_id=data['rent_id'];
-                return GestureDetector(
+               return GestureDetector(
                   onTap: () {
-                      final rentId = data['rent_id']; // Extract rent_id from document data
-
                     Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-                                  return UserViewSingleItem(rent_id:rentId);
-                                    
-                                }));
+                                  return UserViewSingleItem(rent_id:document.id,
+                                 imageUrl: imageUrl,
+                           price: data['price'] ,
+    );
+  }));
                   },
                   child: Card(
                     elevation: 4.0,
@@ -173,13 +173,16 @@ Future<List<DocumentSnapshot>> getdata() async {
                 final data = document.data() as Map<String, dynamic>;
                 final imageUrl = data['image_url'];
                 final rent_id =data['rent_id'];
+
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-                                  return UserViewSingleItem(rent_id:document.id);
-                                    
-                                }));
+                                  return UserViewSingleItem(rent_id:document.id,
+                                 imageUrl: imageUrl,
+                           price: data['price'] ,
+    );
+  }));
                   },
                   child: Card(
                     elevation: 4.0,
@@ -247,9 +250,11 @@ Future<List<DocumentSnapshot>> getdata() async {
                   onTap: () {
                     Navigator.push(context,
                                     MaterialPageRoute(builder: (context) {
-                                  return UserViewSingleItem(rent_id: document.id,);
-                                    
-                                }));
+                                  return UserViewSingleItem(rent_id:document.id,
+                                 imageUrl: imageUrl,
+                           price: data['price'],
+    );
+  }));
                   },
                   child: Card(
                     elevation: 4.0,

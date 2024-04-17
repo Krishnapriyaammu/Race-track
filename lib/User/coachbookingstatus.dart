@@ -1,39 +1,35 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CoachBookingStatus extends StatefulWidget {
   
   var img;
    String coach_id;
+   String rt_id;
    
-   CoachBookingStatus({super.key, required this.img, required this. coach_id,  });
+   CoachBookingStatus({super.key, required this.img, required this. coach_id, required this. rt_id,  });
 
   @override
   State<CoachBookingStatus> createState() => _CoachBookingStatusState();
 }
 
 class _CoachBookingStatusState extends State<CoachBookingStatus> {
-  Future<Map<String, dynamic>> getdata() async {
-  try {
-    final QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('coachbooking')   .where('coach_id', isEqualTo: widget.coach_id)
-                  
- // Adjust 'coach_id' to match the field name in your Firestore document
-
-        .get();
-    print('Fetched ${snapshot.docs.length} documents');
-    if (snapshot.docs.isNotEmpty) {
-     final document = snapshot.docs.first;
+   Future<Map<String, dynamic>> getdata() async {
+    try {
+      final QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('coachbooking')
+          .where('coach_id', isEqualTo: widget.coach_id)
+          .get();
+      print('Fetched ${snapshot.docs.length} documents');
+      if (snapshot.docs.isNotEmpty) {
+        final document = snapshot.docs.first;
         final data = document.data() as Map<String, dynamic>;
-        final date = data['date'];
-        final time = data['time'];
-        final level = data['level'];
-        final status = data['status'];
         return {
-          'date': date,
-          'time': time,
-          'level': level,
-          'status': status,
+          'date': data['date'],
+          'time': data['time'],
+          'level': data['level'],
+          'status': data['status'],
         };
       } else {
         return {
@@ -49,6 +45,58 @@ class _CoachBookingStatusState extends State<CoachBookingStatus> {
     }
   }
 
+  Future<void> _sendFeedback() async {
+    String feedback = ''; // Initialize feedback variable
+
+    // Show dialog to get feedback
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Add Feedback'),
+          content: TextField(
+            onChanged: (value) {
+              feedback = value; // Update feedback when text changes
+            },
+            decoration: InputDecoration(hintText: 'Enter feedback'),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+              },
+            ),
+           TextButton(
+            child: Text('Submit'),
+            onPressed: () async {
+              // Store feedback, userid, and coach_id in Firebase
+              SharedPreferences sp = await SharedPreferences.getInstance();
+              String userId = sp.getString('uid') ?? '';
+              String coachId = widget.coach_id;
+              String rt_id = widget.rt_id;
+
+              // Verify that rt_id is not null or empty
+             if (feedback.isNotEmpty && rt_id.isNotEmpty) {
+  await FirebaseFirestore.instance.collection('feedback').add({
+    'userId': userId,
+    'coachId': coachId,
+    'feedback': feedback,
+    'rt_id': rt_id,
+  });
+} else {
+  print('Feedback or rt_id is empty.');
+              }
+
+              // Close dialog
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,7 +128,7 @@ class _CoachBookingStatusState extends State<CoachBookingStatus> {
                         child: SizedBox(
                           width: 200,
                           height: 200,
-                          child: widget.img != null
+                          child: widget.img.isNotEmpty
                               ? Image.network(
                                   widget.img,
                                   fit: BoxFit.cover,
@@ -119,10 +167,14 @@ class _CoachBookingStatusState extends State<CoachBookingStatus> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text('Cancel'),
-                    ),
+                    if (status == 1)
+                     ElevatedButton(
+  onPressed: () {
+    print('rt_id: ${widget.rt_id}');
+    _sendFeedback();
+  },
+  child: Text('Send Feedback'),
+                      ),
                   ],
                 ),
               );

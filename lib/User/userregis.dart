@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -196,63 +197,66 @@ class _UserRegistrationState extends State<UserRgistration> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  ElevatedButton(
+                ElevatedButton(
                     onPressed: () async {
                       if (fkey.currentState!.validate()) {
-                        SharedPreferences sp =
-                            await SharedPreferences.getInstance();
-                        var a = sp.getString('uid');
-                        await uploadImage();
+                        try {
+                          SharedPreferences sp =
+                              await SharedPreferences.getInstance();
+                          var a = sp.getString('uid');
+                          await uploadImage();
 
-                        var existingUser = await FirebaseFirestore.instance
-                            .collection('user_register')
-                            .where('email', isEqualTo: Email.text)
-                            .get();
-
-                        if (existingUser.docs.isNotEmpty) {
-                          // User already exists with the same email
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: Text('Error'),
-                                content: Text(
-                                    'User with this email already exists.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text('OK'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        } else {
-                          await FirebaseFirestore.instance
+                          var existingUser = await FirebaseFirestore.instance
                               .collection('user_register')
-                              .add({
-                            'name': Name.text,
-                            'email': Email.text,
-                            'place': Place.text,
-                            // 'proof': proof.text,
-                            'phone': Mobile.text,
-                            'password': password.text,
-                            'conform password': confirmPass.text,
-                            'image_url': imageUrl,
-                          });
-                          print(Name.text);
-                          print(Email.text);
-                          print(Mobile.text);
-                          print(password.text);
-                          print(confirmPass.text);
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Login(type: 'user'),
-                            ),
-                          );
+                              .where('email', isEqualTo: Email.text)
+                              .get();
+
+                          if (existingUser.docs.isNotEmpty) {
+                            // User already exists with the same email
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text('Error'),
+                                  content: Text(
+                                      'User with this email already exists.'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            await FirebaseFirestore.instance
+                                .collection('user_register')
+                                .add({
+                              'name': Name.text,
+                              'email': Email.text,
+                              'place': Place.text,
+                              'mobile no': Mobile.text,
+                              'password': password.text,
+                              'confirm_password': confirmPass.text,
+                              'image_url': imageUrl,
+                            });
+                            print(Name.text);
+                            print(Email.text);
+                            print(Mobile.text);
+                            print(password.text);
+                            print(confirmPass.text);
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => NavigationUser(),
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          print('Error creating user: $e');
                         }
                       }
                     },
@@ -272,7 +276,7 @@ class _UserRegistrationState extends State<UserRgistration> {
       if (profileImage != null) {
         Reference storageReference = FirebaseStorage.instance
             .ref()
-            .child('image/${pickedFile!.name}');
+            .child('image/${DateTime.now().millisecondsSinceEpoch}');
 
         await storageReference.putFile(profileImage!);
 

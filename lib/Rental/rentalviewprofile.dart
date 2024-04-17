@@ -117,10 +117,10 @@ class _RentViewProfileState extends State<RentViewProfile> {
                   DataCell(Text('Place')),
                   DataCell(Text(data['place'])),
                 ]),
-                DataRow(cells: [
-                  DataCell(Text('Proof')),
-                  DataCell(Text(data['proof'])),
-                ]),
+                // DataRow(cells: [
+                //   DataCell(Text('Proof')),
+                //   DataCell(Text(data['proof'])),
+                // ]),
                 DataRow(cells: [
                   DataCell(Text('Status')),
                   DataCell(
@@ -169,7 +169,7 @@ class _RentViewProfileState extends State<RentViewProfile> {
     TextEditingController emailController = TextEditingController(text: data['email']);
     TextEditingController phoneController = TextEditingController(text: data['mobile no']);
     TextEditingController placeController = TextEditingController(text: data['place']);
-    TextEditingController proofController = TextEditingController(text: data['proof']);
+    // TextEditingController proofController = TextEditingController(text: data['proof']);
 
     showDialog(
       context: context,
@@ -183,7 +183,7 @@ class _RentViewProfileState extends State<RentViewProfile> {
                 TextFormField(controller: emailController, decoration: InputDecoration(labelText: 'Email')),
                 TextFormField(controller: phoneController, decoration: InputDecoration(labelText: 'Phone')),
                 TextFormField(controller: placeController, decoration: InputDecoration(labelText: 'Place')),
-                TextFormField(controller: proofController, decoration: InputDecoration(labelText: 'Proof')),
+                // TextFormField(controller: proofController, decoration: InputDecoration(labelText: 'Proof')),
               ],
             ),
           ),
@@ -200,7 +200,7 @@ class _RentViewProfileState extends State<RentViewProfile> {
                   'email': emailController.text,
                   'mobile no': phoneController.text,
                   'place': placeController.text,
-                  'proof': proofController.text,
+                  // 'proof': proofController.text,
                 }).then((_) {
                   Navigator.pop(context); // Close the dialog
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(

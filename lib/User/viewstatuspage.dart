@@ -8,14 +8,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ViewStatusPage extends StatefulWidget {
   String rent_id;
-  final double price; // New parameter for price
+  final String price; // New parameter for price
   String documentId;
 
   ViewStatusPage(
       {super.key,
       required this.rent_id,
       required this.price,
-      required this.documentId});
+      required this.documentId, });
 
   @override
   State<ViewStatusPage> createState() => _ViewStatusPageState();
@@ -126,6 +126,18 @@ class _ViewStatusPageState extends State<ViewStatusPage> {
                         SizedBox(
                           height: 8.0,
                         ),
+                        Text(
+  'Price: ${booking['total_price']}', // Display price
+  style: TextStyle(fontSize: 16.0),
+),
+                        SizedBox(height: 8.0),
+
+Text(
+  'Quantity: ${booking['quantity']}', // Display quantity
+  style: TextStyle(fontSize: 16.0),
+),
+                        SizedBox(height: 8.0),
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -140,20 +152,7 @@ class _ViewStatusPageState extends State<ViewStatusPage> {
                               else if (booking['status'] == 1)
                                 ElevatedButton(
                                   onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => RentPayment(
-                                          rent_id: widget.rent_id,
-                                          price: widget.price,
-                                          onPaymentSuccess: () {
-                                            setState(() {
-                                              isBookingPaid = true;
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    );
+                                 
                                   },
                                   child: Text('Payment'),
                                   style: ElevatedButton.styleFrom(

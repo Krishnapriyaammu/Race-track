@@ -41,6 +41,7 @@ class _EventDetailsState extends State<EventDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey[900],
       body: FutureBuilder(
         future: _eventDetailsFuture,
         builder: (context,
@@ -75,143 +76,171 @@ class _EventDetailsState extends State<EventDetails> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        SizedBox(height: 100),
-                        Center(
-                          child: Text(
-                            eventData['event_name'] ?? 'Event Name Not Available',
-                            style: GoogleFonts.poppins(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                        SizedBox(height: 40),
+                        Text(
+                          eventData['event_name'] ?? 'Event Name Not Available',
+                          style: GoogleFonts.poppins(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 20),
+                        Card(
+                          color: Colors.white.withOpacity(0.8),
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Event Date',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  '${eventData['event_date'] ?? 'Date Not Available'}',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 18,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
                         SizedBox(height: 20),
-                        Container(
-                          padding: EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.8),
+                        Card(
+                          color: Colors.white.withOpacity(0.8),
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Event Date',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF212121),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Total Tickets',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(height: 10),
-                              Text(
-                                '${eventData['event_date'] ?? 'Date Not Available'}',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 18,
-                                  color: Color(0xFF212121),
+                                SizedBox(height: 10),
+                                Text(
+                                  '${eventData['total_tickets'] ?? 'Tickets Not Available'}',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 18,
+                                    color: Colors.black87,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Container(
-                          padding: EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.8),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Total Tickets',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF212121),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Text(
-                                '${eventData['total_tickets'] ?? 'Tickets Not Available'}',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 18,
-                                  color: Color(0xFF212121),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        DropdownButtonHideUnderline(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.8),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: DropdownButton<String>(
-                              value: _selectedCategory,
-                              onChanged: (newValue) {
-                                setState(() {
-                                  _selectedCategory = newValue!;
-                                });
-                              },
-                              items: ['General', 'Child']
-                                  .map<DropdownMenuItem<String>>(
-                                    (category) => DropdownMenuItem<String>(
-                                      value: category,
-                                      child: Text(
-                                        category,
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 20,
-                                          color: Color(0xFF212121),
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
+                              ],
                             ),
                           ),
                         ),
                         SizedBox(height: 20),
-                        Container(
-                          padding: EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.8),
+                        Card(
+                          color: Colors.white.withOpacity(0.8),
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Text(
-                            _selectedCategory == 'General'
-                                ? 'General Price: $generalPrice'
-                                : 'Child Price: $childPrice',
-                            style: GoogleFonts.poppins(
-                              fontSize: 20,
-                              color: Color(0xFF212121),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Select Ticket Category',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    value: _selectedCategory,
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        _selectedCategory = newValue!;
+                                      });
+                                    },
+                                    items: ['General', 'Child']
+                                        .map<DropdownMenuItem<String>>(
+                                          (category) => DropdownMenuItem<String>(
+                                            value: category,
+                                            child: Text(
+                                              category,
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 18,
+                                                color: Colors.black87,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
                         SizedBox(height: 20),
-                        Container(
-                          padding: EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.8),
+                        Card(
+                          color: Colors.white.withOpacity(0.8),
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Text(
-                            'VIP Price: $_vipPrice',
-                            style: GoogleFonts.poppins(
-                              fontSize: 20,
-                              color: Color(0xFF212121),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Text(
+                              _selectedCategory == 'General'
+                                  ? 'General Price: $generalPrice'
+                                  : 'Child Price: $childPrice',
+                              style: GoogleFonts.poppins(
+                                fontSize: 20,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Card(
+                          color: Colors.white.withOpacity(0.8),
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Text(
+                              ' Pay extra  $_vipPrice for VIP seats',
+                              style: GoogleFonts.poppins(
+                                fontSize: 20,
+                                color: Colors.black87,
+                              ),
                             ),
                           ),
                         ),
                         SizedBox(height: 40),
                         ElevatedButton(
                           onPressed: () {
-                           Navigator.push(context,
+                            Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
                               return EventBookingDetails(rt_id:widget.rt_id);
                             }));
@@ -220,6 +249,13 @@ class _EventDetailsState extends State<EventDetails> {
                             'View Booking',
                             style: GoogleFonts.poppins(
                               fontSize: 20,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blueAccent,
+                            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                         ),

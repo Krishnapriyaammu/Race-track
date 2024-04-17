@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/Community/message.dart';
 
@@ -12,62 +11,50 @@ class ViewAllMessage extends StatefulWidget {
 }
 
 class _ViewAllMessageState extends State<ViewAllMessage> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+   final List<String> senders = ['John', 'Alice', 'Bob', 'Mary', 'David', 'Emma'];
+  final List<String> messages = [
+    'Hello!',
+    'Hi there!',
+    'Hey!',
+    'Good morning!',
+    'Morning!',
+    'How are you?'
+  ];
+  final List<String> times = ['10:00 AM', '10:05 AM', '10:10 AM', '10:15 AM', '10:20 AM', '10:25 AM'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('All Messages'),
-        backgroundColor: Color(0xFF075E54), // WhatsApp green color
-        actions: [],
+        title: Text('Messages'),
       ),
-      body: _buildUserList(),
-    );
-  }
-
-  Widget _buildUserList() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('community_register').snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return const Text('Error');
-        }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        return ListView(
-          children: snapshot.data!.docs
-              .map<Widget>((doc) => _buildUserListItem(doc))
-              .toList(),
-        );
-      },
-    );
-  }
-
-  Widget _buildUserListItem(DocumentSnapshot<Object?> document) {
-    Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-
-    // Display all users except the current user
-if (_auth.currentUser != null && _auth.currentUser!.email != data['email']) {
-      return ListTile(
-        title: Text(data['email'] ?? ''),
-        onTap: () {
-          // Pass the clicked user's UID to the chat page
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => Message(
-          //       receiverUserEmail: data['email'],
-          //       receiverUserID: data['uid'],
-          //     ),
-          //   ),
-          // );
+      body: ListView.builder(
+        itemCount: senders.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              // Navigate to detailed message page
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => Message(), // Correct the syntax here
+              //   ),
+              // );
+            },
+            child: ListTile(
+              leading: CircleAvatar(
+                child: Text(senders[index][0]),
+              ),
+              title: Text(
+                senders[index],
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(messages[index]),
+              trailing: Text(times[index]),
+            ),
+          );
         },
-      );
-    } else {
-      // Return an empty container if it's the current user
-      return Container();
-    }
+      ),
+    );
   }
 }

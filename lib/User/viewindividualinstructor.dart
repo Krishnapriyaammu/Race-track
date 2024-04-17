@@ -127,8 +127,8 @@ class _ViewInstructorState extends State<ViewInstructor> {
                 onPressed: () async {
 
                    SharedPreferences sp = await SharedPreferences.getInstance();
-                              var userid = sp.getString('uid');
-                              
+                              var username = sp.getString('name');
+                              var userid=sp.getString('uid');
 
                   String selectedLevel = bookingDetailsController.text;
 
@@ -142,6 +142,7 @@ class _ViewInstructorState extends State<ViewInstructor> {
                     'time': timeController.text,
                     'level': selectedLevel,
                     'rt_id':widget.rt_id,
+                    'username':username,
                     'userid':userid,
                     'status':0,
                     'coach_id':widget.coach_id,
@@ -150,7 +151,7 @@ class _ViewInstructorState extends State<ViewInstructor> {
                                             setBookingStatus(widget.coach_id);
 
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                    return CoachBookingStatus(img: widget.img,coach_id:widget.coach_id,);
+                    return CoachBookingStatus(img: widget.img,coach_id:widget.coach_id,rt_id:widget.rt_id);
                   }));
                 },
                 style: ElevatedButton.styleFrom(
@@ -183,7 +184,7 @@ class _ViewInstructorState extends State<ViewInstructor> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => CoachBookingStatus(img: widget.img, coach_id: widget.coach_id,),
+              builder: (context) => CoachBookingStatus(img: widget.img, coach_id: widget.coach_id,rt_id: widget.rt_id,),
             ),
           );
         },

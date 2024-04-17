@@ -85,8 +85,7 @@ late List<String> _addedImages = [];
             //               context,
             //               MaterialPageRoute(
             //                 builder: (context) => ChatPage(
-            //                   userId: widget.communityId, // Pass the community ID as userId
-            //              userEmail: widget.email, //
+            //                   community_id: widget.communityId, // Pass the community ID as userId
             //                 )
             //               ),
             //             );

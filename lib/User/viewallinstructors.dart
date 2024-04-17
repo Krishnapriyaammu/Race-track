@@ -14,18 +14,17 @@ class UserViewAllCoach extends StatefulWidget {
 }
 
 class _UserViewAllCoachState extends State<UserViewAllCoach> {
-  Future<List<DocumentSnapshot>> getData() async {
+   Future<List<DocumentSnapshot>> getData() async {
     try {
-      print('----------------------------${widget.rt_id}');
-
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('race_track_add_coach').where('uid',isEqualTo: widget.rt_id)
+          .collection('race_track_add_coach')
+          .where('uid', isEqualTo: widget.rt_id)
           .get();
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;
     } catch (e) {
       print('Error fetching data: $e');
-      throw e; 
+      throw e;
     }
   }
 
@@ -46,34 +45,17 @@ class _UserViewAllCoachState extends State<UserViewAllCoach> {
             return ListView.builder(
               itemCount: snapshot.data?.length ?? 0,
               itemBuilder: (context, index) {
-               final document = snapshot.data![index];
-              final data = document.data() as Map<String, dynamic>;
-              final imageUrl = data['image_url'];
-              final desc = data['about'];
-              final name = data['name'];
-      
+                final document = snapshot.data![index];
+                final data = document.data() as Map<String, dynamic>;
+                final imageUrl = data['image_url'];
+                final desc = data['about'];
+                final name = data['name'];
+                final experience = data['experience']; // Fetching experience data
+
                 return ListTile(
                   onTap: () {},
                   title: Text(data['name'] ?? 'Name not available'),
-                  subtitle: SizedBox(
-                    width: 5,
-                    child: RatingBar.builder(
-                      itemSize: 20,
-                      initialRating: (data['rating'] ?? 0).toDouble(),
-                      minRating: 1,
-                      direction: Axis.horizontal,
-                      allowHalfRating: true,
-                      itemCount: 5,
-                      itemBuilder: (context, _) => Icon(
-                        Icons.star,
-                        size: 3,
-                        color: Colors.blue,
-                      ),
-                      onRatingUpdate: (rating) {
-                        print(rating);
-                      },
-                    ),
-                  ),
+                  subtitle: Text('Experience: ${data['experience'] ?? 'Not available'}'), // Displaying experience
                   leading: imageUrl != null
                       ? CircleAvatar(
                           backgroundImage: NetworkImage(imageUrl),
@@ -84,17 +66,25 @@ class _UserViewAllCoachState extends State<UserViewAllCoach> {
                           radius: 30,
                         ),
                   trailing: ElevatedButton(
-                    onPressed: () {print(imageUrl);
+                    onPressed: () {
+                      print(imageUrl);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ViewInstructor(id:data['uid'],img:imageUrl,desc:desc,name:name,rt_id:widget.rt_id,coach_id:data['coach_id']),
+                          builder: (context) => ViewInstructor(
+                            id: data['uid'],
+                            img: imageUrl,
+                            desc: desc,
+                            name: name,
+                            rt_id: widget.rt_id,
+                            coach_id: data['coach_id'],
+                          ),
                         ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 16.0),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                       backgroundColor: Color.fromARGB(255, 28, 43, 129),
                     ),
                     child: Text(

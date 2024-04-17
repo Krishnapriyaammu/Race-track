@@ -281,7 +281,7 @@ class _EventAddState extends State<EventAdd> {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  'VIP category',
+                  'VIP category(extra amount)',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,

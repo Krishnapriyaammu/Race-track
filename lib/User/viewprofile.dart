@@ -87,7 +87,7 @@ class _ViewprofileState extends State<Viewprofile> {
                       SizedBox(height: 10),
                       Text(' ${data['place']}', style: TextStyle(fontSize: 16)),
                       SizedBox(height: 10),
-                      Text('Proof: ${data['proof']}', style: TextStyle(fontSize: 16)),
+                      // Text('Proof: ${data['proof']}', style: TextStyle(fontSize: 16)),
                     ],
                   ),
                 ),

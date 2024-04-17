@@ -284,17 +284,7 @@ void _sendNotification(String documentId) {
             },
           ),
         ),
-        PopupMenuItem(
-          child: ListTile(
-            leading: Icon(Icons.notifications),
-            title: Text('View Notifications'),
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return RentNotification();
-              }));
-            },
-          ),
-        ),
+      
         PopupMenuItem(
           child: ListTile(
             leading: Icon(Icons.logout),

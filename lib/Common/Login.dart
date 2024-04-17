@@ -51,7 +51,7 @@ class _LoginState extends State<Login> {
           var image_url = userSnapshot.docs[0]['image_url'];
             var username = userSnapshot.docs[0]['name'];
              var email = userSnapshot.docs[0]['email'];
-             var mobileno = userSnapshot.docs[0]['phone'];
+             var mobileno = userSnapshot.docs[0]['mobile no'];
              var place = userSnapshot.docs[0]['place'];
 
       
@@ -60,7 +60,7 @@ class _LoginState extends State<Login> {
           sp.setString('name', username);
             sp.setString('image_url',image_url);
             sp.setString('email', email);
-            sp.setString('phone', mobileno);
+            sp.setString('mobile no', mobileno);
             sp.setString('place', place);
 
         if(userSnapshot.docs.isNotEmpty){
@@ -258,14 +258,14 @@ class _LoginState extends State<Login> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          'Forgot Password',
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 27, 23, 229),
-                            fontSize: 15,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
+                        // Text(
+                        //   'Forgot Password',
+                        //   style: TextStyle(
+                        //     color: Color.fromARGB(255, 27, 23, 229),
+                        //     fontSize: 15,
+                        //     decoration: TextDecoration.underline,
+                        //   ),
+                        // ),
                         
                         TextButton(
                           onPressed: () {

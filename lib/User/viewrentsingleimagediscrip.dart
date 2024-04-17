@@ -5,129 +5,122 @@ import 'package:loginrace/User/viewstatuspage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserViewSingleItem extends StatefulWidget {
-  final String rent_id;
+ final String rent_id;
+  final String imageUrl;
+  final String price;  
   
-  UserViewSingleItem({Key? key, required this.rent_id}) : super(key: key);
+  UserViewSingleItem({Key? key, required this.rent_id, required this. imageUrl, required this. price}) : super(key: key);
 
   @override
   State<UserViewSingleItem> createState() => _UserViewSingleItemState();
 }
 
 class _UserViewSingleItemState extends State<UserViewSingleItem> {
-  var _nameController = TextEditingController();
-  var _mobileController = TextEditingController();
-  var _placeController = TextEditingController();
-  var _dueDateController = TextEditingController();
-  var _quantityController = TextEditingController();
-  var _addressController = TextEditingController(); // Controller for quantity
-  String? documentId; // Variable to store the document ID
+   late TextEditingController _nameController;
+  late TextEditingController _mobileController;
+  late TextEditingController _placeController;
+  late TextEditingController _dueDateController;
+  late TextEditingController _addressController;
+  int _selectedQuantity = 1;
+  Map<String, dynamic> _rentalImageData = {};
+  String? documentId;
 
-  int _selectedQuantity = 1; // Default selected quantity
-  late Map<String, dynamic>
-      _rentalImageData; // Store rental image data
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController();
+    _mobileController = TextEditingController();
+    _placeController = TextEditingController();
+    _dueDateController = TextEditingController();
+    _addressController = TextEditingController();
+    _fetchRentalImageData();
+  }
 
-  // Fetch rental image data and user details
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _mobileController.dispose();
+    _placeController.dispose();
+    _dueDateController.dispose();
+    _addressController.dispose();
+    super.dispose();
+  }
+
   Future<void> _fetchRentalImageData() async {
     try {
-      SharedPreferences sp = await SharedPreferences.getInstance();
-      var userId = sp.getString('uid');
-
-      // Fetch user details based on the logged-in user's ID
-      final userSnapshot = await FirebaseFirestore.instance
-          .collection('user_register')
-          .doc(userId)
-          .get();
-
-      if (userSnapshot.exists) {
-        final userData = userSnapshot.data() as Map<String, dynamic>;
-        setState(() {
-          // Populate the text controllers with the fetched user details
-          _nameController.text = userData['name'] ?? '';
-          _mobileController.text = userData['phone'] ?? '';
-          _placeController.text = userData['place'] ?? '';
-        });
-      } else {
-        print('User data not found for ID: $userId');
-      }
-
       final snapshot = await FirebaseFirestore.instance
-          .collection('user_rent_booking')
-          .doc(widget.rent_id) // Fetch user_rent_booking document by rent_id
+          .collection('rental_upload_image')
+          .doc(widget.rent_id)
           .get();
       if (snapshot.exists) {
-        final userData = snapshot.data() as Map<String, dynamic>;
-        final rentalUploadImageId = userData['rental_upload_image_id'];
-        if (rentalUploadImageId != null) {
-          final rentalImageSnapshot = await FirebaseFirestore.instance
-              .collection('rental_upload_image')
-              .doc(rentalUploadImageId)
-              .get();
-          if (rentalImageSnapshot.exists) {
-            setState(() {
-              _rentalImageData =
-                  rentalImageSnapshot.data() as Map<String, dynamic>;
-            });
-          } else {
-            print(
-                'Rental image data not found for ID: $rentalUploadImageId');
-          }
-        } else {
-          print(
-              'rental_upload_image_id not found in user_rent_booking document');
-        }
+        setState(() {
+          _rentalImageData = snapshot.data() as Map<String, dynamic>;
+        });
       } else {
-        print(
-            'user_rent_booking document not found for ID: ${widget.rent_id}');
+        print('Rental image data not found for ID: ${widget.rent_id}');
+      }
+
+      if (_rentalImageData.isNotEmpty) {
+        print('Rental image data: $_rentalImageData');
+        print('Rental image price: ${_rentalImageData['price']}');
+      } else {
+        print('_rentalImageData is empty');
       }
     } catch (e) {
       print('Error fetching data: $e');
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchRentalImageData();
+  void _updateTotalPrice(int quantity) {
+    setState(() {
+      _selectedQuantity = quantity;
+    });
   }
-
+String _calculateTotalPrice() {
+  double price = double.tryParse(widget.price) ?? 0.0; // Convert price to double
+  double totalPrice = price * _selectedQuantity;
+  return totalPrice.toStringAsFixed(2); // Convert total price back to string with 2 decimal places
+}
   Future<void> _bookItem() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    var userid = sp.getString('uid');
-    var currentDate = DateTime.now(); // Get current date and time
+    var userId = sp.getString('uid');
+    var currentDate = DateTime.now();
 
-    // Get the correct rent_id from the rental_upload_image document
-    var rentId = widget.rent_id;
-  double totalPrice = (_rentalImageData['price'] as num).toDouble() * _selectedQuantity;
+    if (_rentalImageData.isEmpty) {
+      print('_rentalImageData is empty');
+      return;
+    }
 
-  
-  DocumentReference docRef = await FirebaseFirestore.instance
-      .collection('user_rent_booking')
-      .add({
-    'name': _nameController.text,
-    'place': _placeController.text,
-    'mobile no': _mobileController.text,
-    'due_date': _dueDateController.text,
-    'address': _addressController.text,
-    'quantity': _selectedQuantity, // Include selected quantity
-    'userid': userid,
-    'rent_id': widget.rent_id, // Set the correct rent_id here
-    'status': 0,
-    'booking_date': currentDate,
-    'total_price': totalPrice, // Include total price
-  });
-  setState(() {
-    documentId = docRef.id; // Assign the documentId here
-  });
+    String totalPrice = _calculateTotalPrice();
 
-  // Update the total_count in the rental_upload_image document
-  await FirebaseFirestore.instance
-      .collection('rental_upload_image')
-      .doc(rentId) // Use the correct rent_id here
-      .update({
-    'total_count': (_rentalImageData['total_count'] as int) -
-        _selectedQuantity,
-  });
-    
+    DocumentReference docRef = await FirebaseFirestore.instance
+        .collection('user_rent_booking')
+        .add({
+      'name': _nameController.text,
+      'place': _placeController.text,
+      'mobile no': _mobileController.text,
+      'due_date': _dueDateController.text,
+      'address': _addressController.text,
+      'quantity': _selectedQuantity,
+      'userid': userId,
+      'rent_id': widget.rent_id,
+      'status': 0,
+      'booking_date': currentDate,
+      'total_price': totalPrice,
+    });
+
+    setState(() {
+      documentId = docRef.id;
+    });
+
+    await FirebaseFirestore.instance
+        .collection('rental_upload_image')
+        .doc(widget.rent_id)
+        .update({
+      'total_count': _rentalImageData['total_count'] - _selectedQuantity,
+    });
+
+    Navigator.pop(context);
   }
 
   @override
@@ -136,242 +129,174 @@ class _UserViewSingleItemState extends State<UserViewSingleItem> {
       appBar: AppBar(
         title: Text('Rent Details'),
       ),
-      body: FutureBuilder<DocumentSnapshot>(
-          future: FirebaseFirestore.instance
-              .collection('rental_upload_image')
-              .doc(widget.rent_id)
-              .get(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else {
-              var data = snapshot.data!.data() as Map<String, dynamic>?;
-
-              if (data == null) {
-                print('Item not found for Rent ID: ${widget.rent_id}');
-                return Center(child: Text('Item not found'));
-              }
-              int totalCount = data['total_count'] as int;
-
-              return SingleChildScrollView(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Container(
-                      height: 200,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.0),
-                        image: DecorationImage(
-                          image: NetworkImage(data['image_url'] as String),
-                          fit: BoxFit.cover,
-                        ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Display rental image
+            Container(
+              height: 200,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.0),
+                image: DecorationImage(
+                  image: NetworkImage(widget.imageUrl),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            SizedBox(height: 16.0),
+            // Dropdown to select quantity
+        Row(
+  children: [
+    Text('Select Quantity: '),
+    DropdownButton<int>(
+      value: _selectedQuantity,
+      onChanged: (value) {
+        if (value != null) {
+          setState(() {
+            _selectedQuantity = value;
+          });
+          _updateTotalPrice(value); // Update total price
+        }
+      },
+      items: List.generate(
+        3,
+        (index) => DropdownMenuItem<int>(
+          value: index + 1,
+          child: Text((index + 1).toString()),
+        ),
+      )..add(
+        DropdownMenuItem<int>(
+          value: 4,
+          child: Text('More'),
                       ),
                     ),
-                    SizedBox(height: 16.0),
-                    Row(
-                      children: [
-                        Text('Select Quantity: '),
-                        DropdownButton<int>(
-                          value: _selectedQuantity,
-                          onChanged: (value) {
-                            setState(() {
-                              if (value! <= 3) {
-                                _selectedQuantity = value;
-                              } else {
-                                _showCustomQuantityDialog();
-                              }
-                            });
+                ),
+              ],
+            ),
+            SizedBox(height: 16.0),
+            // Display description
+            Text(
+              _rentalImageData['description'] ?? 'Description not available',
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8.0),
+            // Display price
+           Text(
+  'Price: \$${_calculateTotalPrice()}',
+  style: TextStyle(fontSize: 16.0),
+),
+            SizedBox(height: 8.0),
+            Text(
+              'Total Count: ${_rentalImageData['total_count'] ?? 'Not available'}',
+              style: TextStyle(fontSize: 16.0),
+            ),
+            SizedBox(height: 16.0),
+            // Button to rent item
+            ElevatedButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Rent Item'),
+                      content: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Enter your details to rent the item:'),
+                            SizedBox(height: 10.0),
+                            TextFormField(
+                              controller: _nameController,
+                              // readOnly: true,
+                              decoration:
+                                  InputDecoration(labelText: 'Full Name'),
+                            ),
+                            SizedBox(height: 8.0),
+                            TextFormField(
+                              controller: _mobileController,
+                              decoration: InputDecoration(
+                                  labelText: 'Contact Number'),
+                            ),
+                            SizedBox(height: 8.0),
+                            TextFormField(
+                              controller: _placeController,
+                              // readOnly: true,
+                              decoration: InputDecoration(labelText: 'Place'),
+                            ),
+                            SizedBox(height: 8.0),
+                            TextFormField(
+                              controller: _addressController,
+                              decoration:
+                                  InputDecoration(labelText: 'Address'),
+                            ),
+                            SizedBox(height: 8.0),
+                            TextFormField(
+                              controller: _dueDateController,
+                              // readOnly: true,
+                              decoration:
+                                  InputDecoration(labelText: 'Due date'),
+                              onTap: () async {
+                                DateTime? selectedDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime.now(),
+                                  lastDate: DateTime(2100),
+                                );
+
+                                if (selectedDate != null) {
+                                  setState(() {
+                                    _dueDateController.text =
+                                        selectedDate.toString().split(' ')[0];
+                                  });
+                                }
+                              },
+                            ),
+                            SizedBox(height: 8.0),
+                            Text(
+                                'Selected Quantity: $_selectedQuantity'),
+                          ],
+                        ),
+                      ),
+                      actions: [
+                        ElevatedButton(
+                          onPressed: _bookItem,
+                          child: Text('Submit'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
                           },
-                          items: List.generate(
-                            3, // Generate dropdown items up to 3
-                            (index) => DropdownMenuItem<int>(
-                              value: index + 1,
-                              child: Text((index + 1).toString()),
-                            ),
-                          )
-                            ..add(
-                              DropdownMenuItem<int>(
-                                value: 4, // Value for "More"
-                                child: Text('More'),
-                              ),
-                            ),
+                          child: Text('Cancel'),
                         ),
                       ],
-                    ),
-                    SizedBox(height: 16.0),
-                    Text(
-                      data['description'] ?? 'Description not available',
-                      style: TextStyle(
-                          fontSize: 18.0, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 8.0),
-                    Text(
-                      'Price: \$${data['price']}',
-                      style: TextStyle(fontSize: 16.0),
-                    ),
-                    SizedBox(height: 8.0),
-                    Text('Total Count: $totalCount',
-                        style: TextStyle(fontSize: 16.0)),
-
-                    SizedBox(height: 16.0),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Handle Rent button press
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Rent Item'),
-                              content: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                        'Enter your details to rent the item:'),
-                                    SizedBox(height: 10.0),
-                                    TextFormField(
-                                      controller: _nameController,
-                                      readOnly: true,
-                                      decoration:
-                                          InputDecoration(labelText: 'Full Name'),
-                                    ),
-                                    SizedBox(height: 8.0),
-                                    TextFormField(
-                                      controller: _mobileController,
-                                      decoration: InputDecoration(
-                                          labelText: 'Contact Number'),
-                                    ),
-                                    SizedBox(height: 8.0),
-                                    TextFormField(
-                                      controller: _placeController,
-                                      readOnly: true,
-                                      decoration:
-                                          InputDecoration(labelText: 'Place'),
-                                    ),
-                                    SizedBox(height: 8.0),
-                                    TextFormField(
-                                      controller: _addressController,
-                                      decoration:
-                                          InputDecoration(labelText: 'Address'),
-                                    ),
-                                    SizedBox(height: 8.0),
-                                    TextFormField(
-                                      controller: _dueDateController,
-                                      readOnly: true,
-                                      decoration:
-                                          InputDecoration(labelText: 'Due date'),
-                                      onTap: () async {
-                                        // Show date picker when text field is tapped
-                                        DateTime? selectedDate =
-                                            await showDatePicker(
-                                          context: context,
-                                          initialDate: DateTime.now(),
-                                          firstDate: DateTime.now(),
-                                          lastDate: DateTime(2100),
-                                        );
-
-                                        if (selectedDate != null) {
-                                          // Update the due date controller with selected date
-                                          setState(() {
-                                            _dueDateController.text =
-                                                selectedDate
-                                                    .toString()
-                                                    .split(' ')[0];
-                                          });
-                                        }
-                                      },
-                                    ),
-                                    SizedBox(height: 8.0),
-                                    Text(
-                                        'Selected Quantity: $_selectedQuantity'),
-                                  ],
-                                ),
-                              ),
-                              actions: [
-                                ElevatedButton(
-                                  onPressed: _bookItem,
-                                  child: Text('Submit'),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context); // Close the dialog
-                                  },
-                                  child: Text('Cancel'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      child: Text('Rent'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Navigate to ViewStatusPage
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ViewStatusPage(
-                                    rent_id: widget.rent_id,
-                                              documentId:documentId ??'',
-                                               // Pass the document ID here
-
-                                    price: (data['price'] as num).toDouble(),
-                                  )),
-                        );
-                      },
-                      child: Text('View Status'),
-                    ),
-                  ],
-                ),
-              );
-            }
-          }),
-    );
-  }
-
-  // Function to show custom quantity dialog
-  void _showCustomQuantityDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Enter Quantity'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: _quantityController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(labelText: 'Quantity'),
-              ),
-            ],
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                // Update selected quantity with custom value
-                setState(() {
-                  _selectedQuantity =
-                      int.tryParse(_quantityController.text) ?? 1;
-                  Navigator.pop(context); // Close dialog
-                });
+                    );
+                  },
+                );
               },
-              child: Text('OK'),
+              child: Text('Rent'),
             ),
+            // Button to view status
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(context); // Close dialog
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ViewStatusPage(
+                      rent_id: widget.rent_id,
+                      documentId: documentId ?? '',
+                      price: _calculateTotalPrice(),
+                    ),
+                  ),
+                );
               },
-              child: Text('Cancel'),
+              child: Text('View Status'),
             ),
           ],
-        );
-      },
+        ),
+      ),
     );
   }
 }

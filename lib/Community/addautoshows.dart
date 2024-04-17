@@ -18,22 +18,50 @@ class AddAutoshows extends StatefulWidget {
 }
 
 class _AddAutoshowsState extends State<AddAutoshows> {
- TextEditingController _priceController = TextEditingController(); // Controller for price input
-
-  String? _selectedCategory; // Change to nullable
+ TextEditingController _priceController = TextEditingController();
+  String? _selectedCategory;
   Map<String, String> _categoryPrices = {
-    'Vintage Car': '', // Initialize with empty strings for each category
+    'Vintage Car': '',
     'Motor Bikes': '',
     'Sports Car': '',
     'Luxury Car': '',
-    // Add more categories as needed
   };
-  List<File>? _uploadedImages; // List to store uploaded images
+  List<File>? _uploadedImages;
 
   @override
   void initState() {
     super.initState();
-    _selectedCategory = _categoryPrices.keys.first; // Set initial value to the first category
+    _selectedCategory = _categoryPrices.keys.first;
+    // Call method to fetch price for initial category
+    _fetchPriceForCategory(_selectedCategory!);
+  }
+
+  // Method to fetch price for a category
+  Future<void> _fetchPriceForCategory(String category) async {
+    // Query Firestore to get price for the category
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('category_price')
+        .where('category', isEqualTo: category)
+        .where('community_id', isEqualTo: widget.community_id)
+        .get();
+
+    // Check if any documents are found
+    if (querySnapshot.docs.isNotEmpty) {
+      // Get the first document and extract price
+      final price = querySnapshot.docs.first.get('price') as String?;
+      // Update the price in the category prices map only for the selected category
+      setState(() {
+        _categoryPrices[category] = price ?? '';
+        // Update the price controller text field
+        _priceController.text = price ?? '';
+      });
+    } else {
+      // If no document is found, set the price for the category to empty string
+      setState(() {
+        _categoryPrices[category] = '';
+        _priceController.text = '';
+      });
+    }
   }
 
   @override
@@ -68,7 +96,8 @@ class _AddAutoshowsState extends State<AddAutoshows> {
                 onChanged: (value) {
                   setState(() {
                     _selectedCategory = value;
-                    _priceController.text = _categoryPrices[value] ?? ''; // Update price text field with the selected category's price
+                    // Call method to fetch price for the selected category
+                    _fetchPriceForCategory(value!);
                   });
                 },
                 decoration: InputDecoration(
@@ -89,8 +118,12 @@ class _AddAutoshowsState extends State<AddAutoshows> {
                   Expanded(
                     child: TextField(
                       controller: _priceController,
+                      onChanged: (value) {
+                        // Update the price in the category prices map as the user types
+                        // Do not update the map here to prevent incorrect prices
+                      },
                       decoration: InputDecoration(
-                        labelText: 'Enter Price',
+                        labelText: 'Price',
                         border: OutlineInputBorder(),
                       ),
                     ),
@@ -99,9 +132,10 @@ class _AddAutoshowsState extends State<AddAutoshows> {
                   ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        _categoryPrices[_selectedCategory!] = _priceController.text; // Update the price for the selected category
+                        // Update the price in the category prices map when the button is pressed
+                        _categoryPrices[_selectedCategory!] = _priceController.text;
                       });
-                      _priceController.clear(); // Clear the price input field
+                      _priceController.clear();
                     },
                     child: Text('Update Price'),
                   ),
@@ -139,94 +173,92 @@ class _AddAutoshowsState extends State<AddAutoshows> {
               SizedBox(height: 20.0),
               _uploadedImages != null && _uploadedImages!.isNotEmpty
                   ? GridView.count(
+                crossAxisCount: 3,
+                mainAxisSpacing: 8.0,
+                crossAxisSpacing: 8.0,
+                childAspectRatio: 10,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                children: _uploadedImages!.map((image) {
+                  return GridTile(
+                    child: Image.file(image, fit: BoxFit.cover),
+                  );
+                }).toList(),
+              )
+                  : _selectedCategory != null
+                  ? StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: FirebaseFirestore.instance
+                    .collection('community_add_autoshows')
+                    .where('category', isEqualTo: _selectedCategory)
+                    .where('community_id', isEqualTo: widget.community_id) // Filter by community ID
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  final List<DocumentSnapshot<Map<String, dynamic>>>
+                  documents = snapshot.data!.docs;
+                  return GridView.builder(
+                    gridDelegate:
+                    SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       mainAxisSpacing: 8.0,
                       crossAxisSpacing: 8.0,
-                      childAspectRatio: 10,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      children: _uploadedImages!.map((image) {
-                        return GridTile(
-                          child: Image.file(image, fit: BoxFit.cover),
-                        );
-                      }).toList(),
-                    )
-                  : _selectedCategory != null
-                      ? StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                          stream: FirebaseFirestore.instance
-                              .collection('community_add_autoshows')
-                              .where('category', isEqualTo: _selectedCategory)                   
-                               .where('community_id', isEqualTo: widget.community_id) // Filter by community ID
-
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-                            final List<DocumentSnapshot<Map<String, dynamic>>>
-                                documents = snapshot.data!.docs;
-                            return GridView.builder(
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                mainAxisSpacing: 8.0,
-                                crossAxisSpacing: 8.0,
-                                childAspectRatio: 1.0,
-                              ),
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: documents.length,
-                              itemBuilder: (context, index) {
-                                final Map<String, dynamic> data =
-                                    documents[index].data()!;
-                                final imageUrl =
-                                    data['image_url'] as String?;
-                                return GridTile(
-                                  child: Column(
-                                    children: [
-                                      Expanded(
-                                        child: imageUrl != null
-                                            ? Image.network(imageUrl,
-                                                fit: BoxFit.cover)
-                                            : Container(),
-                                      ),
-                                      SizedBox(height: 8.0),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        )
-                      : Container(),
+                      childAspectRatio: 1.0,
+                    ),
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: documents.length,
+                    itemBuilder: (context, index) {
+                      final Map<String, dynamic> data =
+                      documents[index].data()!;
+                      final imageUrl =
+                      data['image_url'] as String?;
+                      return GridTile(
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: imageUrl != null
+                                  ? Image.network(imageUrl,
+                                  fit: BoxFit.cover)
+                                  : Container(),
+                            ),
+                            SizedBox(height: 8.0),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+              )
+                  : Container(),
               SizedBox(height: 250.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ElevatedButton(
-                   onPressed: () async {
-    // Save the category and price to Firebase
-    await FirebaseFirestore.instance.collection('category_price').add({
-      'category': _selectedCategory,
-      'price': _categoryPrices[_selectedCategory],
-      'community_id': widget.community_id, // Add community_id
+                    onPressed: () async {
+                      // Save the category and price to Firebase
+                      await FirebaseFirestore.instance.collection('category_price').add({
+                        'category': _selectedCategory,
+                        'price': _categoryPrices[_selectedCategory],
+                        'community_id': widget.community_id,
+                      });
 
-    });
-    
-    Fluttertoast.showToast(
-      msg: 'Auto Show saved successfully',
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      backgroundColor: Colors.blue,
-      textColor: Colors.white,
-    );
-  },
-  child: Text(
-    'Save Auto Show',
-    style: TextStyle(color: Colors.white),
-  ),
+                      Fluttertoast.showToast(
+                        msg: 'Auto Show saved successfully',
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        backgroundColor: Colors.blue,
+                        textColor: Colors.white,
+                      );
+                    },
+                    child: Text(
+                      'Save Auto Show',
+                      style: TextStyle(color: Colors.white),
+                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       elevation: 5,

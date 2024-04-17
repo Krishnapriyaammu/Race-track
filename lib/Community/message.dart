@@ -4,27 +4,106 @@
 // import 'package:loginrace/service/chat_service.dart';
 
 // class Message extends StatefulWidget {
-//   final String receiverUserEmail;
-//   final String receiverUserID;
-//    Message({super.key, required this.receiverUserEmail, required this.receiverUserID, required String senderId, required String senderEmail, required String receiverId, required Timestamp timestamp, required String message});
+ 
+//   const Message({Key? key});
 
 //   @override
 //   State<Message> createState() => _MessageState();
 // }
 
 // class _MessageState extends State<Message> {
+//   final List<Map<String, dynamic>> _messageRequests = [];
 
-//    final TextEditingController _messageController = TextEditingController();
-//   final ChatService _chatService = ChatService();
-//   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  
-//   void sendMessage() async {
-//     // Only send message if there is something to send
-//     if (_messageController.text.isNotEmpty) {
-//       await _chatService.sendMessage(
-//           widget.receiverUserID, _messageController.text);
-//       // Clear the text controller after sending the message
-//       _messageController.clear();
+//   @override
+//   void initState() {
+//     super.initState();
+//     _fetchMessageRequests();
+//   }
+
+//   Future<void> _fetchMessageRequests() async {
+//     final QuerySnapshot messageRequestsSnapshot =
+//         await FirebaseFirestore.instance.collection('user_designer_message').get();
+
+//     final List<Map<String, dynamic>> requests = [];
+
+//     for (final doc in messageRequestsSnapshot.docs) {
+//       final Map<String, dynamic> requestData = doc.data() as Map<String, dynamic>;
+//       final String? userId = requestData['uid'];
+
+//       if (userId != null) {
+//         final DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+//             .collection('user_register')
+//             .doc(userId)
+//             .get();
+
+//         if (userSnapshot.exists) {
+//           final Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+//           final String? username = userData['name'];
+
+//           if (username != null) {
+//             requestData['username'] = username;
+//             requests.add(requestData);
+//           }
+//         }
+//       }
+//     }
+
+//     setState(() {
+//       _messageRequests.addAll(requests.reversed);
+//     });
+//   }
+
+//   Future<void> _sendReply(String? messageId) async {
+//     if (messageId != null) {
+//       final TextEditingController _replyController = TextEditingController();
+
+//       final DocumentSnapshot messageSnapshot =
+//           await FirebaseFirestore.instance.collection('user_community_message').doc(messageId).get();
+
+//       if (messageSnapshot.exists) {
+//         final Map<String, dynamic> messageData =
+//             messageSnapshot.data() as Map<String, dynamic>;
+//         final String? userId = messageData['uid'];
+//         final String? messageText = messageData['text'] as String?;
+
+//         if (userId != null && messageText != null) {
+//           final String? reply = await showDialog<String>(
+//             context: context,
+//             builder: (context) => AlertDialog(
+//               title: Text('Reply to Message'),
+//               content: TextField(
+//                 controller: _replyController,
+//                 decoration: InputDecoration(hintText: 'Enter your reply'),
+//               ),
+//               actions: [
+//                 TextButton(
+//                   onPressed: () => Navigator.pop(context),
+//                   child: Text('Cancel'),
+//                 ),
+//                 TextButton(
+//                   onPressed: () {
+//                     Navigator.pop(context, _replyController.text);
+//                   },
+//                   child: Text('Send'),
+//                 ),
+//               ],
+//             ),
+//           );
+
+//           _replyController.dispose();
+
+//           if (reply != null && userId != null) {
+//             await FirebaseFirestore.instance.collection('community_user_message').add({
+//               'user_id': userId,
+//               'message': reply,
+//               'sender': 'Community',
+//               'timestamp': Timestamp.now(),
+//             });
+
+//             await FirebaseFirestore.instance.collection('user_designer_message').doc(messageId).delete();
+//           }
+//         }
+//       }
 //     }
 //   }
 
@@ -32,149 +111,38 @@
 //   Widget build(BuildContext context) {
 //     return Scaffold(
 //       appBar: AppBar(
-//         title: Text(widget.receiverUserEmail),
+//         title: Text(
+//           'Message Requests',
+//           style: TextStyle(color: Colors.deepPurpleAccent),
+//         ),
+//         centerTitle: true,
 //       ),
 //       body: Column(
 //         children: [
-//           // Message
 //           Expanded(
-//             child: _buildMessageList(),
-//           ),
-//           // User input
-//           _buildMessageInput(),
-//           const SizedBox(
-//             height: 25,
-//           )
-//         ],
-//       ),
-//     );
-//   }
+//             child: ListView.builder(
+//               itemCount: _messageRequests.length,
+//               itemBuilder: (context, index) {
+//                 final request = _messageRequests[index];
+//                 final String? message = request['text'] as String?;
+//                 final String? username = request['username'] as String?;
+//                 final String? messageId = request['message_id'] as String?;
 
-//   // Build message list
-//   Widget _buildMessageList() {
-//     return StreamBuilder(
-//       stream: _chatService.getMessage(
-//           widget.receiverUserID, _firebaseAuth.currentUser!.uid),
-//       builder: (context, snapshot) {
-//         if (snapshot.hasError) {
-//           return Text('Error${snapshot.error}');
-//         }
-//         if (snapshot.connectionState == ConnectionState.waiting) {
-//           return const Text('Loading...');
-//         }
-//         return ListView(
-//           children: snapshot.data!.docs
-//               .map((document) => _buildMessageItem(document))
-//               .toList(),
-//         );
-//       },
-//     );
-//   }
-
-//   // Build message item
-//   Widget _buildMessageItem(DocumentSnapshot document) {
-//     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-
-//     // Align the message to the right if the sender is the current user, otherwise to the left
-//     var alignment = (data['senderId'] == _firebaseAuth.currentUser!.uid)
-//         ? Alignment.centerRight
-//         : Alignment.centerLeft;
-//     return Container(
-//       alignment: alignment,
-//       child: Padding(
-//         padding: const EdgeInsets.all(8.0),
-//         child: Column(
-//           crossAxisAlignment:
-//               (data['senderId'] == _firebaseAuth.currentUser!.uid)
-//                   ? CrossAxisAlignment.end
-//                   : CrossAxisAlignment.start,
-//           children: [
-//             Text(data['senderEmail']),
-//             const SizedBox(
-//               height: 5,
-//             ),
-//             ChatBubble(message: data['message']),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   // Build message input
-//   Widget _buildMessageInput() {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(horizontal: 25.0),
-//       child: Row(
-//         children: [
-//           // Textfield
-//           Expanded(
-//             child: MyTextFields(
-//               controller: _messageController,
-//               hintText: 'Enter Message',
-//               obscureText: false,
-//             ),
-//           ),
-//           // Send button
-//           IconButton(
-//             onPressed: sendMessage,
-//             icon: Icon(
-//               Icons.send,
-//               size: 30,
+//                 return ListTile(
+//                   title: Text(message != null ? message : 'No message'),
+//                   subtitle: Text(username != null ? username : 'Unknown user'),
+//                   trailing: IconButton(
+//                     icon: Icon(Icons.check),
+//                     onPressed: () {
+//                       _sendReply(messageId);
+//                     },
+//                   ),
+//                 );
+//               },
 //             ),
 //           ),
 //         ],
 //       ),
-//     );
-//   }
-// }
-// class ChatBubble extends StatelessWidget {
-//   final String message;
-//   const ChatBubble({Key? key, required this.message}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       padding: EdgeInsets.all(12),
-//       decoration: BoxDecoration(
-//         color: Colors.blue, // Set the background color here
-//         borderRadius: BorderRadius.circular(8),
-//       ),
-//       child: Text(
-//         message,
-//         style: TextStyle(
-//           fontSize: 16,
-//           color: Colors.white, // Optional: Text color
-//         ),
-//       ),
-//     );
-//   }
-// }
-// class MyTextFields extends StatelessWidget {
-//   final TextEditingController controller;
-//   final String hintText;
-//   final bool obscureText;
-//   const MyTextFields(
-//       {super.key,
-//       required this.controller,
-//       required this.hintText,
-//       required this.obscureText});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return TextField(
-//       controller: controller,
-//       obscureText: obscureText,
-//       decoration: InputDecoration(
-//           enabledBorder: OutlineInputBorder(
-//             borderSide: BorderSide(color: Colors.grey.shade200),
-//           ),
-//           focusedBorder: OutlineInputBorder(
-//             borderSide: BorderSide(color: Colors.white),
-//           ),
-//           fillColor: Colors.grey[100],
-//           filled: true,
-//           hintText: hintText,
-//           hintStyle: TextStyle(color: Colors.grey)),
 //     );
 //   }
 // }

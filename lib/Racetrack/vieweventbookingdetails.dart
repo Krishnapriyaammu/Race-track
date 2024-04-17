@@ -12,7 +12,7 @@ class EventBookingDetails extends StatefulWidget {
 class _EventBookingDetailsState extends State<EventBookingDetails> {
   @override
    Widget build(BuildContext context) {
-    return Scaffold(
+   return Scaffold(
       appBar: AppBar(
         title: Text('Booking Details'),
         backgroundColor: Colors.blueAccent, // Customize app bar color
@@ -36,7 +36,8 @@ class _EventBookingDetailsState extends State<EventBookingDetails> {
                     elevation: 4, // Add elevation to the card for a raised effect
                     margin: EdgeInsets.symmetric(vertical: 8),
                     child: ListTile(
-                      leading: Icon(Icons.person), // Icon for user
+                      // Remove leading icon
+                      leading: null,
                       title: Text(
                         'Name: ${bookingData['name'] ?? 'Unknown'}',
                         style: TextStyle(fontSize: 18),
