@@ -94,8 +94,8 @@ class _UserViewFullRentersState extends State<UserViewFullRenters> {
                       final data = document.data() as Map<String, dynamic>;
                       final imageUrl = data['image_url'];
                       final availability = data['availability'];
-                      final buttonText = availability == 'available' ? 'AVAILABLE' : 'NOT AVAILABLE';
-                      final buttonColor = availability == 'available' ? Colors.green : Colors.red;
+                      final buttonText = availability == 'available' ? ' NOT AVAILABLE' : ' AVAILABLE';
+                      final buttonColor = availability == 'available' ? Colors.red : Colors.green;
                       return ListTile(
                         onTap: () {},
                         title: Text(data['Renter Name'] ?? 'Name not available'),

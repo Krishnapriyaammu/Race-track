@@ -201,17 +201,32 @@ class ProductTile extends StatelessWidget {
             color: Color.fromARGB(255, 200, 225, 255),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: imageUrl != null ? Image.network(imageUrl, fit: BoxFit.cover) : Icon(Icons.image),
+          child: imageUrl != null
+              ? Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                )
+              : Icon(Icons.image),
+        ),
+        title: Text(
+          description,
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 8),
-            Text(description, style: TextStyle(fontSize: 16)),
+            Text(
+              'Price: $price',
+              style: TextStyle(fontSize: 16),
+            ),
             SizedBox(height: 8),
-            Text('Price: $price', style: TextStyle(fontSize: 16)),
-            SizedBox(height: 8),
-            Text('Total Count: $totalCount', style: TextStyle(fontSize: 16)),
+            Text(
+              'Total Count: $totalCount',
+              style: TextStyle(fontSize: 16),
+            ),
           ],
         ),
         trailing: Row(

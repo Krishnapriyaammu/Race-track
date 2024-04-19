@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loginrace/Common/Login.dart';
 import 'package:loginrace/User/usereditprofile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Viewprofile extends StatefulWidget {
     final String userId;
@@ -14,7 +15,7 @@ class Viewprofile extends StatefulWidget {
 }
 
 class _ViewprofileState extends State<Viewprofile> {
- late Future<DocumentSnapshot> userData;
+late Future<DocumentSnapshot> userData;
 
   @override
   void initState() {
@@ -45,7 +46,7 @@ class _ViewprofileState extends State<Viewprofile> {
           ),
         ],
       ),
-    body: FutureBuilder<DocumentSnapshot>(
+      body: FutureBuilder<DocumentSnapshot>(
         future: userData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -59,9 +60,8 @@ class _ViewprofileState extends State<Viewprofile> {
           }
 
           var data = snapshot.data!.data() as Map<String, dynamic>;
-          var imageUrl = data['image_url'] as String?;
 
-           return SingleChildScrollView(
+          return SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -70,32 +70,131 @@ class _ViewprofileState extends State<Viewprofile> {
                   child: CircleAvatar(
                     radius: 70,
                     backgroundColor: Colors.blue,
-                    backgroundImage: imageUrl != null ? NetworkImage(imageUrl) : null,
-                    child: imageUrl == null ? Icon(Icons.person, size: 70, color: Colors.white) : null,
+                    backgroundImage: NetworkImage(data['image_url'] ?? ''),
+                    child: data['image_url'] == null
+                        ? Icon(Icons.person, size: 70, color: Colors.white)
+                        : null,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(40),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(' ${data['name']}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                      SizedBox(height: 10),
-                      Text(' ${data['email']}', style: TextStyle(fontSize: 16)),
-                      SizedBox(height: 10),
-                      Text(' ${data['mobile_no']}', style: TextStyle(fontSize: 16)),
-                      SizedBox(height: 10),
-                      Text(' ${data['place']}', style: TextStyle(fontSize: 16)),
-                      SizedBox(height: 10),
-                      // Text('Proof: ${data['proof']}', style: TextStyle(fontSize: 16)),
-                    ],
-                  ),
-                ),
+                _buildProfileDetails(data),
               ],
             ),
           );
         },
       ),
+    );
+  }
+
+ Widget _buildProfileDetails(Map<String, dynamic>? data) {
+  if (data == null) {
+    return Center(child: Text('No data available'));
+  }
+
+  return Padding(
+    padding: const EdgeInsets.all(40),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        DataTable(
+          columns: [
+            const DataColumn(
+              label: SizedBox.shrink(),
+            ),
+            const DataColumn(
+              label: SizedBox.shrink(),
+            ),
+          ],
+          rows: [
+            DataRow(cells: [
+              DataCell(Text('Name')),
+              DataCell(Text(data['name'] ?? '')),
+            ]),
+            DataRow(cells: [
+              DataCell(Text('Email')),
+              DataCell(Text(data['email'] ?? '')),
+            ]),
+            DataRow(cells: [
+              DataCell(Text('Phone')),
+              DataCell(Text(data['mobile no'] ?? '')),
+            ]),
+            DataRow(cells: [
+              DataCell(Text('Place')),
+              DataCell(Text(data['place'] ?? '')),
+            ]),
+            // DataRow(cells: [
+            //   DataCell(Text('Proof')),
+            //   DataCell(Text(data['proof'] ?? '')),
+            // ]),
+          ],
+        ),
+        SizedBox(height: 20),
+          ElevatedButton.icon(
+            onPressed: () => _editProfile(context, data),
+            icon: Icon(Icons.edit),
+            label: Text('Edit Profile'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _editProfile(BuildContext context, Map<String, dynamic> data) async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+
+    TextEditingController nameController = TextEditingController(text: data['name']);
+    TextEditingController emailController = TextEditingController(text: data['email']);
+    TextEditingController phoneController = TextEditingController(text: data['mobile no']);
+    TextEditingController placeController = TextEditingController(text: data['place']);
+    // TextEditingController proofController = TextEditingController(text: data['proof']);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Edit Profile'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextFormField(controller: nameController, decoration: InputDecoration(labelText: 'Name')),
+                TextFormField(controller: emailController, decoration: InputDecoration(labelText: 'Email')),
+                TextFormField(controller: phoneController, decoration: InputDecoration(labelText: 'Phone')),
+                TextFormField(controller: placeController, decoration: InputDecoration(labelText: 'Place')),
+                // TextFormField(controller: proofController, decoration: InputDecoration(labelText: 'Proof')),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Update data in Firestore
+                FirebaseFirestore.instance.collection('user_register').doc(widget.userId).update({
+                  'name': nameController.text,
+                  'email': emailController.text,
+                  'mobile no': phoneController.text,
+                  'place': placeController.text,
+                  // 'proof': proofController.text,
+                }).then((_) {
+                  Navigator.pop(context); // Close the dialog
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Profile updated successfully'),
+                    duration: Duration(seconds: 2),
+                  ));
+                }).catchError((error) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Failed to update profile: $error'),
+                    duration: Duration(seconds: 2),
+                  ));
+                });
+              },
+              child: Text('Save'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

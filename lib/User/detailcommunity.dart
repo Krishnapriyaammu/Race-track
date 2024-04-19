@@ -81,14 +81,13 @@ late List<String> _addedImages = [];
                 ),
                 ElevatedButton(
                   onPressed: () {
-            //  Navigator.push(
-            //               context,
-            //               MaterialPageRoute(
-            //                 builder: (context) => ChatPage(
-            //                   community_id: widget.communityId, // Pass the community ID as userId
-            //                 )
-            //               ),
-            //             );
+             Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ChatPage(
+                            )
+                          ),
+                        );
 
 
                   },

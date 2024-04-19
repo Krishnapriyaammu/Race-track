@@ -150,6 +150,15 @@ class _RaceTrackViewEventsState extends State<RaceTrackViewEvents> {
                     ),
                   ),
                   SizedBox(height: 4),
+                  Text(
+                    data['place'] ?? 'place not available',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+
              Text(
   'Total Tickets: $totalTickets',
   style: GoogleFonts.poppins(

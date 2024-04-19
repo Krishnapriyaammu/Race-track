@@ -6,8 +6,8 @@ class ViewCommunity extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-       appBar: AppBar(
+   return Scaffold(
+      appBar: AppBar(
         title: Text('View Communities'),
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -29,52 +29,68 @@ class ViewCommunity extends StatelessWidget {
               final communityData = documents[index].data() as Map<String, dynamic>;
 
               final String name = communityData['name'];
-              final String email =communityData['email'];
+              final String email = communityData['email'];
               final String imageUrl = communityData['image_url'];
-           final String communityId = documents[index].id;
+              final String communityId = documents[index].id;
 
-
-              return Card(
-                elevation: 4,
-                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(imageUrl), // Community image
-                  ),
-                  title: Text(
-                    name,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Row(
-                    children: [
-                      Icon(Icons.star, color: Colors.yellow),
-                      SizedBox(width: 4),
-                      Text(
-                        '4.5', // Replace with actual community rating
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => CommunityDetails(
-                       communityName: name,
-                        communityImage: imageUrl,
-                        communityId: communityId,
-                        email:email,
-
-
-                      )),
+                      MaterialPageRoute(
+                        builder: (context) => CommunityDetails(
+                          communityName: name,
+                          communityImage: imageUrl,
+                          communityId: communityId,
+                          email: email,
+                        ),
+                      ),
                     );
                   },
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Image.network(
+                            imageUrl,
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                name,
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              SizedBox(height: 8),
+                              // Text(
+                              //   email,
+                              //   style: TextStyle(color: Colors.grey),
+                              // ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               );
             },
           );
         },
       ),
-    
     );
   }
 }

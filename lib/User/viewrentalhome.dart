@@ -40,7 +40,7 @@ class _UserViewRentHomeState extends State<UserViewRentHome>
           tabs: [
             Tab(text: 'Bikes'),
             Tab(text: 'Cars'),
-            Tab(text: 'Grocery'),
+            Tab(text: 'Riding Gears'),
           ],
         ),
       ),
@@ -212,7 +212,7 @@ Future<List<DocumentSnapshot>> getdata() async {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('rental_upload_image')
           .where('rent_id',isEqualTo: widget.id)
-          .where('category',isEqualTo: 'Grocery')
+          .where('category',isEqualTo: 'Riding Gears')
           .get();
       print('Fetched ${snapshot.docs.length} documents');
       return snapshot.docs;

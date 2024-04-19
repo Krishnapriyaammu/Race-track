@@ -3,6 +3,7 @@ import 'package:loginrace/Community/sportscar.dart';
 import 'package:loginrace/Community/vintagecar.dart';
 import 'package:loginrace/User/Vintagepage.dart';
 import 'package:loginrace/User/luxuarycarpage.dart';
+import 'package:loginrace/User/motorbike.dart';
 import 'package:loginrace/User/sportscarpage.dart';
 
 class AutoshowSearch extends StatefulWidget {
@@ -89,12 +90,12 @@ class _AutoshowSearchState extends State<AutoshowSearch> {
                         );
                         break;
                       case 'Motor Bikes':
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => MotorBikesPage(community_id:widget.communityId),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MotorBikePage(community_id:widget.communityId),
+                          ),
+                        );
                         break;
                       case 'Vintage Car':
                         Navigator.push(

@@ -267,35 +267,35 @@ class _LoginState extends State<Login> {
                         //   ),
                         // ),
                         
-                        TextButton(
-                          onPressed: () {
-                      if(widget.type=='user')
-                      {
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-          return UserRgistration();
-        }));
-                      }
-                      if(widget.type=='race track')
-                      {
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-          return raceRegistration();
-        }));
-                      }
-                      if(widget.type=='rental')
-                      {
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-          return RentalRegister();
-        }));
-                      }
-                      if(widget.type=='community')
-                      {
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-          return CommunityRegister();
-        }));
-                      }
-                          },
-                          child: Text('SIGN UP'),
+                       Expanded(
+      child: Center(
+        child: TextButton(
+          onPressed: () {
+            if(widget.type=='user') {
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                return UserRgistration();
+              }));
+            }
+            if(widget.type=='race track') {
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                return raceRegistration();
+              }));
+            }
+            if(widget.type=='rental') {
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                return RentalRegister();
+              }));
+            }
+            if(widget.type=='community') {
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                return CommunityRegister();
+              }));
+            }
+          },
+          child: Text('Not Registered yet ? Sign up'),
+                          ),
                         ),
+                       )
                       ],
                     ),
                     SizedBox(height: 40),

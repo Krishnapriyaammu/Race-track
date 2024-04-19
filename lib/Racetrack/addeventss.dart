@@ -18,6 +18,8 @@ class _EventAddState extends State<EventAdd> {
   int _generalPrice = 0; // State for general ticket price
   int _childPrice = 0; // State for child ticket price
   String _vipPrice = '';
+  String _place = ''; // Declare place here
+
     File? _image;
       String imageUrl = ''; // Declare imageUrl here
  // Declare _image here
@@ -56,6 +58,8 @@ class _EventAddState extends State<EventAdd> {
         'image_url': imageUrl,
         'child_price': _childPrice,
         'vip_price': _vipPrice,
+       'place': _place,
+
         'rt_id': a,
       });
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -115,27 +119,33 @@ class _EventAddState extends State<EventAdd> {
   final TextEditingController _eventDateController = TextEditingController();
   final TextEditingController _totalTicketsController =
       TextEditingController();
+        final TextEditingController _placeController = TextEditingController();
+
         final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate ?? DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(DateTime.now().year + 10),
-    );
-    if (picked != null && picked != _selectedDate)
-      setState(() {
-        _selectedDate = picked;
-        _eventDateController.text = picked.toString();
-      });
+ Future<void> _selectDate(BuildContext context) async {
+  final DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: _selectedDate ?? DateTime.now(),
+    firstDate: DateTime.now(),
+    lastDate: DateTime(DateTime.now().year + 10),
+  );
+  if (picked != null && picked != _selectedDate) {
+    setState(() {
+      _selectedDate = picked;
+      // Format the picked date to only display the date part
+      _eventDateController.text = '${picked.year}-${picked.month}-${picked.day}';
+    });
   }
+}
 
   @override
   void dispose() {
     _eventNameController.dispose();
     _eventDateController.dispose();
     _totalTicketsController.dispose();
+     _placeController.dispose();
+
     super.dispose();
   }
 
@@ -199,6 +209,28 @@ class _EventAddState extends State<EventAdd> {
                     suffixIcon: Icon(Icons.calendar_today),
                   ),
                 ),
+                  SizedBox(height: 20),
+                TextFormField(
+                  controller: _placeController,
+                  onChanged: (value) {
+                    setState(() {
+                      _place = value;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Place is required';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'Place',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 30),
                 SizedBox(height: 20),
                 TextFormField(
                   controller: _totalTicketsController,

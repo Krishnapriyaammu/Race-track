@@ -251,7 +251,7 @@ class _UserRegistrationState extends State<UserRgistration> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => NavigationUser(),
+                                builder: (context) => Login(type: 'user'),
                               ),
                             );
                           }

@@ -2,28 +2,26 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/User/bookautoshow.dart';
 
-class SportsCarPage extends StatefulWidget {
-  String community_id;
-   SportsCarPage({super.key, required this. community_id});
+class MotorBikePage extends StatefulWidget {
+  final String community_id;
+   MotorBikePage({super.key, required this. community_id});
 
   @override
-  State<SportsCarPage> createState() => _SportsCarPageState();
+  State<MotorBikePage> createState() => _MotorBikePageState();
 }
 
-class _SportsCarPageState extends State<SportsCarPage> {
-
- 
+class _MotorBikePageState extends State<MotorBikePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cars'),
+        title: Text('Motor Bikes'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('community_add_autoshows')
             .where('community_id', isEqualTo: widget.community_id)
-            .where('category', isEqualTo: 'Sports Car')
+            .where('category', isEqualTo: 'Motor Bikes')
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -31,7 +29,7 @@ class _SportsCarPageState extends State<SportsCarPage> {
           }
 
           final List<DocumentSnapshot> documents = snapshot.data!.docs;
-          List<String> sportsCarImages =
+          List<String> luxuryCarImages =
               documents.map((doc) => doc['image_url'] as String).toList();
 
           return SingleChildScrollView(
@@ -41,7 +39,7 @@ class _SportsCarPageState extends State<SportsCarPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   child: Text(
-                    'Sports Cars',
+                    'Motor Bikes ',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -52,14 +50,14 @@ class _SportsCarPageState extends State<SportsCarPage> {
                   height: 300,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: sportsCarImages.length,
+                    itemCount: luxuryCarImages.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Padding(
                         padding: EdgeInsets.all(8),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: Image.network(
-                            sportsCarImages[index],
+                            luxuryCarImages[index],
                             width: 250,
                             height: 250,
                             fit: BoxFit.cover,
@@ -71,7 +69,7 @@ class _SportsCarPageState extends State<SportsCarPage> {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  'Other Sports Car Images',
+                  'Other Motor Bikes  Images',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -86,12 +84,12 @@ class _SportsCarPageState extends State<SportsCarPage> {
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                   ),
-                  itemCount: sportsCarImages.length,
+                  itemCount: luxuryCarImages.length,
                   itemBuilder: (BuildContext context, int index) {
                     return ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Image.network(
-                        sportsCarImages[index],
+                        luxuryCarImages[index],
                         fit: BoxFit.cover,
                       ),
                     );
@@ -109,7 +107,7 @@ class _SportsCarPageState extends State<SportsCarPage> {
             MaterialPageRoute(
               builder: (context) => BookAutoShow(
                 community_id: widget.community_id,
-                category: 'Sports Car',
+                category: 'Motor Bikes',
               ),
             ),
           );

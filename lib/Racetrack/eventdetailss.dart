@@ -88,6 +88,38 @@ class _EventDetailsState extends State<EventDetails> {
                         ),
                         SizedBox(height: 20),
                         Card(
+  color: Colors.white.withOpacity(0.8),
+  elevation: 4,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(12),
+  ),
+  child: Padding(
+    padding: const EdgeInsets.all(16),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Place',
+          style: GoogleFonts.poppins(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        SizedBox(height: 10),
+        Text(
+          '${eventData['place'] ?? 'Place Not Available'}',
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            color: Colors.black87,
+          ),
+        ),
+      ],
+    ),
+  ),
+),
+SizedBox(height: 10,),
+                        Card(
                           color: Colors.white.withOpacity(0.8),
                           elevation: 4,
                           shape: RoundedRectangleBorder(

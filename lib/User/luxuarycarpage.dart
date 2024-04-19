@@ -1,23 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:loginrace/User/bookautoshow.dart';
 
 class LuxuaryPage extends StatefulWidget {
-  String community_id;
-   LuxuaryPage({super.key, required this. community_id});
+   final String community_id;
+  LuxuaryPage({Key? key, required this.community_id}) : super(key: key);
 
   @override
   State<LuxuaryPage> createState() => _LuxuaryPageState();
 }
 
 class _LuxuaryPageState extends State<LuxuaryPage> {
- 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('  Luxuary Cars'),
+        title: Text('Luxury Cars'),
       ),
-     body: StreamBuilder<QuerySnapshot>(
+      body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('community_add_autoshows')
             .where('community_id', isEqualTo: widget.community_id)
@@ -29,7 +29,8 @@ class _LuxuaryPageState extends State<LuxuaryPage> {
           }
 
           final List<DocumentSnapshot> documents = snapshot.data!.docs;
-          List<String> vintageCarImages = documents.map((doc) => doc['image_url'] as String).toList();
+          List<String> luxuryCarImages =
+              documents.map((doc) => doc['image_url'] as String).toList();
 
           return SingleChildScrollView(
             child: Column(
@@ -38,7 +39,7 @@ class _LuxuaryPageState extends State<LuxuaryPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   child: Text(
-                    'VINTAGE CARS',
+                    'LUXURY CARS',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -49,14 +50,14 @@ class _LuxuaryPageState extends State<LuxuaryPage> {
                   height: 300,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: vintageCarImages.length,
+                    itemCount: luxuryCarImages.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Padding(
                         padding: EdgeInsets.all(8),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: Image.network(
-                            vintageCarImages[index],
+                            luxuryCarImages[index],
                             width: 250,
                             height: 250,
                             fit: BoxFit.cover,
@@ -68,7 +69,7 @@ class _LuxuaryPageState extends State<LuxuaryPage> {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  'Other Vintage Car Images',
+                  'Other LUXURY Car Images',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -83,12 +84,12 @@ class _LuxuaryPageState extends State<LuxuaryPage> {
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                   ),
-                  itemCount: vintageCarImages.length,
+                  itemCount: luxuryCarImages.length,
                   itemBuilder: (BuildContext context, int index) {
                     return ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Image.network(
-                        vintageCarImages[index],
+                        luxuryCarImages[index],
                         fit: BoxFit.cover,
                       ),
                     );
@@ -98,6 +99,21 @@ class _LuxuaryPageState extends State<LuxuaryPage> {
             ),
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BookAutoShow(
+                community_id: widget.community_id,
+                category: 'Luxury Car',
+              ),
+            ),
+          );
+        },
+        label: Text('Book Now'),
+        icon: Icon(Icons.book),
       ),
     );
   }

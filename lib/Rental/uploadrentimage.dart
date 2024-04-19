@@ -16,12 +16,11 @@ class RentUploadImage extends StatefulWidget {
 
 class _RentUploadImageState extends State<RentUploadImage> {
    var DescriptionEdit = TextEditingController();
-    var PriceEdit = TextEditingController();
+  var PriceEdit = TextEditingController();
   var CountEdit = TextEditingController();
   String? documentId; // Variable to store the document ID
 
- String imageUrl='';
-  var profileImage;
+  String imageUrl = '';
   File? _selectedImage;
   final picker = ImagePicker();
   String? selectedCategory;
@@ -58,7 +57,7 @@ class _RentUploadImageState extends State<RentUploadImage> {
                     selectedCategory = value;
                   });
                 },
-                items: ['Bikes', 'Cars', 'Grocery']
+                items: ['Bikes', 'Cars', 'Riding Gears']
                     .map((category) => DropdownMenuItem<String>(
                           value: category,
                           child: Text(category),
@@ -79,6 +78,11 @@ class _RentUploadImageState extends State<RentUploadImage> {
                           fit: BoxFit.cover,
                         )
                       : null,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 1,
+                  ),
                 ),
                 child: _selectedImage == null
                     ? Icon(
@@ -91,7 +95,7 @@ class _RentUploadImageState extends State<RentUploadImage> {
             ),
             SizedBox(height: 20),
             Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextFormField(
                 maxLines: 5,
                 controller: DescriptionEdit,
@@ -103,65 +107,66 @@ class _RentUploadImageState extends State<RentUploadImage> {
                 },
                 decoration: InputDecoration(
                   hintText: 'Describe here',
-                  fillColor: Color.fromARGB(255, 180, 206, 251),
-                  filled: true,
+                  labelText: 'Description',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide.none,
                   ),
                 ),
               ),
             ),
             SizedBox(height: 20),
             Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextFormField(
                 controller: PriceEdit,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: 'Price',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                 ),
               ),
             ),
             SizedBox(height: 20),
             Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextFormField(
                 controller: CountEdit,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: 'Total Count',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                 ),
               ),
             ),
             SizedBox(height: 20),
             ElevatedButton(
-            onPressed: () async {
-  SharedPreferences sp = await SharedPreferences.getInstance();
-  var a = sp.getString('uid');
+              onPressed: () async {
+                SharedPreferences sp = await SharedPreferences.getInstance();
+                var a = sp.getString('uid');
 
-  // Upload image
-  await uploadImage();
-    int totalCount = int.tryParse(CountEdit.text) ?? 0;
+                // Upload image
+                await uploadImage();
+                int totalCount = int.tryParse(CountEdit.text) ?? 0;
 
+                // Add data to Firestore
+                DocumentReference docRef = await FirebaseFirestore.instance.collection('rental_upload_image').add({
+                  'category': selectedCategory,
+                  'description': DescriptionEdit.text,
+                  'image_url': imageUrl,
+                  'price': PriceEdit.text, // Add price field
+                  'total_count': totalCount, // Add total count field
+                  'rent_id': a,
+                });
+                documentId = docRef.id;
 
-  // Add data to Firestore
-  DocumentReference docRef = await FirebaseFirestore.instance.collection('rental_upload_image').add({
-    'category': selectedCategory,
-    'description': DescriptionEdit.text,
-    'image_url': imageUrl,
-    'price': PriceEdit.text, // Add price field
-    'total_count': totalCount, // Add total count field
-    'rent_id': a,
-  });
-  documentId = docRef.id;
-
-  Navigator.push(context, MaterialPageRoute(builder: (context) {
-    return ProductViewPage();
-  }));
-},
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return ProductViewPage();
+                }));
+              },
               child: Text('Add'),
             ),
           ],
@@ -170,21 +175,21 @@ class _RentUploadImageState extends State<RentUploadImage> {
     );
   }
 
- Future<void> uploadImage() async {
-  try {
-    if (_selectedImage != null) {
-      Reference storageReference = FirebaseStorage.instance.ref().child('image/${DateTime.now().millisecondsSinceEpoch}.jpg');
+  Future<void> uploadImage() async {
+    try {
+      if (_selectedImage != null) {
+        Reference storageReference = FirebaseStorage.instance.ref().child('image/${DateTime.now().millisecondsSinceEpoch}.jpg');
 
-      await storageReference.putFile(_selectedImage!);
+        await storageReference.putFile(_selectedImage!);
 
-      // Get the download URL
-      imageUrl = await storageReference.getDownloadURL();
+        // Get the download URL
+        imageUrl = await storageReference.getDownloadURL();
 
-      // Now you can use imageUrl as needed (e.g., save it to Firestore)
-      print('Image URL: $imageUrl');
+        // Now you can use imageUrl as needed (e.g., save it to Firestore)
+        print('Image URL: $imageUrl');
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
     }
-  } catch (e) {
-    print('Error uploading image: $e');
   }
-}
 }
