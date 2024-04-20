@@ -199,9 +199,9 @@ class _RentalRegisterState extends State<RentalRegister> {
                   ElevatedButton(
                     onPressed: () async {
                       if (fkey.currentState!.validate()) {
-                        SharedPreferences sp =
-                            await SharedPreferences.getInstance();
-                        var a = sp.getString('uid');
+                        // SharedPreferences sp =
+                        //     await SharedPreferences.getInstance();
+                        // var a = sp.getString('uid');
                         await uploadImage();
 
                         var existingUser = await FirebaseFirestore.instance

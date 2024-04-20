@@ -200,9 +200,9 @@ class _CommunityRegisterState extends State<CommunityRegister> {
                     onPressed: () async {
                       if (fkey.currentState!.validate()) {
                         try {
-                          SharedPreferences sp =
-                              await SharedPreferences.getInstance();
-                          var a = sp.getString('uid');
+                          // SharedPreferences sp =
+                          //     await SharedPreferences.getInstance();
+                          // var a = sp.getString('uid');
                           await uploadImage();
 
                           var existingUser = await FirebaseFirestore.instance
@@ -241,7 +241,7 @@ class _CommunityRegisterState extends State<CommunityRegister> {
                               'password': password.text,
                               'confirm_password': confirmPass.text,
                               'image_url': imageUrl,
-                              'community_id': a,
+                              // 'community_id': a,
                               'status': 0,
                             });
                             print(Name.text);

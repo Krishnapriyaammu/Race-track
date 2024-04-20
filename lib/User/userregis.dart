@@ -6,24 +6,21 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loginrace/Common/Login.dart';
-import 'package:loginrace/User/navigationuser.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UserRgistration extends StatefulWidget {
-  const UserRgistration({super.key});
+  const UserRgistration({Key? key}) : super(key: key);
 
   @override
-  State<UserRgistration> createState() => _UserRegistrationState();
+  State<UserRgistration> createState() => _UserRgistrationState();
 }
 
-class _UserRegistrationState extends State<UserRgistration> {
-   var profileImage;
+class _UserRgistrationState extends State<UserRgistration> {
+  var profileImage;
   XFile? pickedFile;
   File? image;
   var Name = TextEditingController();
   var Email = TextEditingController();
   var Place = TextEditingController();
-  var proof = TextEditingController();
   var password = TextEditingController();
   var confirmPass = TextEditingController();
   var Mobile = TextEditingController();
@@ -34,7 +31,7 @@ class _UserRegistrationState extends State<UserRgistration> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('User Register')),
+        title: const Center(child: Text('User Register')),
       ),
       body: SafeArea(
         child: Padding(
@@ -62,11 +59,11 @@ class _UserRegistrationState extends State<UserRgistration> {
                       backgroundImage:
                           profileImage != null ? FileImage(profileImage) : null,
                       child: profileImage == null
-                          ? Icon(Icons.camera_alt, size: 30)
+                          ? const Icon(Icons.camera_alt, size: 30)
                           : null,
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextFormField(
                     controller: Name,
                     validator: (value) {
@@ -85,7 +82,7 @@ class _UserRegistrationState extends State<UserRgistration> {
                       prefixIcon: Icon(Icons.person),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextFormField(
                     controller: Email,
                     validator: (value) {
@@ -108,7 +105,7 @@ class _UserRegistrationState extends State<UserRgistration> {
                       prefixIcon: Icon(Icons.email),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextFormField(
                     controller: Place,
                     validator: (value) {
@@ -127,7 +124,7 @@ class _UserRegistrationState extends State<UserRgistration> {
                       prefixIcon: Icon(Icons.location_on),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextFormField(
                     controller: Mobile,
                     validator: (value) {
@@ -153,7 +150,7 @@ class _UserRegistrationState extends State<UserRgistration> {
                       prefixIcon: Icon(Icons.phone),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextFormField(
                     controller: password,
                     validator: (value) {
@@ -173,7 +170,7 @@ class _UserRegistrationState extends State<UserRgistration> {
                       prefixIcon: Icon(Icons.lock),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextFormField(
                     controller: confirmPass,
                     validator: (value) {
@@ -196,45 +193,25 @@ class _UserRegistrationState extends State<UserRgistration> {
                       prefixIcon: Icon(Icons.lock),
                     ),
                   ),
-                  SizedBox(height: 20),
-                ElevatedButton(
+                  const SizedBox(height: 20),
+                  ElevatedButton(
                     onPressed: () async {
                       if (fkey.currentState!.validate()) {
                         try {
-                          SharedPreferences sp =
-                              await SharedPreferences.getInstance();
-                          var a = sp.getString('uid');
-                          await uploadImage();
+                          UserCredential userCredential = await FirebaseAuth
+                              .instance
+                              .createUserWithEmailAndPassword(
+                            email: Email.text,
+                            password: password.text,
+                          );
 
-                          var existingUser = await FirebaseFirestore.instance
-                              .collection('user_register')
-                              .where('email', isEqualTo: Email.text)
-                              .get();
+                          if (userCredential.user != null) {
+                            await uploadImage();
 
-                          if (existingUser.docs.isNotEmpty) {
-                            // User already exists with the same email
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text('Error'),
-                                  content: Text(
-                                      'User with this email already exists.'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text('OK'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          } else {
                             await FirebaseFirestore.instance
                                 .collection('user_register')
-                                .add({
+                                .doc(userCredential.user!.uid)
+                                .set({
                               'name': Name.text,
                               'email': Email.text,
                               'place': Place.text,
@@ -243,11 +220,7 @@ class _UserRegistrationState extends State<UserRgistration> {
                               'confirm_password': confirmPass.text,
                               'image_url': imageUrl,
                             });
-                            print(Name.text);
-                            print(Email.text);
-                            print(Mobile.text);
-                            print(password.text);
-                            print(confirmPass.text);
+
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -280,10 +253,8 @@ class _UserRegistrationState extends State<UserRgistration> {
 
         await storageReference.putFile(profileImage!);
 
-        // Get the download URL
         imageUrl = await storageReference.getDownloadURL();
 
-        // Now you can use imageUrl as needed (e.g., save it to Firestore)
         print('Image URL: $imageUrl');
       }
     } catch (e) {

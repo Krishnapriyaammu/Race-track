@@ -13,11 +13,15 @@ class ViewEvents extends StatefulWidget {
   State<ViewEvents> createState() => _ViewEventsState();
 }
 class _ViewEventsState extends State<ViewEvents> {
- TextEditingController _searchController = TextEditingController();
-     String imageUrl='';
+ late Future<List<DocumentSnapshot>> _futureEvents;
 
+  @override
+  void initState() {
+    super.initState();
+    _futureEvents = getData();
+  }
 
- Future<List<DocumentSnapshot>> getData() async {
+  Future<List<DocumentSnapshot>> getData() async {
     try {
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('racetrack_upload_event')
@@ -61,20 +65,15 @@ class _ViewEventsState extends State<ViewEvents> {
           ),
         ),
       ),
-      body: FutureBuilder(
-        future: getData(),
-        builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+      body: FutureBuilder<List<DocumentSnapshot>>(
+        future: _futureEvents,
+        builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            return GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // Number of columns
-                crossAxisSpacing: 10.0,
-                mainAxisSpacing: 10.0,
-              ),
+            return ListView.builder(
               itemCount: snapshot.data?.length ?? 0,
               itemBuilder: (context, index) {
                 final document = snapshot.data![index];
@@ -83,91 +82,92 @@ class _ViewEventsState extends State<ViewEvents> {
 
                 return GestureDetector(
                   onTap: () {
-                    _navigateToEventBooking(context, snapshot.data![index].id);
+                    _navigateToEventBooking(context, document.id);
                   },
-                  child: AnimatedContainer(
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                    decoration: BoxDecoration(
+                  child: Card(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: Offset(0, 3), // changes position of shadow
-                        ),
-                      ],
                     ),
-                    child: Card(
-                      width:30,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Expanded(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10.0),
-                                  topRight: Radius.circular(10.0),
-                                ),
-                                image: DecorationImage(
-                                  image: NetworkImage(imageUrl),
-                                  fit: BoxFit.cover,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(10.0),
+                          ),
+                          child: Image.network(
+                            imageUrl,
+                            fit: BoxFit.cover,
+                            height: 200,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Center(
+                                child: Text(
+                                  data['event_name'] ?? 'Name not available',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  data['event_name'] ?? 'Name not available',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  data['place'] ?? 'Place not available',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 4),
-                                Text(
-                                  data['event_date'] ?? 'Date not available',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 14,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                SizedBox(height: 4),
-                                Row(
-                                  children: [
-                                    Icon(Icons.calendar_today,
-                                        size: 16, color: Colors.grey),
-                                    SizedBox(width: 4),
-                                    Text(
-                                      data['total_tickets'].toString() ??
-                                          'Tickets not available',
-                                      style: GoogleFonts.poppins(
-                                          color: Colors.grey),
+                              SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Icon(Icons.location_on,
+                                      size: 16, color: Colors.grey),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    data['place'] ?? 'Place not available',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Icon(Icons.calendar_today,
+                                      size: 16, color: Colors.grey),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    data['event_date'] ?? 'Date not available',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Icon(Icons.event_seat,
+                                      size: 16, color: Colors.grey),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    data['total_tickets'].toString() ??
+                                        'Tickets not available',
+                                    style: GoogleFonts.poppins(
+                                        color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 );
@@ -182,7 +182,8 @@ class _ViewEventsState extends State<ViewEvents> {
   void _navigateToEventBooking(BuildContext context, String eventId) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => EventTicketBooking(rt_id: eventId)),
+      MaterialPageRoute(
+          builder: (context) => EventTicketBooking(rt_id: eventId)),
     );
   }
 }

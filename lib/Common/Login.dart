@@ -4,12 +4,16 @@ import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loginrace/Admin/adminhome.dart';
 import 'package:loginrace/Community/communityregis.dart';
+import 'package:loginrace/Community/forgotcommunity.dart';
 import 'package:loginrace/Community/navigation.dart';
+import 'package:loginrace/Racetrack/forgotracetrack.dart';
 import 'package:loginrace/Racetrack/navigationracetrack.dart';
 import 'package:loginrace/Racetrack/racetrackhome1.dart';
 import 'package:loginrace/Racetrack/registration.dart';
+import 'package:loginrace/Rental/forgotrental.dart';
 import 'package:loginrace/Rental/rentalregistration.dart';
 import 'package:loginrace/Rental/rentnavigation.dart';
+import 'package:loginrace/User/forgotuser.dart';
 import 'package:loginrace/User/navigationuser.dart';
 import 'package:loginrace/User/userHomee.dart';
 import 'package:loginrace/User/userhome.dart';
@@ -256,64 +260,98 @@ class _LoginState extends State<Login> {
                     ),
                     SizedBox(height: 20),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Text(
-                        //   'Forgot Password',
-                        //   style: TextStyle(
-                        //     color: Color.fromARGB(255, 27, 23, 229),
-                        //     fontSize: 15,
-                        //     decoration: TextDecoration.underline,
-                        //   ),
-                        // ),
+  
+  mainAxisAlignment: MainAxisAlignment.end,
+  children: [
+    InkWell(
+      onTap: () {
+        // Check the type and navigate accordingly
+        if (widget.type == "user") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ForgotUser()),
+          );
+        } else if (widget.type == "race track") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ForgotRacetrack()),
+          );
+        } else if (widget.type == "rental") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ForgotRental()),
+          );
+        } else if (widget.type == "community") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ForgotCommunity()),
+          );
+        }
+      },
+      child: Text(
+        "forgot password?",
+        style: TextStyle(
+          decoration: TextDecoration.underline,
+          color: Color.fromARGB(255, 20, 97, 160),
+        ),
+      ),
+    ),
+  ],
+),
+
                         
-                       Expanded(
-      child: Center(
-        child: TextButton(
-          onPressed: () {
-            if(widget.type=='user') {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                return UserRgistration();
-              }));
-            }
-            if(widget.type=='race track') {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                return raceRegistration();
-              }));
-            }
-            if(widget.type=='rental') {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                return RentalRegister();
-              }));
-            }
-            if(widget.type=='community') {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-                return CommunityRegister();
-              }));
-            }
-          },
-          child: Text('Not Registered yet ? Sign up'),
-                          ),
-                        ),
-                       )
-                      ],
+                       ElevatedButton(
+                        onPressed: () async {
+                          if (fkey.currentState!.validate()) {
+                            print('-------------');
+                            await checkData();
+                            //  Navigator.push(context, MaterialPageRoute(builder:(context) {
+                            //       return Navigationbar();
+                            //     },));
+                          }
+                        },
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Color.fromARGB(111, 247, 73, 73))),
+                        child: Text(
+                          'LOGIN',
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 245, 244, 245)),
+                        )),
+                    SizedBox(
+                      height: 30,
                     ),
-                    SizedBox(height: 40),
-                    ElevatedButton(
+                    TextButton(
                       onPressed: () {
-                        if (fkey.currentState!.validate()) {
-                          checkData();
-                        }
+                        if (widget.type == 'user') {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return UserRgistration();
+                            },
+                          ));
+                        } else if (widget.type == 'race track') {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return raceRegistration();
+                            },
+                          ));
+                        } else if (widget.type == 'rental') {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return RentalRegister();
+                            },
+                          ));
+                        } else if (widget.type == 'community') {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return CommunityRegister();
+                            },
+                          ));
+                        } 
+                      
                       },
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Color.fromARGB(255, 217, 149, 149)),
-                      ),
-                      child: Text(
-                        'Login',
-                        style: TextStyle(fontSize: 20, color: Colors.white),
-                      ),
-                    ),
+                      child: Text('Not Registered yet? Sign up'),
+                    )
                   ],
                 ),
               ),

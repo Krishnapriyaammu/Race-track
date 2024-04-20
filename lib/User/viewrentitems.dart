@@ -8,14 +8,14 @@ class UserViewFullRenters extends StatefulWidget {
 }
 
 class _UserViewFullRentersState extends State<UserViewFullRenters> {
-  late Stream<QuerySnapshot> _dataStream;
+   late Stream<QuerySnapshot> _dataStream;
   late TextEditingController _searchController;
 
   @override
   void initState() {
     super.initState();
-    _dataStream = FirebaseFirestore.instance.collection('rental_add_service').snapshots();
     _searchController = TextEditingController();
+    _dataStream = getDataStream('');
   }
 
   @override
@@ -93,43 +93,64 @@ class _UserViewFullRentersState extends State<UserViewFullRenters> {
                       final id = document.id;
                       final data = document.data() as Map<String, dynamic>;
                       final imageUrl = data['image_url'];
-                      final availability = data['availability'];
-                      final buttonText = availability == 'available' ? ' NOT AVAILABLE' : ' AVAILABLE';
-                      final buttonColor = availability == 'available' ? Colors.red : Colors.green;
-                      return ListTile(
-                        onTap: () {},
-                        title: Text(data['Renter Name'] ?? 'Name not available'),
-                        subtitle: Text(data['Rental Service'] ?? 'Service not available'),
-                        leading: imageUrl != null
-                            ? CircleAvatar(
-                                backgroundImage: NetworkImage(imageUrl),
-                                radius: 30,
-                              )
-                            : CircleAvatar(
-                                child: Icon(Icons.person),
-                                radius: 30,
-                              ),
-                        trailing: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => UserViewRentHome(id: data['rent_id']),
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                            backgroundColor: buttonColor,
-                          ),
-                          child: Text(
-                            buttonText,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                            ),
-                          ),
-                        ),
+                      final rentalId = data['rent_id'];
+                      return StreamBuilder<DocumentSnapshot>(
+                        stream: FirebaseFirestore.instance.collection('rentalregister').doc(rentalId).snapshots(),
+                        builder: (context, AsyncSnapshot<DocumentSnapshot> availabilitySnapshot) {
+                          if (availabilitySnapshot.connectionState == ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else if (availabilitySnapshot.hasError) {
+                            return Text('Error: ${availabilitySnapshot.error}');
+                          } else {
+                            final availabilityData = availabilitySnapshot.data!.data() as Map<String, dynamic>?;
+
+                            if (availabilityData != null && availabilityData.containsKey('availability')) {
+                              final availability = availabilityData['availability'] as String;
+                              final buttonText = availability == 'available' ? 'AVAILABLE' : 'NOT AVAILABLE';
+                              final buttonColor = availability == 'available' ? Colors.green : Colors.red;
+                              return ListTile(
+                                onTap: () {
+                                  if (availability == 'available') {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => UserViewRentHome(id: rentalId),
+                                      ),
+                                    );
+                                  }
+                                },
+                                title: Text(data['Renter Name'] ?? 'Name not available'),
+                                subtitle: Text(data['Rental Service'] ?? 'Service not available'),
+                                leading: imageUrl != null
+                                    ? CircleAvatar(
+                                        backgroundImage: NetworkImage(imageUrl),
+                                        radius: 30,
+                                      )
+                                    : CircleAvatar(
+                                        child: Icon(Icons.person),
+                                        radius: 30,
+                                      ),
+                                trailing: ElevatedButton(
+                                  
+                                  onPressed: availability == 'available' ? () {} : null,
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                                    backgroundColor: buttonColor,
+                                  ),
+                                  child: Text(
+                                    buttonText,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          }
+                        },
                       );
                     },
                   );

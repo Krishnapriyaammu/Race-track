@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:loginrace/User/slotavailability.dart';
 import 'package:loginrace/User/usertrackbooking.dart';
 import 'package:loginrace/User/userviewfeedback.dart';
 import 'package:loginrace/User/viewallinstructors.dart';
@@ -58,10 +59,10 @@ class _ViewTrackDetailsState extends State<ViewTrackDetails> {
   @override
    Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // title: Text('Adventure Race Track'),
-        backgroundColor: Colors.black87,
-      ),
+      // appBar: AppBar(
+      //   // title: Text('Adventure Race Track'),
+      //   backgroundColor: Colors.black87,
+      // ),
       backgroundColor: Colors.transparent,
       body: Container(
         decoration: BoxDecoration(
@@ -123,7 +124,7 @@ class _ViewTrackDetailsState extends State<ViewTrackDetails> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) {
-                    return UserTrackBooking(
+                    return SlotAvailability(
                       rt_id: widget.rt_id,
                       level1: widget.level1,
                     );
@@ -189,7 +190,7 @@ class _ViewTrackDetailsState extends State<ViewTrackDetails> {
       );
     },
     child: Text(
-      'View all',
+      'View Feedbacks',
       style: TextStyle(color: Colors.blue),
                 ),
               ),
