@@ -166,8 +166,8 @@ void initState() {
                           _formKey.currentState!.save();
 
                           try {
-                            // SharedPreferences sp = await SharedPreferences.getInstance();
-                            // var userid = sp.getString('uid');
+                            SharedPreferences sp = await SharedPreferences.getInstance();
+                            var userid = sp.getString('uid');
 
                             await FirebaseFirestore.instance.collection('auto_show_booking').add({
                               'name': _name,
@@ -175,7 +175,7 @@ void initState() {
                               'phone_number': _phoneNumber,
                               'place': _place,
                               'date': _selectedDate,
-                              // 'userid': userid,
+                              'userid': userid,
                               'community_id': widget.community_id,
                               'category': widget.category,
                               'status': 0,

@@ -5,7 +5,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loginrace/Racetrack/addslots.dart';
 import 'package:loginrace/Racetrack/navigationracetrack.dart';
+import 'package:loginrace/Racetrack/slotdetails.dart';
 import 'package:loginrace/Racetrack/track.dart';
 import 'package:loginrace/Racetrack/trackamount.dart';
 import 'package:loginrace/Racetrack/trackdetails.dart';
@@ -19,19 +21,18 @@ class RaceTrackViewRace extends StatefulWidget {
 }
 
 class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
-  var Racetrackname = TextEditingController();
-  var Rating = TextEditingController();
-  var tracktype = TextEditingController();
-  var Place = TextEditingController();
-  var upcoming_events = TextEditingController();
-  var level1 = TextEditingController();
-  var level2 = TextEditingController();
+ TextEditingController Racetrackname = TextEditingController();
+  TextEditingController Rating = TextEditingController();
+  TextEditingController tracktype = TextEditingController();
+  TextEditingController Place = TextEditingController();
+  TextEditingController upcoming_events = TextEditingController();
+  TextEditingController level1 = TextEditingController();
+  TextEditingController level2 = TextEditingController();
   String imageUrl = '';
-  var profileImage;
+  File? profileImage;
   XFile? pickedFile;
-  File? image;
 
-  void updateStatus(String documentId) async {
+  Future<void> updateStatus(String documentId) async {
     try {
       await FirebaseFirestore.instance
           .collection('user_track_booking')
@@ -64,7 +65,7 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
       SharedPreferences sp = await SharedPreferences.getInstance();
       var uid = sp.getString('uid');
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('user_track_booking')
+          .collection('user_race_track_booking')
           .where('rt_id', isEqualTo: uid)
           .get();
       print('Fetched ${snapshot.docs.length} booked users');
@@ -75,22 +76,40 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
     }
   }
 
- Future<List<DocumentSnapshot>> getFeedbacks() async {
-  try {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    var uid = sp.getString('uid');
-    final QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('user_send_feedback')
-        .where('rt_id', isEqualTo: uid)
-        .get();
-    print('Fetched ${snapshot.docs.length} feedbacks');
-    print('Feedback documents: ${snapshot.docs}');
-    return snapshot.docs;
-  } catch (e) {
-    print('Error fetching feedbacks: $e');
-    throw e;
+  Future<Map<String, dynamic>> getUserDetails(String userId) async {
+    try {
+      final DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('user_register')
+          .doc(userId)
+          .get();
+
+      if (snapshot.exists) {
+        return snapshot.data() as Map<String, dynamic>;
+      } else {
+        return {}; // Return empty map if user not found
+      }
+    } catch (e) {
+      print('Error fetching user details: $e');
+      throw e;
+    }
   }
-}
+
+  Future<List<DocumentSnapshot>> getFeedbacks() async {
+    try {
+      SharedPreferences sp = await SharedPreferences.getInstance();
+      var uid = sp.getString('uid');
+      final QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('user_send_feedback')
+          .where('rt_id', isEqualTo: uid)
+          .get();
+      print('Fetched ${snapshot.docs.length} feedbacks');
+      print('Feedback documents: ${snapshot.docs}');
+      return snapshot.docs;
+    } catch (e) {
+      print('Error fetching feedbacks: $e');
+      throw e;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -228,128 +247,163 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                             );
                           }),
                         );
+                        
                       }
                     },
                   ),
                 ),
               ],
+              
             ),
+            
 
             // View Booked Users Tab
             FutureBuilder(
               future: getBookedUsers(),
-              builder: (context,
-                  AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+              builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else {
                   List<DocumentSnapshot> bookedUsers = snapshot.data ?? [];
+                  return Stack(
+                    children: [
+                      ListView.builder(
+                        itemCount: bookedUsers.length,
+                        itemBuilder: (context, index) {
+                          final userData = bookedUsers[index].data() as Map<String, dynamic>;
+                          String status = userData['status'] ?? '0';
+                          bool isLevel1Completed = status == '1';
+                          final String documentId = bookedUsers[index].id;
+
+                          return FutureBuilder(
+                            future: getUserDetails(userData['userid']),
+                            builder: (context, AsyncSnapshot<Map<String, dynamic>> userSnapshot) {
+                              if (userSnapshot.connectionState == ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (userSnapshot.hasError) {
+                                return Text('Error: ${userSnapshot.error}');
+                              } else {
+                                final user = userSnapshot.data ?? {};
+                                final String username = user['name'] ?? 'Username not available';
+                                final String mobile = user['mobile no'] ?? 'Mobile not available';
+
+                                return Card(
+                                  elevation: 3,
+                                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                  child: ListTile(
+                                    title: Text(username),
+                                    subtitle: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('Mobile: $mobile'),
+                                        Text(userData['selectedSlot'] ?? 'Name not available'),
+                                        Text(userData['startTime'] ?? 'Email not available'),
+                                        Text(userData['totalHours'].toString() ?? 'Hours not available'),
+                                        Text(userData['totalPrice'] ?? 'Email not available'),
+                                        Text(
+                              userData['selectedDate']?.toDate()?.toString().split(' ')[0] ?? 'Date not available',
+                            ),              
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                },
+              );
+            },
+          ),
+          Positioned(
+            bottom: 80, // Adjust position as needed
+            right: 16,
+            child: FloatingActionButton(
+              onPressed: () {
+  Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return AddSlots(
+                
+                    );
+                  }),
+                );              },
+              child: Icon(Icons.add),
+            ),
+          ),
+          Positioned(
+            bottom: 16,
+            right: 16,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return SlotDetails(
+                     
+                    );
+                  }),
+                );
+              },
+              child: Text('View Slots'),
+            ),
+          ),
+        ],
+      );
+    }
+  },
+),
+            // Feedbacks Tab
+            FutureBuilder(
+              future: getFeedbacks(),
+              builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else {
                   return ListView.builder(
-                    itemCount: bookedUsers.length,
+                    itemCount: snapshot.data?.length ?? 0,
                     itemBuilder: (context, index) {
-                      final userData =
-                          bookedUsers[index].data() as Map<String, dynamic>;
-                      String status = userData['status'] ?? '0';
-                      bool isLevel1Completed = status == '1';
-                      final String documentId = bookedUsers[index].id;
+                      final document = snapshot.data![index];
+                      final data = document.data() as Map<String, dynamic>;
+                      final imageUrl = data['image_url'];
 
                       return Card(
-                        elevation: 3,
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        child: ListTile(
-                          title: Text(userData['name'] ?? 'Name not available'),
-                          subtitle: Column(
+                        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(userData['email'] ?? 'Email not available'),
-                              Text(userData['place'] ?? 'Place not available'),
-                              Text(userData['phone'] ?? 'Phone not available'),
+                              imageUrl != null
+                                  ? CircleAvatar(
+                                      radius: 50,
+                                      backgroundImage: NetworkImage(imageUrl),
+                                    )
+                                  : Icon(Icons.image),
+                              SizedBox(height: 8),
+                              Text(
+                                data['username'] ?? 'Username not available',
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 8),
+                              RatingBarIndicator(
+                                rating: data['rating'] ?? 0.0,
+                                itemBuilder: (context, index) => Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                ),
+                                itemCount: 5,
+                                itemSize: 20.0,
+                                direction: Axis.horizontal,
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                data['feedback'] ?? 'Feedback not available',
+                                style: TextStyle(fontSize: 16),
+                              ),
                             ],
                           ),
-                          trailing: ElevatedButton(
-                            onPressed: isLevel1Completed
-                                ? null
-                                : () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        int selectedLevel = 1;
-
-                                        return StatefulBuilder(
-                                          builder: (BuildContext context,
-                                              StateSetter setState) {
-                                            return AlertDialog(
-                                              title: Text('Level Confirmation'),
-                                              content: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                      'Please choose the level:'),
-                                                  Row(
-                                                    children: [
-                                                      Radio(
-                                                        value: 1,
-                                                        groupValue:
-                                                            selectedLevel,
-                                                        onChanged:
-                                                            (int? value) {
-                                                          setState(() {
-                                                            selectedLevel =
-                                                                value!;
-                                                          });
-                                                        },
-                                                      ),
-                                                      Text('Level 1'),
-                                                      Radio(
-                                                        value: 2,
-                                                        groupValue:
-                                                            selectedLevel,
-                                                        onChanged:
-                                                            (int? value) {
-                                                          setState(() {
-                                                            selectedLevel =
-                                                                value!;
-                                                          });
-                                                        },
-                                                      ),
-                                                      Text('Level 2'),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                              actions: <Widget>[
-                                                ElevatedButton(
-                                                  onPressed: () {
-                                                    updateStatus(documentId);
-                                                    Navigator.of(context)
-                                                        .pop();
-                                                  },
-                                                  child: Text('Complete'),
-                                                ),
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context)
-                                                        .pop();
-                                                  },
-                                                  child: Text('Cancel'),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      },
-                                    );
-                                  },
-                            child: status == '0'
-                                ? Text('Pending')
-                                : Text('Level 1 completed'),
-                          ),
-                          onTap: () {},
                         ),
                       );
                     },
@@ -357,274 +411,9 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                 }
               },
             ),
-
-            // Feedbacks Tab
-            
-       FutureBuilder(
-  future: getFeedbacks(),
-  builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return Center(child: CircularProgressIndicator());
-    } else if (snapshot.hasError) {
-      return Center(child: Text('Error: ${snapshot.error}'));
-    } else {
-      return ListView.builder(
-        itemCount: snapshot.data?.length ?? 0,
-        itemBuilder: (context, index) {
-          final document = snapshot.data![index];
-          final data = document.data() as Map<String, dynamic>;
-          final imageUrl = data['image_url'];
-
-          return Card(
-            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  imageUrl != null
-                      ? CircleAvatar(
-                          radius: 50,
-                          backgroundImage: NetworkImage(imageUrl),
-                        )
-                      : Icon(Icons.image),
-                  SizedBox(height: 8),
-                  Text(
-                    data['username'] ?? 'Username not available',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 8),
-                  RatingBarIndicator(
-                    rating: data['rating'] ?? 0.0,
-                    itemBuilder: (context, index) => Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                    ),
-                    itemCount: 5,
-                    itemSize: 20.0,
-                    direction: Axis.horizontal,
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    data['feedback'] ?? 'Feedback not available',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      );
-    }
-  },
-),
           ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            _showAddTrackDialog(context);
-          },
-          child: Icon(Icons.add),
-        ),
-      ),
+        )
+      )
     );
-  }
-
-  void _showAddTrackDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, setState) {
-            return SingleChildScrollView(
-              child: AlertDialog(
-                title: Text('Add Track'),
-                content: Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () async {
-                        ImagePicker picker = ImagePicker();
-                        pickedFile =
-                            await picker.pickImage(source: ImageSource.gallery);
-
-                        setState(() {
-                          if (pickedFile != null) {
-                            profileImage = File(pickedFile!.path);
-                          }
-                        });
-                      },
-                      child: ClipOval(
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundImage: profileImage != null
-                              ? FileImage(profileImage!)
-                              : null,
-                          child: profileImage == null
-                              ? Icon(Icons.camera_alt, size: 30)
-                              : null,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Text('Name'),
-                        ),
-                      ],
-                    ),
-                    TextFormField(
-                      controller: Racetrackname,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'enter Name';
-                        }
-                      },
-                      decoration: InputDecoration(
-                        fillColor: Color.fromARGB(255, 192, 221, 224),
-                        filled: true,
-                        border: UnderlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(40)),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Text('Track type'),
-                        ),
-                      ],
-                    ),
-                    TextFormField(
-                      controller: tracktype,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'enter type';
-                        }
-                      },
-                      decoration: InputDecoration(
-                        fillColor: Color.fromARGB(255, 192, 221, 224),
-                        filled: true,
-                        border: UnderlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(40)),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Text('place'),
-                        ),
-                      ],
-                    ),
-                    TextFormField(
-                      controller: Place,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'enter place';
-                        }
-                      },
-                      decoration: InputDecoration(
-                        fillColor: Color.fromARGB(255, 192, 221, 224),
-                        filled: true,
-                        border: UnderlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(40)),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Text('level 1'),
-                        ),
-                      ],
-                    ),
-                    TextFormField(
-                      controller: level1,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'enter price';
-                        }
-                      },
-                      decoration: InputDecoration(
-                        fillColor: Color.fromARGB(255, 192, 221, 224),
-                        filled: true,
-                        border: UnderlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(40)),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                  ],
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('Cancel'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      SharedPreferences sp =
-                          await SharedPreferences.getInstance();
-                      var a = sp.getString('uid');
-                      await uploadImage();
-
-                      await FirebaseFirestore.instance
-                          .collection("racetrack_upload_track")
-                          .add({
-                        'track name': Racetrackname.text,
-                        'rating': Rating.text,
-                        'tracktype': tracktype.text,
-                        'place': Place.text,
-                        'upcomingevents': upcoming_events.text,
-                        'level1': level1.text,
-                        'level2': level2.text,
-                        'image_url': imageUrl,
-                        'uid': a,
-                      });
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) {
-                          return RaceTrackNavigation();
-                        }),
-                      );
-                    },
-                    child: Text('Upload'),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Future<void> uploadImage() async {
-    try {
-      if (profileImage != null) {
-        Reference storageReference =
-            FirebaseStorage.instance.ref().child('image/${pickedFile!.name}');
-        await storageReference.putFile(profileImage!);
-        imageUrl = await storageReference.getDownloadURL();
-        print('Image URL: $imageUrl');
-      }
-    } catch (e) {
-      print('Error uploading image: $e');
-    }
   }
 }

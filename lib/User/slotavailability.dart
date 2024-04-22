@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loginrace/User/shiftsavailable.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class SlotAvailability extends StatefulWidget {
   String rt_id;
@@ -11,7 +13,7 @@ class SlotAvailability extends StatefulWidget {
 }
 
 class _SlotAvailabilityState extends State<SlotAvailability> {
-   double _sliderValue = 3; // Initial value for the slider
+  double _sliderValue = 3; // Initial value for the slider
   TimeOfDay _startTime = TimeOfDay.now(); // Initial start time
 
   @override
@@ -27,9 +29,9 @@ class _SlotAvailabilityState extends State<SlotAvailability> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CalendarDatePicker(
-              initialDate: DateTime.now(),
-              firstDate: DateTime.now(),
-              lastDate: DateTime(DateTime.now().year + 5),
+              initialDate: DateTime.now().add(Duration(days: 1)), // Set initial date to tomorrow
+              firstDate: DateTime.now().add(Duration(days: 1)), // Allow selection from tomorrow
+              lastDate: DateTime.now().add(Duration(days: 1)), // Allow selection up to tomorrow
               onDateChanged: (date) {},
             ),
             ListTile(
@@ -86,16 +88,17 @@ class _SlotAvailabilityState extends State<SlotAvailability> {
                 onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) {
                                           return ShiftAvailable(
-                                            rt_id: widget.rt_id,
-            totalPrice: (_sliderValue * 5).toStringAsFixed(2),
-            totalHours: _sliderValue.toInt(),
-            startTime: _startTime,
-          );
-        },
-      ),
-    );
-  },
-  child: Text('NEXT'),
+                                            rt_id:widget.rt_id,
+                                             totalPrice: (_sliderValue * 5).toStringAsFixed(2),
+                      totalHours: _sliderValue.toInt(),
+                          selectedDate: DateTime.now().add(Duration(days: 1)), // Pass selected date
+
+                    
+                      startTime: _startTime,
+                                            
+                                          );
+                                        }));                },
+                child: Text('NEXT'),
               ),
             ),
           ],
