@@ -30,7 +30,7 @@ class _ShiftAvailableState extends State<ShiftAvailable> {
    String selectedSlot = '';
   String selectedPaymentOption = '';
   List<String> paymentOptions = ['Credit Card', 'Google Pay', 'PayPal'];
-    int morningCount = 0;
+  int morningCount = 0;
   int eveningCount = 0;
   int nightCount = 0;
 
@@ -39,14 +39,14 @@ class _ShiftAvailableState extends State<ShiftAvailable> {
   @override
   void initState() {
     super.initState();
-     fetchSlotCounts();
-
+    fetchSlotCounts();
   }
+
   Future<void> fetchSlotCounts() async {
-  morningCount = await getSlotCount('Morning');
-  eveningCount = await getSlotCount('Evening');
-  nightCount = await getSlotCount('Night');
-}
+    morningCount = await getSlotCount('Morning');
+    eveningCount = await getSlotCount('Evening');
+    nightCount = await getSlotCount('Night');
+  }
 
   Future<int> getSlotCount(String slotName) async {
     try {
@@ -161,6 +161,11 @@ class _ShiftAvailableState extends State<ShiftAvailable> {
               'Selected Payment Option: $selectedPaymentOption',
               style: TextStyle(fontSize: 16),
             ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: submitData,
+              child: Text('Submit'),
+            ),
           ],
         ),
       ),
@@ -177,6 +182,78 @@ class _ShiftAvailableState extends State<ShiftAvailable> {
         return nightCount;
       default:
         return 0;
+    }
+  }
+
+  void submitData() async {
+    try {
+      SharedPreferences sp = await SharedPreferences.getInstance();
+      var userid = sp.getString('uid');
+
+      // Convert TimeOfDay to string
+      String startTimeString =
+          '${widget.startTime.hour}:${widget.startTime.minute}';
+           String selectedDateString =
+        '${widget.selectedDate.year}-${widget.selectedDate.month.toString().padLeft(2, '0')}-${widget.selectedDate.day.toString().padLeft(2, '0')}';
+
+
+         DocumentReference bookingRef = await FirebaseFirestore.instance.collection('user_track_booking').add({
+      'rt_id': widget.rt_id,
+      'userid': userid,
+      'selectedDate': selectedDateString,
+      'totalPrice': widget.totalPrice,
+      'totalHours': widget.totalHours,
+      // Store TimeOfDay as string
+      'startTime': startTimeString,
+      'selectedSlot': selectedSlot,
+      'selectedPaymentOption': selectedPaymentOption,
+      // Include the document ID as part of the document data
+      'documentId': '', // Placeholder for the document ID
+    });
+
+    // Get the document ID from the booking reference
+    String documentId = bookingRef.id;
+
+    // Update the document with the actual document ID
+    await bookingRef.update({'documentId': documentId});
+
+    // Update slot count after successful booking
+    await updateSlotCount(selectedSlot);
+
+    // Show success message
+    Fluttertoast.showToast(msg: 'Track booked successfully');
+  } catch (e) {
+    // Show error message
+    Fluttertoast.showToast(msg: 'Failed to submit data: $e');
+  }
+}
+  Future<void> updateSlotCount(String slotName) async {
+    try {
+      final formattedDate =
+          '${widget.selectedDate.year}-${widget.selectedDate.month}-${widget.selectedDate.day}';
+      final docRef = firestore.collection('slots').doc(formattedDate);
+
+      // Start a Firestore transaction
+      await firestore.runTransaction((transaction) async {
+        final snapshot = await transaction.get(docRef);
+        if (snapshot.exists) {
+          final data = snapshot.data() as Map<String, dynamic>;
+          int currentCount = data[slotName.toLowerCase() + 'Count'] ?? 0;
+          if (currentCount > 0) {
+            // Decrease the slot count by 1
+            transaction.update(docRef, {
+              slotName.toLowerCase() + 'Count': currentCount - 1,
+            });
+          } else {
+            throw Exception('Slot count cannot be negative');
+          }
+        } else {
+          throw Exception('Document does not exist for $formattedDate');
+        }
+      });
+    } catch (e) {
+      print('Error updating slot count: $e');
+      throw Exception('Failed to update slot count: $e');
     }
   }
 }

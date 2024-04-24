@@ -65,7 +65,7 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
       SharedPreferences sp = await SharedPreferences.getInstance();
       var uid = sp.getString('uid');
       final QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('user_race_track_booking')
+          .collection('user_track_booking')
           .where('rt_id', isEqualTo: uid)
           .get();
       print('Fetched ${snapshot.docs.length} booked users');
@@ -302,9 +302,11 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                                         Text(userData['startTime'] ?? 'Email not available'),
                                         Text(userData['totalHours'].toString() ?? 'Hours not available'),
                                         Text(userData['totalPrice'] ?? 'Email not available'),
-                                        Text(
-                              userData['selectedDate']?.toDate()?.toString().split(' ')[0] ?? 'Date not available',
-                            ),              
+                                       Text(
+  (userData['selectedDate'] != null)
+      ? DateTime.parse(userData['selectedDate']).toString().split(' ')[0]
+      : 'Date not available',
+),   
                           ],
                         ),
                       ),
@@ -339,6 +341,7 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
                   context,
                   MaterialPageRoute(builder: (context) {
                     return SlotDetails(
+                       
                      
                     );
                   }),

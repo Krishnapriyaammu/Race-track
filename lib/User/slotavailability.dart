@@ -13,9 +13,62 @@ class SlotAvailability extends StatefulWidget {
 }
 
 class _SlotAvailabilityState extends State<SlotAvailability> {
-  double _sliderValue = 3; // Initial value for the slider
-  TimeOfDay _startTime = TimeOfDay.now(); // Initial start time
+  double _sliderValue = 1; // Initial value for the slider
+  TimeOfDay _startTime = TimeOfDay.now();
+    late DateTime _selectedDate; // Selected date
+  double _amount = 0; // Amount fetched from Firestore // Initial start time
+  double _totalPrice = 0; // Total price
 
+  @override
+  void initState() {
+    super.initState();
+    _selectedDate = DateTime.now().add(Duration(days: 1)); // Initialize with tomorrow's date
+    _fetchAmountFromFirestore();
+  }
+Future<void> _fetchAmountFromFirestore() async {
+  try {
+    final formattedDate = '${_selectedDate.year}-${_selectedDate.month}-${_selectedDate.day}';
+    final docRef = FirebaseFirestore.instance.collection('slots').doc(formattedDate);
+
+    final snapshot = await docRef.get();
+
+    if (snapshot.exists) {
+      final data = snapshot.data() as Map<String, dynamic>;
+      setState(() {
+        _amount = (data['amount'] ?? 0).toDouble();
+                  _totalPrice = _amount; // Initialize total price with the fetched amount
+ // Explicitly cast to double
+      });
+    } else {
+      setState(() {
+        _amount = 0;
+       _totalPrice = 0;
+
+      });
+    }
+  } catch (e, stackTrace) {
+    print('Error fetching amount from Firestore: $e');
+    print('Stack trace: $stackTrace');
+    // You can also show a dialog or a snackbar to inform the user about the error
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text('An error occurred while fetching data from Firestore. Please try again later.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
   @override
   Widget build(BuildContext context) {
     // Calculate the end time based on the start time and the selected number of hours
@@ -32,7 +85,12 @@ class _SlotAvailabilityState extends State<SlotAvailability> {
               initialDate: DateTime.now().add(Duration(days: 1)), // Set initial date to tomorrow
               firstDate: DateTime.now().add(Duration(days: 1)), // Allow selection from tomorrow
               lastDate: DateTime.now().add(Duration(days: 1)), // Allow selection up to tomorrow
-              onDateChanged: (date) {},
+              onDateChanged: (date) {
+                 setState(() {
+                  _selectedDate = date;
+                  _fetchAmountFromFirestore(); // Fetch amount whenever the date changes
+                });
+              },
             ),
             ListTile(
               title: Text('Select Start Time'),
@@ -53,7 +111,9 @@ class _SlotAvailabilityState extends State<SlotAvailability> {
                 max: 12,
                 onChanged: (value) {
                   setState(() {
-                    _sliderValue = value; // Update the slider value
+                    _sliderValue = value; 
+                                        _updateTotalPrice(); // Update total price when slider value changes
+// Update the slider value
                   });
                 },
               ),
@@ -70,7 +130,7 @@ class _SlotAvailabilityState extends State<SlotAvailability> {
               children: [
                 Text('Price', style: TextStyle(fontWeight: FontWeight.bold)),
                 Spacer(),
-                Text('\$5.00/1 hour', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('$_amount/1 hour', style: TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
             Divider(color: Colors.grey),
@@ -78,7 +138,8 @@ class _SlotAvailabilityState extends State<SlotAvailability> {
               children: [
                 Text('Total Price', style: TextStyle(fontWeight: FontWeight.bold)),
                 Spacer(),
-                Text('\$${(_sliderValue * 5).toStringAsFixed(2)}/${_sliderValue.toInt()} hours', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('\$${_totalPrice.toStringAsFixed(2)}/${_sliderValue.toInt()} hours',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
             SizedBox(height: 20), // Add some space between the rows and the button
@@ -89,7 +150,8 @@ class _SlotAvailabilityState extends State<SlotAvailability> {
                       Navigator.push(context, MaterialPageRoute(builder: (context) {
                                           return ShiftAvailable(
                                             rt_id:widget.rt_id,
-                                             totalPrice: (_sliderValue * 5).toStringAsFixed(2),
+                                           totalPrice: _totalPrice.toStringAsFixed(2), // Convert double to string with two decimal places
+
                       totalHours: _sliderValue.toInt(),
                           selectedDate: DateTime.now().add(Duration(days: 1)), // Pass selected date
 
@@ -132,4 +194,18 @@ class _SlotAvailabilityState extends State<SlotAvailability> {
       });
     }
   }
+ void _updateTotalPrice() {
+  int currentHours = _sliderValue.toInt();
+  double pricePerHour = _amount;
+  
+  if (currentHours > _totalPrice) {
+    setState(() {
+      _totalPrice = pricePerHour * currentHours;
+    });
+  } else if (currentHours < _totalPrice) {
+    setState(() {
+      _totalPrice = pricePerHour * currentHours;
+    });
+  }
+}
 }
