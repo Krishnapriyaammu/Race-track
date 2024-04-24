@@ -110,6 +110,180 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
       throw e;
     }
   }
+     void _showAddTrackDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, setState) {
+            return SingleChildScrollView(
+              child: AlertDialog(
+                title: Text('Add Track'),
+                content: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        ImagePicker picker = ImagePicker();
+                        pickedFile =
+                            await picker.pickImage(source: ImageSource.gallery);
+
+                        setState(() {
+                          if (pickedFile != null) {
+                            profileImage = File(pickedFile!.path);
+                          }
+                        });
+                      },
+                      child: ClipOval(
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: profileImage != null
+                              ? FileImage(profileImage!)
+                              : null,
+                          child: profileImage == null
+                              ? Icon(Icons.camera_alt, size: 30)
+                              : null,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text('Name'),
+                        ),
+                      ],
+                    ),
+                    TextFormField(
+                      controller: Racetrackname,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'enter Name';
+                        }
+                      },
+                      decoration: InputDecoration(
+                        fillColor: Color.fromARGB(255, 192, 221, 224),
+                        filled: true,
+                        border: UnderlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(40)),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text('Track type'),
+                        ),
+                      ],
+                    ),
+                    TextFormField(
+                      controller: tracktype,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'enter type';
+                        }
+                      },
+                      decoration: InputDecoration(
+                        fillColor: Color.fromARGB(255, 192, 221, 224),
+                        filled: true,
+                        border: UnderlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(40)),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text('place'),
+                        ),
+                      ],
+                    ),
+                    TextFormField(
+                      controller: Place,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'enter place';
+                        }
+                      },
+                      decoration: InputDecoration(
+                        fillColor: Color.fromARGB(255, 192, 221, 224),
+                        filled: true,
+                        border: UnderlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(40)),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                   
+                    SizedBox(height: 20),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      SharedPreferences sp =
+                          await SharedPreferences.getInstance();
+                      var a = sp.getString('uid');
+                      await uploadImage();
+
+                      await FirebaseFirestore.instance
+                          .collection("racetrack_upload_track")
+                          .add({
+                        'track name': Racetrackname.text,
+                        'rating': Rating.text,
+                        'tracktype': tracktype.text,
+                        'place': Place.text,
+                        'upcomingevents': upcoming_events.text,
+                        
+                        'image_url': imageUrl,
+                        'uid': a,
+                      });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) {
+                          return RaceTrackNavigation();
+                        }),
+                      );
+                    },
+                    child: Text('Upload'),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> uploadImage() async {
+    try {
+      if (profileImage != null) {
+        Reference storageReference =
+            FirebaseStorage.instance.ref().child('image/${pickedFile!.name}');
+        await storageReference.putFile(profileImage!);
+        imageUrl = await storageReference.getDownloadURL();
+        print('Image URL: $imageUrl');
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
+    }
+  }
+  
+
 
   @override
   Widget build(BuildContext context) {
@@ -129,132 +303,132 @@ class _RaceTrackViewRaceState extends State<RaceTrackViewRace> {
         body: TabBarView(
           children: [
             // Add Track Tab
-            Column(
-              children: [
-                Expanded(
-                  child: FutureBuilder(
-                    future: getData(),
-                    builder: (context,
-                        AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else {
-                        return ListView.builder(
-                          itemCount: snapshot.data?.length ?? 0,
-                          itemBuilder: ((context, index) {
-                            final document = snapshot.data![index];
-                            final data =
-                                document.data() as Map<String, dynamic>;
-                            final imageUrl = data['image_url'];
-                            return Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Card(
-                                elevation: 5,
-                                child: Row(
-                                  children: [
-                                    // Left Container
-                                    Expanded(
-                                      child: Container(
-                                        padding: EdgeInsets.all(12),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              data['track name'] ??
-                                                  'Name not available',
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                            Row(
-                                              children: [
-                                                RatingBar.builder(
-                                                  itemSize: 20,
-                                                  initialRating: 3,
-                                                  minRating: 1,
-                                                  direction: Axis.horizontal,
-                                                  allowHalfRating: true,
-                                                  itemCount: 5,
-                                                  itemPadding:
-                                                      EdgeInsets.symmetric(
-                                                          horizontal: 4.0),
-                                                  itemBuilder: (context, _) =>
-                                                      Icon(
-                                                    Icons.star,
-                                                    size: 20,
-                                                    color: Colors.amber,
-                                                  ),
-                                                  onRatingUpdate: (rating) {
-                                                    print(rating);
-                                                  },
-                                                ),
-                                                SizedBox(width: 10),
-                                                Text(
-                                                  '3.0',
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 10),
-                                            Text(
-                                              data['tracktype'] ??
-                                                  'Name not available',
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                            Text(
-                                              data['place'] ??
-                                                  'Name not available',
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                          ],
+        Column(
+      children: [
+        Expanded(
+          child: FutureBuilder(
+            future: getData(),
+            builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else {
+                return Stack(
+                  children: [
+                    ListView.builder(
+                      itemCount: snapshot.data?.length ?? 0,
+                      itemBuilder: ((context, index) {
+                        final document = snapshot.data![index];
+                        final data = document.data() as Map<String, dynamic>;
+                        final imageUrl = data['image_url'];
+                        return Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Card(
+                            elevation: 5,
+                            child: Row(
+                              children: [
+                                // Left Container
+                                Expanded(
+                                  child: Container(
+                                    padding: EdgeInsets.all(12),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          data['track name'] ?? 'Name not available',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 120,
-                                      height: 120,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        image: DecorationImage(
-                                          image:
-                                              AssetImage('images/racing.jpg'),
-                                          fit: BoxFit.cover,
+                                        SizedBox(height: 10),
+                                        // Row(
+                                        //   children: [
+                                        //     RatingBar.builder(
+                                        //       itemSize: 20,
+                                        //       initialRating: 3,
+                                        //       minRating: 1,
+                                        //       direction: Axis.horizontal,
+                                        //       allowHalfRating: true,
+                                        //       itemCount: 5,
+                                        //       itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                        //       itemBuilder: (context, _) => Icon(
+                                        //         Icons.star,
+                                        //         size: 20,
+                                        //         color: Colors.amber,
+                                        //       ),
+                                        //       onRatingUpdate: (rating) {
+                                        //         print(rating);
+                                        //       },
+                                        //     ),
+                                        //     SizedBox(width: 10),
+                                        //     Text(
+                                        //       '3.0',
+                                        //       style: TextStyle(
+                                        //         fontSize: 16,
+                                        //         fontWeight: FontWeight.bold,
+                                        //       ),
+                                        //     ),
+                                        //   ],
+                                        // ),
+                                        SizedBox(height: 10),
+                                        Text(
+                                          data['tracktype'] ?? 'Name not available',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                          ),
                                         ),
-                                      ),
-                                      child: imageUrl != null
-                                          ? Image.network(imageUrl,
-                                              fit: BoxFit.cover)
-                                          : Icon(Icons.image),
+                                        Text(
+                                          data['place'] ?? 'Name not available',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          }),
+                                Container(
+                                  width: 120,
+                                  height: 120,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    image: DecorationImage(
+                                      image: AssetImage('images/racing.jpg'),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  child: imageUrl != null
+                                      ? Image.network(imageUrl, fit: BoxFit.cover)
+                                      : Icon(Icons.image),
+                                ),
+                              ],
+                            ),
+                          ),
                         );
-                        
-                      }
-                    },
-                  ),
-                ),
-              ],
-              
-            ),
+                      }),
+                    ),
+                    Positioned(
+                      bottom: 16,
+                      right: 16,
+                      child: FloatingActionButton(
+                        onPressed: () {
+                _showAddTrackDialog(context);
+                        },
+                        child: Icon(Icons.add),
+                      ),
+                    ),
+                  ],
+                );
+              }
+            },
+          ),
+        ),
+      ],
+      
+    ),
             
 
             // View Booked Users Tab

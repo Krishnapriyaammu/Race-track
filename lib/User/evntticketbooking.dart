@@ -1,6 +1,8 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:loginrace/User/eventregistration.dart';
 import 'package:loginrace/User/ticketcart.dart';
 import 'package:loginrace/User/ticketdetails.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,14 +17,27 @@ class EventTicketBooking extends StatefulWidget {
   _EventTicketBookingState createState() => _EventTicketBookingState();
 }
 
-class _EventTicketBookingState extends State<EventTicketBooking> {
-    late Future<DocumentSnapshot<Map<String, dynamic>>> _eventDetailsFuture;
+class _EventTicketBookingState extends State<EventTicketBooking>
+ with SingleTickerProviderStateMixin { // Add SingleTickerProviderStateMixin here
+  late Future<DocumentSnapshot<Map<String, dynamic>>> _eventDetailsFuture;
   String _selectedCategory = 'General';
+  late AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
     _eventDetailsFuture = getEventDetails();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 500),
+    );
+    _controller.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   Future<DocumentSnapshot<Map<String, dynamic>>> getEventDetails() async {
@@ -73,6 +88,42 @@ class _EventTicketBookingState extends State<EventTicketBooking> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         SizedBox(height: 100),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EventRegistrationPage(rt_id:widget.rt_id), // Your registration page
+                              ),
+                            );
+                          },
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: DefaultTextStyle(
+                              style: GoogleFonts.poppins(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                              child:
+                               AnimatedTextKit(
+                                animatedTexts: [
+                                  TypewriterAnimatedText(' Register now!!!!'),
+                                ],
+                                onTap: () {
+                                 
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => EventRegistrationPage(rt_id:widget.rt_id), // Your registration page
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
                         Center(
                           child: Text(
                             eventData['event_name'] ?? 'Event Name Not Available',

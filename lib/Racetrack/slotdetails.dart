@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -73,8 +72,10 @@ class _SlotDetailsState extends State<SlotDetails> {
                         final booking = _filteredBookings[index];
                         final userName = booking['userName'];
                         final selectedSlot = booking['selectedSlot'];
+                        final selectedDate =booking['selectedDate'];
+                        final totalprice=booking['totalPrice'];
                         return ListTile(
-                          title: Text('User Name: $userName, Slot: $selectedSlot'),
+                          title: Text('User Name: $userName, Slot: $selectedSlot,date:$selectedDate,totalprice:$totalprice'),
                         );
                       },
                     ),
@@ -85,7 +86,7 @@ class _SlotDetailsState extends State<SlotDetails> {
     );
   }
 
-  void _pickDate() async {
+ void _pickDate() async {
   final selectedDate = await showDatePicker(
     context: context,
     initialDate: DateTime.now(),
@@ -93,9 +94,15 @@ class _SlotDetailsState extends State<SlotDetails> {
     lastDate: DateTime.now().add(Duration(days: 7)),
   );
   if (selectedDate != null) {
+    // Add print statement to track the selected date
+    print('Selected DDDDDDate: $selectedDate');
+
     setState(() {
       _selectedDate = '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}';
     });
+
+    // Add print statement to track the value of _selectedDate after setting
+    print('_selectedDate after setting: $_selectedDate');
   }
 }
 void _searchBookings() async {
@@ -114,7 +121,7 @@ void _searchBookings() async {
         await FirebaseFirestore.instance
             .collection('user_track_booking')
             .where('selectedDate', isEqualTo: _selectedDate)
-            // .where('selectedSlot', isEqualTo: _selectedSlot)
+            .where('selectedSlot', isEqualTo: _selectedSlot)
             .get();
 
     print('Query Snapshot: $querySnapshot');
@@ -131,7 +138,14 @@ void _searchBookings() async {
             await FirebaseFirestore.instance.collection('user_register').doc(userId).get();
         if (userSnapshot.exists) {
           final userName = userSnapshot.data()?['name'] ?? '';
-          filteredBookings.add({'userName': userName, 'selectedSlot': selectedSlot});
+          final selectedDate = doc.data()['selectedDate']; // Get selected date from Firestore
+          final totalPrice = doc.data()['totalPrice']; // Example of getting other fields
+          filteredBookings.add({
+            'userName': userName,
+            'selectedSlot': selectedSlot,
+            'selectedDate': selectedDate, // Include selected date in the result
+            'totalPrice': totalPrice, // Include other relevant fields
+          });
         }
       }
     }

@@ -61,7 +61,7 @@ class _EventTicketDetailsState extends State<EventTicketDetails> {
         'totalTickets': totalBookedTickets,
         'timestamp': Timestamp.now(),
         'userid': userid,
-        'rt_id': widget.rt_id,
+        'event_id': widget.rt_id,
         'generalTickets': _generalTickets,
         'childTickets': _childTickets,
       });
