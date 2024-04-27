@@ -178,6 +178,23 @@ SizedBox(height: 10,),
                                     color: Colors.black87,
                                   ),
                                 ),
+                                  Text(
+                                  'Total Vehicles Participating',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                    SizedBox(height: 10),
+
+                                Text(
+                                  '${eventData['total_vehicles'] ?? 'vehicles Not Available'}',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 18,
+                                    color: Colors.black87,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -283,7 +300,7 @@ SizedBox(height: 10,),
                               fontSize: 20,
                             ),
                           ),
-                          style: ElevatedButton.styleFrom(
+                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blueAccent,
                             padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
                             shape: RoundedRectangleBorder(
@@ -292,6 +309,23 @@ SizedBox(height: 10,),
                           ),
                         ),
                         SizedBox(height: 20),
+
+                        // Link-like text to view registrations
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: GestureDetector(
+                            onTap: () {
+                              // Add your logic here to handle viewing registrations
+                            }, 
+                            child: Text(
+                              'View Registrations',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),

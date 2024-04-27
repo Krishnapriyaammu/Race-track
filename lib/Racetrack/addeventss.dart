@@ -39,44 +39,45 @@ class _EventAddState extends State<EventAdd> {
   }
 
   Future<void> _saveTicketDetails() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    var a = sp.getString('uid');
-
-    await uploadImage();
-    try {
-      final CollectionReference tickets =
-          FirebaseFirestore.instance.collection('racetrack_upload_event');
-      int totalTickets = int.tryParse(_totalTicketsController.text) ?? 0;
-      await tickets.add({
-        'event_name': _eventNameController.text,
-        'event_date': _eventDateController.text,
-        'total_tickets': totalTickets,
-        'general_price': _generalPrice,
-        'image_url': imageUrl,
-        'child_price': _childPrice,
-        'vip_price': _vipPrice,
-       'place': _place,
-
-        'rt_id': a,
-      });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Ticket details saved successfully.'),
-        duration: Duration(seconds: 2),
-      ));
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return RaceTrackViewEvents();
-      }));
-    } catch (e) {
-      print('Error saving ticket details: $e');
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Error saving ticket details: $e'),
-        duration: Duration(seconds: 2),
-      ));
-    }
+  if (!_formKey.currentState!.validate()) {
+    return;
   }
+  SharedPreferences sp = await SharedPreferences.getInstance();
+  var a = sp.getString('uid');
+
+  await uploadImage();
+  try {
+    final CollectionReference tickets =
+        FirebaseFirestore.instance.collection('racetrack_upload_event');
+    int totalTickets = int.tryParse(_totalTicketsController.text) ?? 0;
+    int totalVehicles = int.tryParse(_totalVehicle.text) ?? 0; // Parse total vehicles to int
+    await tickets.add({
+      'event_name': _eventNameController.text,
+      'event_date': _eventDateController.text,
+      'total_tickets': totalTickets,
+      'general_price': _generalPrice,
+      'image_url': imageUrl,
+      'child_price': _childPrice,
+      'vip_price': _vipPrice,
+      'place': _place,
+      'total_vehicles': totalVehicles, // Store total vehicles as int
+      'rt_id': a,
+    });
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Ticket details saved successfully.'),
+      duration: Duration(seconds: 2),
+    ));
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return RaceTrackViewEvents();
+    }));
+  } catch (e) {
+    print('Error saving ticket details: $e');
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Error saving ticket details: $e'),
+      duration: Duration(seconds: 2),
+    ));
+  }
+}
    String? _validateEventName(String? value) {
     if (value == null || value.isEmpty) {
       return 'Event name is required';
@@ -101,6 +102,16 @@ class _EventAddState extends State<EventAdd> {
     }
     return null;
   }
+   String? _validateTotalVehicles(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Total vehicles is required';
+    }
+    int? totalTickets = int.tryParse(value);
+    if (totalTickets == null || totalTickets <= 0) {
+      return 'Invalid total vehicles';
+    }
+    return null;
+  }
 
   String? _validatePrice(String? value) {
     if (value == null || value.isEmpty) {
@@ -120,6 +131,7 @@ class _EventAddState extends State<EventAdd> {
   final TextEditingController _totalTicketsController =
       TextEditingController();
         final TextEditingController _placeController = TextEditingController();
+        final TextEditingController _totalVehicle =TextEditingController();
 
         final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -144,6 +156,7 @@ class _EventAddState extends State<EventAdd> {
     _eventNameController.dispose();
     _eventDateController.dispose();
     _totalTicketsController.dispose();
+    _totalVehicle.dispose();
      _placeController.dispose();
 
     super.dispose();
@@ -238,6 +251,18 @@ class _EventAddState extends State<EventAdd> {
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     labelText: 'Total tickets',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                  SizedBox(height: 20),
+                TextFormField(
+                  controller: _totalVehicle,
+                  validator: _validateTotalVehicles,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'Total vehicles',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

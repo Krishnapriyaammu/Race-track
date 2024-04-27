@@ -531,7 +531,7 @@ class UserTab extends StatelessWidget {
             itemCount: snapshot.data?.length ?? 0,
             itemBuilder: (context, index) {
               final document = snapshot.data![index];
-              final data = document.data() as Map<String, dynamic>?; // Cast data to Map<String, dynamic> or null
+              final data = document.data() as Map<String, dynamic>?; 
               if (data != null) {
                 return Card(
                   margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),

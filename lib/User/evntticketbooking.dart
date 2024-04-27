@@ -70,6 +70,7 @@ class _EventTicketBookingState extends State<EventTicketBooking>
             final generalPrice = (eventData['general_price'] ?? 0) as int;
             final childPrice = (eventData['child_price'] ?? 0) as int;
             final totalTickets = (eventData['total_tickets'] ?? 0) as int;
+            final totalvehicles =(eventData['total_vehicles']?? 0) as int;
 
             return Stack(
               children: [
@@ -184,6 +185,22 @@ class _EventTicketBookingState extends State<EventTicketBooking>
                               SizedBox(height: 10),
                               Text(
                                 '$totalTickets',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  color: Color(0xFF212121),
+                                ),
+                              ),
+                              Text(
+                                'Total Vehicles participating',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF212121),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                '$totalvehicles',
                                 style: GoogleFonts.poppins(
                                   fontSize: 18,
                                   color: Color(0xFF212121),

@@ -20,7 +20,7 @@ class EventRegistrationPage extends StatefulWidget {
 }
 
 class _EventRegistrationPageState extends State<EventRegistrationPage> {
- final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -29,20 +29,43 @@ class _EventRegistrationPageState extends State<EventRegistrationPage> {
   final TextEditingController _licenseNumberController = TextEditingController();
   File? _vehicleImage;
   final ImagePicker _picker = ImagePicker();
+  String? _selectedExperience;
+  List<String> _experiences = ['3 years', '4 years', '5 years', '6 years', '7 years', '8 + years'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Event Registration'),
+        // title: Text('Event Registration'),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
+          child: 
+         Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Center(
+      child: Text(
+        'Event Registration Form',
+        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      ),
+    ),
+    Row(
+      children: [
+        Text(
+          '*',
+          style: TextStyle(color: Colors.red, fontSize: 18),
+        ),
+        SizedBox(width: 5),
+        Text(
+          'Should participate in at least three or more events',
+          style: TextStyle(fontSize: 14),
+        ),
+      ],
+    ),
+    SizedBox(height: 20),
               TextFormField(
                 controller: _fullNameController,
                 decoration: InputDecoration(labelText: 'Full Name'),
@@ -61,7 +84,6 @@ class _EventRegistrationPageState extends State<EventRegistrationPage> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your email';
                   }
-                  // You can add more complex email validation if needed
                   return null;
                 },
               ),
@@ -73,7 +95,6 @@ class _EventRegistrationPageState extends State<EventRegistrationPage> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your phone number';
                   }
-                  // You can add more specific phone number validation if needed
                   return null;
                 },
               ),
@@ -95,11 +116,39 @@ class _EventRegistrationPageState extends State<EventRegistrationPage> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter your license number';
                   }
-                  // Validate license number format (e.g., integer)
                   if (int.tryParse(value) == null) {
                     return 'Please enter a valid license number';
                   }
                   return null;
+                },
+              ),
+              SizedBox(height: 20),
+              DropdownButtonFormField<String>(
+                value: _selectedExperience,
+                items: _experiences.map((experience) {
+                  return DropdownMenuItem<String>(
+                    value: experience,
+                    child: Text(experience),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedExperience = value;
+                  });
+                },
+                decoration: InputDecoration(
+    labelText: 'Experience *', // Add asterisk to the label
+    border: OutlineInputBorder(),
+    suffixIcon: Text(
+      '*', // Add asterisk as suffix icon
+      style: TextStyle(color: Colors.red),
+    ),
+  ),
+  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Please select your experience';
+    }
+    return null;
                 },
               ),
               SizedBox(height: 20),
@@ -113,7 +162,7 @@ class _EventRegistrationPageState extends State<EventRegistrationPage> {
               SizedBox(height: 10),
               ElevatedButton(
                 onPressed: _pickVehicleImage,
-                child: Text('Select Vehicle Image'),
+                child: Text('Upload your vehicle'),
               ),
               SizedBox(height: 20),
               ElevatedButton(
@@ -121,6 +170,7 @@ class _EventRegistrationPageState extends State<EventRegistrationPage> {
                 child: Text('Submit'),
               ),
             ],
+
           ),
         ),
       ),
@@ -128,7 +178,8 @@ class _EventRegistrationPageState extends State<EventRegistrationPage> {
   }
 
   void _pickVehicleImage() async {
-    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedFile =
+    await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _vehicleImage = File(pickedFile.path);
@@ -138,41 +189,37 @@ class _EventRegistrationPageState extends State<EventRegistrationPage> {
 
   Future<void> _submitRegistration() async {
     if (_formKey.currentState!.validate()) {
-      // Form is valid, proceed with registration
-
       String fullName = _fullNameController.text;
       String email = _emailController.text;
       String phoneNumber = _phoneNumberController.text;
       String address = _addressController.text;
       String licenseNumber = _licenseNumberController.text;
 
-      // Check if the license number already exists
-      bool licenseExists = await _licenseNumberAlreadyExists(licenseNumber);
+      bool licenseExists =
+      await _licenseNumberAlreadyExists(licenseNumber);
 
-     if (licenseExists) {
-  // License number already exists, show toast message
-  Fluttertoast.showToast(
-    msg: "License number already exists",
-    toastLength: Toast.LENGTH_SHORT,
-    gravity: ToastGravity.BOTTOM,
-    timeInSecForIosWeb: 1,
-    backgroundColor: Colors.red,
-    textColor: Colors.white,
-    fontSize: 16.0,
-  );
-  return;
-}
-      // Get user ID from SharedPreferences
+      if (licenseExists) {
+        Fluttertoast.showToast(
+          msg: "License number already exists",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        return;
+      }
+
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? userId = prefs.getString('uid');
 
       if (userId != null) {
-        // User ID exists in SharedPreferences
         String vehicleImageUrl = await _uploadVehicleImage();
 
-        // Store registration details in Firestore
         FirebaseFirestore firestore = FirebaseFirestore.instance;
-        CollectionReference registrations = firestore.collection('Event_Registration');
+        CollectionReference registrations =
+        firestore.collection('Event_Registration');
 
         await registrations.add({
           'userId': userId,
@@ -183,32 +230,48 @@ class _EventRegistrationPageState extends State<EventRegistrationPage> {
           'address': address,
           'licenseNumber': licenseNumber,
           'vehicleImageUrl': vehicleImageUrl,
+          'experience': _selectedExperience,
         });
 
-        // Registration successful
         print('Registration successful');
+        FirebaseFirestore.instance.runTransaction((transaction) async {
+          DocumentSnapshot eventSnapshot = await transaction.get(
+              FirebaseFirestore.instance
+                  .collection('racetrack_upload_event')
+                  .doc(widget.rt_id));
+          int totalVehicles =
+          (eventSnapshot.data() as Map<String, dynamic>)['total_vehicles'] ??
+              0;
+          int vehiclesBooked =
+          1; // Assuming one vehicle is booked per registration, you can adjust this accordingly
+          int updatedTotalVehicles = totalVehicles - vehiclesBooked;
+          transaction.update(
+              FirebaseFirestore.instance
+                  .collection('racetrack_upload_event')
+                  .doc(widget.rt_id),
+              {'total_vehicles': updatedTotalVehicles});
+        });
       } else {
-        // User ID does not exist in SharedPreferences
         print('User ID not found in SharedPreferences.');
       }
     }
   }
 
   Future<bool> _licenseNumberAlreadyExists(String licenseNumber) async {
-    // Query Firestore to check if any document has the provided license number
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('Event_Registration')
         .where('licenseNumber', isEqualTo: licenseNumber)
         .get();
-
-    // If any document matches the license number, return true, else return false
     return querySnapshot.docs.isNotEmpty;
   }
 
   Future<String> _uploadVehicleImage() async {
     try {
-      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      Reference storageReference = FirebaseStorage.instance.ref().child('vehicle_images/$fileName.jpg');
+      String fileName =
+          DateTime.now().millisecondsSinceEpoch.toString();
+      Reference storageReference = FirebaseStorage.instance
+          .ref()
+          .child('vehicle_images/$fileName.jpg');
       await storageReference.putFile(_vehicleImage!);
       String downloadURL = await storageReference.getDownloadURL();
       return downloadURL;
