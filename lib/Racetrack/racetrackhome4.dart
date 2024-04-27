@@ -58,7 +58,7 @@ Future<List<DocumentSnapshot>> getData() async {
             IconButton(
               icon: Icon(Icons.add),
               onPressed: () async {
-                final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
+                final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
 
                 setState(() {
                   if (pickedFile != null) {

@@ -26,7 +26,7 @@ class _RentUploadImageState extends State<RentUploadImage> {
   String? selectedCategory;
 
   Future<void> _pickImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       if (pickedFile != null) {
